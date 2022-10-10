@@ -24,48 +24,78 @@
 # package ‘seqinr’
 # package ‘agvgd’
 
+split_by_col <- function(df, cdr3_nt_col, cdr3_aa_col) {
+  rep <- df[c(cdr3_nt_col, cdr3_aa_col)]
+  colnames(rep) <- c("nt", "aa")
+  aa_to_nt <- split(rep$nt, rep$aa)
+  # split 2 vectors in a data frame
+  # resulting a named list mapping
+  # NT sequences groups to their
+  # mutual encoding CDR3 AA sequence
+  return(aa_to_nt)
+}
 
-nt_list <- list(group1$BRCA1$nSeqCDR3, group1$BRCA2$nSeqCDR3, group1$BRCA3$nSeqCDR3)
-lengths(nt_list)
+
+code <- c(T = 0, C = 1, A = 2, G = 3)
+aa_code <- "FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG"
+aa_code <- strsplit(aa_code, "")[[1]]
+translate <- function(nt_seq) {
+  c <- code[nt_seq]
+  in_frame <- seq(from=1, to=length(c) ,by=3)
+  c <- 16*c[in_frame] + 4*c[in_frame + 1] + c[in_frame + 2] + 1
+  paste0(aa_code[c], collapse = "")
+
+}
+nt_to_aa <- function(nt_vec) {
+    nt_vec %>%
+    as.vector %>%
+    strsplit(split = "") %>%
+    map(translate) %>%
+    unlist
+}
 
 
-
+nt_col_name <- "nSeqCDR3"
 aa_col_name <- "aaSeqCDR3"
 
-vec_input <- list(group1$BRCA1$aaSeqCDR3, group1$BRCA2$aaSeqCDR3, group1$BRCA3$aaSeqCDR3)
-vec_input <- setNames(vec_input, names(group1))
-
-Map(c, vec_input)
-lengths(vec_input)
-
-is.pablic <- unlist(lapply(vec_input, unique), use.names = FALSE)
-is.pablic <- table(aa_unique)>1
-
-is.pablic[vec_input$BRCA1[1:10]]
-
-?filter_if()
-
-aa_check <- vec_input$BRCA1[1:10]
-
-typeof(is_pablic[aa_check])
-
-# aa_intersect <- function(pair) intersect(names(pair[[1]]), names(pair[[2]]))
+df_list %>%
+  # lapply(select, nt_col_name, aa_col_name) %>%
+  lapply(pull, var = nt_col_name, name = aa_col_name) %>%
+  Reduce(f = union)
 
 
+df_list %>%
+  lapply(distinct, c(nt_col_name, aa_col_name), .id = "sample")
 
+lapply(df_list, pull, var = "nSeqCDR3", name = "aaSeqCDR3") %>%
+  map(unsplit(is.element))
+
+  # unsplit(is.element)
+
+
+aa_list <- lapply(df_list, pull, "aaSeqCDR3")
+nt_list <- lapply(df_list, pull, "nSeqCDR3")
+mapply(split, nt_list, aa_list,SIMPLIFY = FALSE)
+
+
+df %>% split(~ nSeqCDR3)
+
+
+
+source("R/scripts/read_rep.R")
+
+nt_col_name <- "nSeqCDR3"
+aa_col_name <- "aaSeqCDR3"
+from_cols <- c(aa_col_name, nt_col_name)
+
+aa_count <- table(data, dnn = "sample")
+aa <- split(data, ~ aaSeqCDR3)
+
+rep_list <- split(data, ~ sample)
+all_aa <- Reduce(union, rep_list)
+
+share_seq <- function(df1, df2, bycol) semi_join(df1, df2, by = bycol)
 aa_intersect <- function(pair) mapply(intersect, pair[1], pair[2])
-
-
-
-aa <- aa_intersect(unname(vec_input)[1:2])[1:10]
-group1$BRCA1[group1$BRCA1$aaSeqCDR3==aa,]
-
-
-typeof(vec_input)
-
-typeof
-
-rep1 <- read_tsv(group1_paths[1], col_types = mixcr_column_type)
 
 grouped_aa <- split(rep1$nSeqCDR3, rep1$aaSeqCDR3)
 unique(rep1$aaSeqCDR3) %in% names(grouped_aa) %>% all
@@ -73,23 +103,6 @@ unique(rep1$aaSeqCDR3) %in% names(grouped_aa) %>% all
 grouped_nt <- split(rep1$aaSeqCDR3, rep1$nSeqCDR3)
 unique(rep1$nSeqCDR3) %in% names(grouped_nt) %>% all
 
-
-
-
-
-# rep1 %>% select(cdr3_nt_col, cdr3_aa_col) %>%
-#   group
-
-
-
-
-
-
-# cdr3_nt_col <- "nSeqCDR3"
-# cdr3_aa_col <- "aaSeqCDR3"
-# col_names <- c(cdr3_nt_col, cdr3_aa_col)
-# rep <- group1[[1]][col_names]
-# colnames(rep) <- c("nt", "aa")
 
 
 
@@ -109,84 +122,10 @@ unique(rep1$nSeqCDR3) %in% names(grouped_nt) %>% all
 # fruits %>% expand(type)
 
 
-
-
-split_by_col <- function(df, cdr3_nt_col, cdr3_aa_col) {
-
-  rep <- df[c(cdr3_nt_col, cdr3_aa_col)]
-  colnames(rep) <- c("nt", "aa")
-  aa_to_nt <- split(rep$nt, rep$aa) # split 2 vectors in a data frame
-                                    # resulting a named list mapping
-                                    # NT sequences groups to their
-                                    # mutual encoding CDR3 AA sequence
-  return(aa_to_nt)
-}
-
-
 # aa_to_nt <- split(rep$nt, rep$aa) # split 2 vectors in a data frame
                                   # resulting a named list mapping
                                   # NT sequences groups to their
                                   # mutual encoding CDR3 AA sequence
-
-
-library("dplyr")
-
-nt_col_name <- "nSeqCDR3"
-aa_col_name <- "aaSeqCDR3"
-
-# group1[[1]][aa_col_name]
-
-rep_list <- lapply(group1, split_by_col, cdr3_nt_col="nSeqCDR3", cdr3_aa_col="aaSeqCDR3")
-aa_list <- lapply(rep_list, names)
-
-mapply(intersect, aa_list[1:2])
-
-
-
-aa_intersect <- function(x,y) is.element(names(x), y)
-aa_intersect <- function(pair) intersect(names(pair[[1]]), names(pair[[2]]))
-
-
-pairs <- combn(rep_list, m = 2, simplify = FALSE, FUN = names)
-
-
-?mapply(pairs, function(x) x)
-
-
-
-# all_aa <- Reduce(union, lapply(rep_list, names))
-
-
-
-
-aa_intersect(rep_list[1:2])
-
-
-
-is.element(aa_list[[1]], aa_list[[2]])
-
-aa_intersect()
-
-combn(aa_list, m = 2, simplify = FALSE, FUN = function(x) list(pair=names(x), share=is.element(x[[1]], x[[2]])))
-
-
-
-
-
-
-combn(aa_list, m = 2, simplify = FALSE, FUN = function(x) unlist(x, recursive = FALSE))
-
-# intersect(rep_list[[1]][1:1000], rep_list[[2]][1:1000])
-
-
-intersecing_aa <- intersect(names(rep_list[[1]]), names(rep_list[[2]]))
-
-
-rep_list[[1]][intersecing_aa]
-
-# unname(rep_list[[1]]["CAISDGGDTGELFF"])[[1]]==unname(rep_list[[2]]["CAISDGGDTGELFF"])[[1]]
-
-library(tidyr)
 
 
 
@@ -195,7 +134,7 @@ library(tidyr)
 
 n <- 14
 l <- rep(list(0:1), n)
-expand.grid(l)
+?expand.grid(l)
 
 
 
