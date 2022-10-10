@@ -23,10 +23,7 @@ mixcr_column_type <- cols(
   minQualCDR3 = col_double(),
   aaSeqCDR3 = col_character(),
   refPoints = col_character()
-
 )
-
-
 
 
 dir_path <- "data/Beta/"
@@ -40,6 +37,7 @@ df <- paths %>%
   mutate(sample=file_path_sans_ext(basename(sample))) %>%
   add_count(aaSeqCDR3, wt = n_distinct(nSeqCDR3), sort = TRUE, name = "CRlevel") %>%
   add_count(aaSeqCDR3, wt = n_distinct(sample), name = "Sharing")
+
 
 s <- df[1:10000,] %>%
   mutate(group=ifelse(startsWith(sample, "BRCA"), "Cancer", "Control")) %>%
@@ -102,7 +100,7 @@ distinct(df, nSeqCDR3, aaSeqCDR3, sample, sharing>1)
 
 
 # df_list %>%
-  # map(select, c())
+# map(select, c())
 
 
 
