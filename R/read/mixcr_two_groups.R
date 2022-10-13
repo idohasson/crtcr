@@ -31,6 +31,8 @@ files_from_dir <- function(dir_path, file_name_prefix) {
   return(paths[paths_with_fields])
 }
 
+list.files("data/Beta/", full.names=TRUE)
+
 get_names <- function(paths) file_path_sans_ext(basename(p))
 
 p <- files_from_dir("../../../dataset/clonotypes/Beta/", "BRCA")

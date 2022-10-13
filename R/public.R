@@ -4,40 +4,30 @@ library("dplyr")
 library("tools")
 
 
-mixcr_column_type <- cols(
-  .default = col_logical(),
-  cloneId = col_double(),
-  cloneCount = col_double(),
-  cloneFraction = col_double(),
-  targetSequences = col_character(),
-  targetQualities = col_character(),
-  allVHitsWithScore = col_character(),
-  allDHitsWithScore = col_character(),
-  allJHitsWithScore = col_character(),
-  allCHitsWithScore = col_character(),
-  allVAlignments = col_character(),
-  allDAlignments = col_character(),
-  allJAlignments = col_character(),
-  allCAlignments = col_character(),
-  nSeqCDR3 = col_character(),
-  minQualCDR3 = col_double(),
-  aaSeqCDR3 = col_character(),
-  refPoints = col_character()
-)
 
 
-dir_path <- "data/Beta/"
 
-paths <- list.files(dir_path, full.names=TRUE)
+x <- df %>%
+  sample_n(10) %>%
+  distinct(nSeqCDR3, aaSeqCDR3, sample, group) %>%
+  with(table(aaSeqCDR3, sample, group)) %>%
+  ftable(row.vars = "aaSeqCDR3", col.vars="group")
 
-paths <- paths[!grepl("metadata", paths)]
+# x[,.(public=sum(as.logical())), .G="Cancer"]
+x[aa,]
+# x[.(sum(as.logical(aaSeqCDR3))==1),C:="public"]
 
-df <- paths %>%
-  read_tsv(col_types = mixcr_column_type, id = "sample") %>%
-  mutate(sample=file_path_sans_ext(basename(sample))) %>%
-  add_count(aaSeqCDR3, wt = n_distinct(nSeqCDR3), sort = TRUE, name = "CRlevel") %>%
-  add_count(aaSeqCDR3, wt = n_distinct(sample), name = "Sharing")
 
+clone_table["Sum",,] %>%
+  add_count()
+
+?ftable
+clone_table[,,"Sum"]
+clone_table
+
+
+as.data.table(df) %>%
+  .[,n_distinct(sample), by=c("group", "aaSeqCDR3")]
 
 s <- df[1:10000,] %>%
   mutate(group=ifelse(startsWith(sample, "BRCA"), "Cancer", "Control")) %>%
