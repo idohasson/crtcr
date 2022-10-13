@@ -7,6 +7,40 @@ library("tools")
 
 
 
+sample_paths <- list.files("../../../dataset/clonotypes/Beta/", full.names=TRUE)
+data_list <- sapply(sample_paths, read_mixcr, simplify = FALSE)
+names(data_list) <- names(data_list) %>% basename %>% file_path_sans_ext
+aa_colname <- "aaSeqCDR3"
+
+group1 <- which(startsWith(names(data_list), "BRCA"))
+group2 <- which(!startsWith(names(data_list), "BRCA"))
+
+groups <- list(cancer=names(data_list)[group1], control=names(data_list)[group2])
+
+groups
+
+aa_list <- data_list %>% lapply(pull, aa_colname)
+aa_unique <- aa_list %>% lapply(unique)
+
+aa_count <- table(unlist(aa_unique, use.names = FALSE))
+
+public_aa <- aa_count[aa_count>1]
+private_aa <- aa_count[aa_count==1]
+
+cancer_aa <- Reduce(union, aa_unique[groups$cancer])
+control_aa <- Reduce(union, aa_unique[groups$control])
+
+
+private_aa <- names(private_aa)
+inclusove_aa <- intersect(cancer_aa, control_aa)
+exclusove_aa <- union(setdiff(names(public_aa), control_aa), setdiff(names(public_aa), cancer_aa))
+
+
+
+
+length(exclusove_aa)
+
+
 x <- df %>%
   sample_n(10) %>%
   distinct(nSeqCDR3, aaSeqCDR3, sample, group) %>%
