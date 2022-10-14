@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 notebook*
 ^README\.Rmd$
+^LICENSE\.md$
