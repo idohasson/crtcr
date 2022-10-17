@@ -1,5 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+<<<<<<< Updated upstream
 notebook*
 ^README\.Rmd$
 ^LICENSE\.md$
+=======
+^revdep$
+>>>>>>> Stashed changes
