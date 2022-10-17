@@ -1,17 +1,55 @@
 library("purrr")
-
-# prepare
-rand_aa <- function(vec_size) do.call(paste0, Map(stri_rand_strings, n=vec_size, length=5, pattern = '[A-C]'))
-
-group1 <- replicate(3, rand_aa(10), simplify = FALSE)
-group2 <- replicate(4, rand_aa(10), simplify = FALSE)
-group3 <- replicate(5, rand_aa(10), simplify = FALSE)
-group4 <- replicate(6, rand_aa(10), simplify = FALSE)
-
-public_table(group1, group2, group3, group4)
+library("forcats")
+library("tidyr")
 
 
+state <- function(v) {
 
+  is_singltone <- sum(v) == 1
+  if (is_singltone) {
+    return("private")
+  }
+
+  is_exclusive <- sum(as.logical(v)) == 1
+
+  if (is_exclusive) {
+    return("exclusive")
+  } else {
+    return("inclusive")
+  }
+
+}
+
+public <- function(dfl, gl, clonotype, compare_by) {
+
+  get_gruops(dfl, gl, clonotype, compare_by) %>%
+    as.data.table %>%
+    sharing_level_per_gruop %>%
+    apply(1, state)
+
+  # public(dfl, list(1:3, 4:6), "aaSeqCDR3", "nSeqCDR3") %>% as.list %>% as_tibble
+}
+
+
+public_seq.df <- function(df) {
+
+  is_singltone <- function(vec) sum(as.logical(vec))==1
+
+  t <- df %>%
+    with(table(sample, group, aaSeqCDR3)) %>%
+    as.data.frame %>%
+    xtabs(formula = Freq ~ aaSeqCDR3+group) %>%
+    addmargins(margin = 2,
+               FUN = list(list(sample_freq=sum,
+                               gruop_freq=is_singltone)))
+
+  pri_seq <- t[t[,"sample_freq"]==1,] %>% rownames
+  # pub_seq <- t[t[,"sample_freq"]!=1,] %>% rownames
+  ex_seq <- t[t[,"sample_freq"]!=1 & t[,"gruop_freq"]==1,] %>% rownames
+  in_seq <- t[t[,"sample_freq"]!=1 & !t[,"gruop_freq"]==1,] %>% rownames
+
+  list(private=pri_seq, public=list(exclusive=ex_seq, inclusive=in_seq))
+}
 
 
 public_table <- function(seq_list1, seq_list2, ...) {
@@ -66,6 +104,8 @@ exclusive_seq <- function(vec_list) {
 
 }
 
+
+function() df$aaSeqCDR3 %>% split(f = gl(20, 1, length = length(df$aaSeqCDR3))) %>% map(unique) %>% unlist %>% table %>% discard(~ . == 1)
 
 
 # public sequences from multiple list of vectors
