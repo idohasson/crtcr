@@ -7,6 +7,57 @@ library("forcats")
 
 library(readr)
 
+get_field()
+
+table(df$nSeqCDR3)>1
+df[c("aaSeqCDR3", "nSeqCDR3")] %>% sample_n(100) %>% as.data.frame %>% vec_group_loc
+
+aa_col <- "aaSeqCDR3"
+
+
+get_field <- function(data, field_name) {
+  # aa_col %in% fields(df)
+  field(data, field_name)
+  # get_field(df[1:10,], "aaSeqCDR3")
+}
+
+get_group <- function(grouped) {
+
+  # if (is.vector(grouped)) {
+  #   return(vec_group_loc(grouped))
+  # }
+
+  vec_group_id(grouped)
+  # as_tibble(vec_group_loc(grouped))
+  # x %>%
+  #   as.data.frame %>%
+
+
+
+
+
+  # n_fields(df) == 2
+  # df %>%
+  #   as.data.frame %>%
+  #   vec_group_loc
+}
+
+
+# get_group(sample_n(df[c("sample", "aaSeqCDR3")], 10)) %>%
+#   mutate(length(loc))
+
+df %>%
+  sample_n(10) %>%
+  pull("sample") %>%
+  # select(c("aaSeqCDR3", "sample")) %>%
+  get_group
+# vec_group_id(df)
+
+# if (require("tibble")) {
+#   as_tibble(vec_group_loc(mtcars[c("vs", "am")]))
+# }
+
+
 # paths <- list.files("../../../Datasets/Multiple sampled mice/data/Beta/", full.names = TRUE)[-7]
 dfl <- lapply(paths, read_tsv, show_col_types = FALSE)
 
