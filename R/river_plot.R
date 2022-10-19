@@ -1,6 +1,7 @@
 library("dplyr")
 library("ggplot2")
 library("ggforce")
+library(tidyr)
 
 A_col <- "darkorchid1"
 B_col <- "darkorange1"
@@ -8,7 +9,7 @@ C_col <- "skyblue1"
 alpha <- 0.7 # transparency value
 fct_levels <- c("A","C","B")
 
-dat <- cr_prop(l1, l2) %>%
+dat <- cr_prop(l1, l2, l3) %>%
   # proportions("type")
   proportions("variable")
 

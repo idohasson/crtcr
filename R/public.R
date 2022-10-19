@@ -3,32 +3,17 @@ library("forcats")
 library("tidyr")
 
 
-state <- function(v) {
 
-  is_singltone <- sum(v) == 1
-  if (is_singltone) {
-    return("private")
-  }
 
-  is_exclusive <- sum(as.logical(v)) == 1
-
-  if (is_exclusive) {
-    return("exclusive")
-  } else {
-    return("inclusive")
-  }
-
-}
-
-public <- function(dfl, gl, clonotype, compare_by) {
-
-  get_gruops(dfl, gl, clonotype, compare_by) %>%
-    as.data.table %>%
-    sharing_level_per_gruop %>%
-    apply(1, state)
-
-  # public(dfl, list(1:3, 4:6), "aaSeqCDR3", "nSeqCDR3") %>% as.list %>% as_tibble
-}
+# public <- function(dfl, gl, clonotype, compare_by) {
+#
+#   get_gruops(dfl, gl, clonotype, compare_by) %>%
+#     as.data.table %>%
+#     sharing_level_per_gruop %>%
+#     apply(1, state)
+#
+#   # public(dfl, list(1:3, 4:6), "aaSeqCDR3", "nSeqCDR3") %>% as.list %>% as_tibble
+# }
 
 
 # public_seq.df <- function(df) {

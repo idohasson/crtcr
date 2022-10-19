@@ -67,7 +67,8 @@ cr_lvl.list.character <- function(clones) {
   # if (!list_all_vectors(clones)) {
   #   print("error")
   # }
-  map_dfr(clones, vec_count, .id = "sample") %>%
+  lapply(clones, unique) %>%
+    map_dfr(vec_count, .id = "sample") %>%
     data.table::setnames("key", "aa") %>%
     pivot_wider(names_from = sample, values_from = count, values_fill = 0)
 

@@ -17,11 +17,6 @@ rand_aa <- function(vec_size, l=5) {
   do.call(paste0, Map(stri_rand_strings, n=vec_size, length=l, pattern = '[A-C]'))
 }
 
-my_rescale <- function(data, var, factor = 10) {
-  data %>% dplyr::mutate("{{ var }}" := {{ var }} / .env$factor)
-
-  # df %>% sample_n(10) %>% sharing_level_per_gruop %>% as.data.frame() %>% my_rescale("A")
-}
 
 
 get_group <- function(grouped) {
