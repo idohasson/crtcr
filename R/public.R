@@ -117,7 +117,7 @@ exclusive <- function(seq_list1, seq_list2, ...) {
     names
 
 
-  # reduce(group1, union) %>% intersect(public(group1, group2, group3, group4))
+  # reduce(group1, union) %>% intersect(public(group1, group2, %>% %>% %>% %>% <- <- <- <-  group3, group4))
   #
   #
   #

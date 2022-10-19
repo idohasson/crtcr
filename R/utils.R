@@ -5,11 +5,11 @@ library("forcats")
 library("stringi")
 #
 #
-# # library("dplyr")
-# library("readr")
-# paths <- list.files("../../../Datasets/Multiple sampled mice/data/Beta/", full.names = TRUE)[-7]
-# dfl <- lapply(paths, read_tsv, show_col_types = FALSE)
-# aa_list <- lapply(dfl, pull, "aaSeqCDR3")
+# library("dplyr")
+library("readr")
+paths <- list.files("../../../Datasets/Multiple sampled mice/data/Beta/", full.names = TRUE)[-7]
+dfl <- lapply(paths, read_tsv, show_col_types = FALSE)
+aa_list <- lapply(dfl, pull, "aaSeqCDR3")
 # l1 <- aa_list[1:3]
 # l2 <- aa_list[4:6]
 

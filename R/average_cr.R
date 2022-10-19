@@ -1,16 +1,23 @@
-average_cr.vector <- function(aa) {
-  sum(aa) / sum(aa!=0)
+
+
+
+cr_average  <- function(seq_list) {
+  # To calculate the averaged CR of a sample, we measure the CR level for each AA sequence and
+  # averaged all the CR levels of the sequences appeared in a specific sample.
+  map_dfr(l1, vec_count, .id = "sample") %>%
+    group_by(sample) %>%
+    summarise(avg_cr = mean(count))
 }
 
 
-average_cr.list..vector <- function(aa) {
-  sum(aa) / sum(aa!=0)
-}
+l1 %>%
+  map(function(aa) {
+    vec_count(aa) %>%
+      pull(count) %>%
+      mean
+  })
 
-list(l1, l2, l3) %>%
-  setNames(LETTERS[1:3]) %>%
-  map(flatten_chr) %>%
-  map_dfr(vec_count, .id = "group") %>%
-  as_tibble()
-# %>%
-#   pivot_wider(names_from = group, values_from = count, values_fn = ~mean(.x, na.rm = TRUE))
+lapply(l1, vec_count) %>%
+  map(pull, count) %>%
+  map(mean) %>%
+  as.data.frame()
