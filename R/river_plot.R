@@ -1,7 +1,10 @@
 library("dplyr")
 library("ggplot2")
 library("ggforce")
-library(tidyr)
+
+library("tidyr")
+library("vctrs")
+library("purrr")
 
 A_col <- "darkorchid1"
 B_col <- "darkorange1"
