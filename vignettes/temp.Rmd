@@ -1,0 +1,162 @@
+
+```{r}
+library(forcats)
+library("stringi")
+rand_aa <- function(vec_size, l=5) {
+  do.call(paste0, Map(stri_rand_strings, n=vec_size, length=l, pattern = '[A-I]'))
+}
+
+groups <- list(group1 = replicate(6, rand_aa(100), simplify = FALSE),
+               group2 = replicate(6, rand_aa(100), simplify = FALSE),
+               group3 = replicate(6, rand_aa(100), simplify = FALSE),
+               group4 = replicate(6, rand_aa(100), simplify = FALSE),
+               group5 = replicate(6, rand_aa(100), simplify = FALSE),
+               group6 = replicate(6, rand_aa(100), simplify = FALSE),
+               group7 = replicate(6, rand_aa(100), simplify = FALSE),
+               group8 = replicate(6, rand_aa(100), simplify = FALSE))
+
+c <- group_count(groups[c(1:3)])
+
+
+
+# v <- list(groups$group1, groups$group2) %>%
+#   # setNames(LETTERS[1:3]) %>%
+#   map(flatten_chr) %>%
+#   map_dfr(vec_count, .id = "group")
+
+
+t1 <- groups$group1[1:3]
+t2 <- groups$group2[1:3]
+
+c1 <- groups$group1[4:6]
+c2 <- groups$group2[4:6]
+
+g1 <- list(test = t1, control = c1)
+g2 <- list(test = t2, control = c2)
+
+
+clone_count <- group_count(list(g1, g2))
+
+nrow(clone_count)
+clone_count[,"1"]
+f <- forcats::fct_recode(, gruop1 = "1", gruop2 = "2")
+
+length(v$count)
+
+
+compmeans(v$count,f)
+```
+
+
+
+```{r}
+
+gorup_layers <- seq(length(groups)-1) %>% 
+  
+  lapply(function(i) clonotype_count[c(i, i + 1)]) %>% 
+  
+  setNames(paste("layer", seq_along(.), sep = "")) %>% 
+  
+  map_dfr(.id = "layers", function(pair) {
+    
+    filter(pair, if_any(everything(), ~ . != 0)) %>% 
+      
+      cr_type
+      
+      # enframe(name = "clonotype", value = "type")
+      
+  }) %>% column_to_rownames("layers") %>% 
+  
+  apply(1, table)
+
+```
+
+
+```{r}
+gorup_layers["layer1",] 
+
+# melt(gorup_layers, measure.vars = c("private", "exclusive"))
+
+
+melt.data.table(gorup_layers)
+
+as.matrix(gorup_layers) %>% 
+  proportions(margin = 2) 
+```
+
+
+
+```{r}
+library(data.table)
+
+melt(clonotype_count,
+     # id.vars = "clonotype",
+     id.vars = c("group1", "group2"))
+     # id.vars = "clonotype", 
+
+# dimnames(clonotype_count)
+clonotype_count %>% 
+  melt(id.vars = "clonotype", 
+       
+     # measure.vars = patterns("(group)", "(group)"),
+     variable.name = "y",
+     value.name = c("group1", "group2"))
+
+
+```
+
+
+
+```{r}
+gorup_layers %>% 
+  pivot_longer(!layers, names_to = "type", values_to = "Freq")
+# as.data.frame()
+```
+
+
+```{r}
+edges = data.frame(
+  N1 = paste0(rep(LETTERS[1:4], each = 4), rep(1:5, each = 16)),
+  N2 = paste0(rep(LETTERS[1:4], 4), rep(2:6, each = 16)),
+  Value = runif(80, min = 2, max = 5) * rep(c(1, 0.8, 0.6, 0.4, 0.3), each = 16),
+  stringsAsFactors = F
+)
+
+edges = edges[sample(c(TRUE, FALSE), nrow(edges), replace = TRUE, prob = c(0.8, 0.2)),]
+head(edges)
+```
+
+```{r}
+nodes = data.frame(ID = unique(c(edges$N1, edges$N2)), stringsAsFactors = FALSE)
+#
+nodes$x = as.integer(substr(nodes$ID, 2, 2))
+nodes$y = as.integer(sapply(substr(nodes$ID, 1, 1), charToRaw)) - 65
+#
+rownames(nodes) = nodes$ID
+head(nodes)
+```
+
+```{r}
+library(RColorBrewer)
+#
+palette = paste0(brewer.pal(4, "Set1"), "60")
+#
+styles = lapply(nodes$y, function(n) {
+  list(col = palette[n+1], lty = 0, textcol = "black")
+})
+names(styles) = nodes$ID
+```
+
+```{r}
+library(riverplot)
+
+rp <- list(nodes = nodes, edges = edges, styles = styles)
+#
+class(rp) <- c(class(rp), "riverplot")
+```
+
+
+```{r}
+plot(rp, plot_area = 0.95, yscale=0.06)
+```
+

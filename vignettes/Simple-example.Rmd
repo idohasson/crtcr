@@ -6,8 +6,12 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+TODO:https://datawookie.dev/blog/2014/08/plotting-flows-with-riverplot/
 
 ```{r, include = FALSE}
+
+
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -16,10 +20,57 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 # library(crtcr)
-
+library("dplyr")
+library("ggplot2")
+# library("alluvial")
+# devtools::install_github('thomasp85/ggforce')
+library("ggforce")
+# devtools::install_github("corybrunson/ggalluvial")
+library("ggalluvial")
+library("ggparallel")
 
 ```
 
 ```{r}
+A_col <- "darkorchid1"
+B_col <- "darkorange1"
+C_col <- "skyblue1"
+alpha <- 0.7 # transparency value
 
+fct_levels <- c("private", "exclusive", "inclusive")
 ```
+
+
+```{r}
+dat_raw <- data.frame(Cancer  = sample(c("private", "exclusive", "inclusive"),100,
+                                  replace = TRUE,prob=c(0.2,0.6,0.25)),
+                  Control = sample(c("private", "exclusive", "inclusive"),100,
+                                  replace = TRUE,prob=c(0.56,0.22,0.85)),
+                  stringsAsFactors = FALSE)
+dat <- dat_raw %>%
+  group_by(Cancer,Control) %>%
+  summarise(freq = n()) %>%
+  ungroup()
+```
+
+```{r}
+# @param order flag variable with three levels -1, 0, 1 for levels in
+#    decreasing order, levels in increasing order and levels unchanged. This
+#    variable can be either a scalar or a vector
+
+# "Cancer Group", "Control Group"
+ggparallel(list("Control", "Cancer"), data = dat_raw, 
+           alpha = alpha, order = 0, text.angle = 0, color="black", label=FALSE) +
+  scale_fill_manual(values  = c(A_col, B_col, C_col, A_col, B_col, C_col)) +
+  scale_color_manual(values  = c(A_col, B_col, C_col, A_col, B_col, C_col)) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_text(size = 18)
+  )
+```
+
