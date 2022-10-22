@@ -1,23 +1,18 @@
-library(stringi)
 
-rand_aa <- function(vec_size, l=5) {
-  do.call(paste0, Map(stri_rand_strings, n=vec_size, length=l, pattern = '[A-C]'))
-}
+test_that("cr level", {
 
-test_that("works on a character vector", {
-  v <- rand_aa(10)
+  AA_list <- c("A","C","D","E","F","G","H","I","K","L","M","N","P","Q","R","S","T","V","W","Y")
+  r_aa <- function(size) paste(sample(AA_list, size, replace = TRUE), collapse = "")
 
-  cl <- cr_level(v)
+  n <- 1000
+  df <- data.frame(aa = replicate(n, r_aa(2)),
+             var1 = sample(5, replace = TRUE),
+             var2 = sample(5, n, replace = TRUE),
+             var3 = sample(5, n, replace = TRUE))
 
-  expect_true(is.data.frame(cl))
+  cr <- cr_level(df, "aa", c("var1", "var2"))
 
-  expect_equal(nrow(cl), length(unique(v)))
+  expect_true(is.data.frame(cr))
 
 })
 
-
-test_that("multiplication works", {
-
-
-  expect_equal(2 * 2, 4)
-})
