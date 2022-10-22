@@ -9,14 +9,64 @@ vignette: >
 TODO:https://datawookie.dev/blog/2014/08/plotting-flows-with-riverplot/
 
 ```{r, include = FALSE}
-
-
-
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
+
+
+```{r}
+library("stringi")
+
+
+rand_aa <- function(vec_size, l=5) {
+  do.call(paste0, Map(stri_rand_strings, n=vec_size, length=l, pattern = '[A-C]'))
+}
+
+group_list <- list(control = replicate(5, rand_aa(20), simplify = FALSE),
+               precancer = replicate(5, rand_aa(20), simplify = FALSE),
+               cancer = replicate(5, rand_aa(20), simplify = FALSE))
+
+map_dfr(group_list, length)
+
+#   list(test = replicate(sample_size, rand_aa(aa_size), simplify = FALSE),
+#        control = replicate(sample_size, rand_aa(aa_size), simplify = FALSE))
+
+
+# group_gen <- function(sample_size, aa_size) {
+#   list(test = replicate(sample_size, rand_aa(aa_size), simplify = FALSE),
+#        control = replicate(sample_size, rand_aa(aa_size), simplify = FALSE))
+# }
+
+```
+
+```{r}
+
+gen_sample <- function(clone_size) list2DF(setNames(replicate(2, rand_aa(clone_size, 5), simplify = FALSE), LETTERS[1:2]))
+
+group_gen <- function(sample_n, clone_n) {
+  replicate(sample_n, gen_sample(clone_n), simplify = FALSE)
+}
+
+group_list <- replicate(3, group_gen(3, 10), simplify = FALSE)
+
+flat_groups <- map(group_list, get_flat_group, "A", c("A", "B"))
+names(flat_groups) <- paste("group", seq(length(group_list)), sep = "")
+
+group_count(flat_groups)
+
+clonotype_count <- share_level_per_gruop(flat_groups)
+
+cr_type(clonotype_count)
+
+
+map(x, get_clonotype, "A", c("A", "B"))
+
+get_clonotype(x, "A", c("A", "B"))
+
+```
+
 
 ```{r setup}
 # library(crtcr)

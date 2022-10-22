@@ -1,10 +1,26 @@
 
+cr_level <- function(df_list, clone_col, match_var) {
+
+  unique_clonotypes(df_list, clone_col, match_var) %>%
+
+    map_dfr(vec_count, .id = "sample") %>%
+
+    pivot_wider(names_from = sample,
+                values_from = count,
+                values_fill = 0)
+}
+
 cr_level <- function(clonotype, distinct_by) {
 
 
   # Here, we define CR level as the number of different NT sequences encoding a specific AA
   # sequence. To calculate the averaged CR of a sample, we measure the CR level for each AA sequence and
   # averaged all the CR levels of the sequences appeared in a specific sample.
+
+  # immuneREF feature: Repertoire overlap (convergence)
+  # The pairwise repertoire clonal overlap (clones defined based on 100%
+  # similarity of CDR3 amino acid sequence), was calculated across repertoires,
+  # as previously described
 
   stopifnot("clonotype must be a character vector"= is.character(clonotype))
 

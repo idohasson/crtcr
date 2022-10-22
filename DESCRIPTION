@@ -17,4 +17,8 @@ LazyData: true
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr
 Imports: 
+    dplyr,
+    purrr,
+    tibble,
+    tidyr,
     vctrs
