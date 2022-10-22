@@ -16,7 +16,7 @@
 # rand_aa <- function(vec_size, l=5) {
 #   do.call(paste0, Map(stri_rand_strings, n=vec_size, length=l, pattern = '[A-C]'))
 # }
-#
+# #
 #
 #
 # get_group <- function(grouped) {
