@@ -17,6 +17,7 @@ LazyData: true
 RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 Imports: 
+    circos,
     magrittr,
     purrr,
     tibble,
