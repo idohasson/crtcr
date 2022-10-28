@@ -1,39 +1,76 @@
-# library("purrr")
+
+# share_level <- function(group_list) {
+#   # 'group_list' is list of character vectors of the samples' clonotype.
+#   # 1 clonotypes per sample
+#   # unique vector of each sample concatination
 #
-# share_level <- function(df_list, clonotype) {
+#   gruop_count <- map_dfr(.x = group_list,
+#                          .f = vec_count,
+#                          .id = "group")
 #
-#   if (is.null(names(df_list))) {
-#     df_list <- setNames(df_list, seq_along(df_list))
-#   }
 #
-#   map_dfr(df_list, distinct_at, clonotype, id = "sample")
+#   gruop_count <- pivot_wider(gruop_count,
+#                              names_from = "group",
+#                              values_from = "count",
+#                              values_fill = 0) %>%
+#     column_to_rownames("key")
+#
+#   rowSums(gruop_count > 1)
+#
 # }
+
+
+
+# x <- unique_clonotypes(dfl, "aaSeqCDR3", "nSeqCDR3") %>%
+
+
+# x <- as.list(1:3) %>%
+#   lapply(pluck, .x = dfl) %>%
+#   get_clonotype("aaSeqCDR3") %>%
+#   share_level
+
+
+# rowSums(x != 0)
+#
+# x[1:10,] %>%    pivot_wider(
+#                                           names_from = "sample",
+#                                           values_from = "clonotype",
+#                                           values_fill = 0)
 #
 #
-#
-#
-# share_table <- function(clone_list, ...) {
-#
-#   population <- list(clone_list, ...)
-#
-#   if (vec_depth(population) > 2) {
-#
-#     population <- modify_depth(aa_l, 2, unlist)
-#
-#     }
-#
-#   lapply(population, vec_unique) %>%
-#
-#     map_dfr(vec_count, .id = "group") %>%
-#
-#     pivot_wider(names_from = group,
-#                 values_from = count,
-#                 values_fill = 0) %>%
-#
-#     rename(clonotype = "key")
-# }
-#
-#
+# list(g1 = dfl[c(1:3)], g2 = dfl[c(4:6)]) %>%
+#   lapply(get_clonotype, "aaSeqCDR3") %>%
+#   map_dfr(share_level, .id = "group")
+
+
+
+
+  # map_dfr(vec_count, .id = "group") %>%
+  #
+
+
+share_table <- function(clone_list) {
+
+  # population <- list(clone_list, ...)
+
+  # if (vec_depth(population) > 2) {
+  #
+  #   population <- modify_depth(aa_l, 2, unlist)
+  #
+  #   }
+
+  lapply(clone_list, vec_unique) %>%
+
+    map_dfr(vec_count, .id = "group") %>%
+
+    pivot_wider(names_from = group,
+                values_from = count,
+                values_fill = 0) %>%
+
+    rename(clonotype = "key")
+}
+
+
 # # share_prop <- function(clone_list, ...) {
 # #   # list(clone_list, ...)
 # #   cr_table(clone_list, ...) %>%
@@ -63,26 +100,3 @@
 #         fun.aggregate = n_distinct)
 #
 # }
-#
-# sharing_df <- function(seq_list, by_col) {
-#   # Check if vector type
-#   stopifnot("'seq_list' must be a vector"=is.vector(seq_list))
-#
-#   # Check if vector type
-#   stopifnot("'by_col' must be a vector of dataframes" = is.character(by_col) & length(by_col) == 1)
-#
-#   # Check that all values are data-frames and each has the column name
-#   colname_in_df <- lapply(seq_list, function(df) by_col %in% names(df))
-#   stopifnot("'by_col' counldn't be found in one of the dataframes"=all(as.logical(colname_in_df)))
-#
-#   # Make the combinations of list elements
-#   pairs <- combn( seq_list , 2 , simplify = FALSE )
-#   # Intersect the list elements
-#   out <- lapply( pairs , function(x) intersect( x[[1]][by_col] , x[[2]][by_col] ) )
-#
-#   nms <- combn( names(seq_list) , 2 , FUN = paste0 , collapse = "," , simplify = FALSE )
-#
-#   return(setNames( out , nms ))
-# }
-#
-#

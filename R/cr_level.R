@@ -1,23 +1,52 @@
 
-cr_level <- function(clonotype, distinct_by) {
+#' Title
+#'
+#' @param df
+#' @param aa_col
+#' @param match_var
+#'
+#' @return
+#'
+#' @export
+#'
+#' @examples
+cr_level <- function(df, aa_col, match_var) {
 
+  clonotype_df <- df %>%
 
-  # Here, we define CR level as the number of different NT sequences encoding a specific AA
-  # sequence. To calculate the averaged CR of a sample, we measure the CR level for each AA sequence and
-  # averaged all the CR levels of the sequences appeared in a specific sample.
+    distinct_at(union(aa_col, match_var), .keep_all = TRUE)
 
-  stopifnot("clonotype must be a character vector"= is.character(clonotype))
+  pull(clonotype_df, aa_col) %>%
 
-  if (!missing(distinct_by)) {
-    stopifnot("'distinct_by' must be a character vector"= is.character(clonotype))
-    stopifnot('distinct_by must be with equal lengths'= length(clonotype) != length(distinct_by))
-    # TODO
-  }
+    vec_count() %>%
 
-  cc <- vctrs::vec_count(clonotype, "none")
-  cc <- setNames(cc, c("clonotype", "cr_level"))
-  cc
+    rename(clonotype = "key", cr_level = "count")
 }
+
+# cr_level <- function(clonotype, distinct_by) {
+#
+#
+#   # Here, we define CR level as the number of different NT sequences encoding a specific AA
+#   # sequence. To calculate the averaged CR of a sample, we measure the CR level for each AA sequence and
+#   # averaged all the CR levels of the sequences appeared in a specific sample.
+#
+#   # immuneREF feature: Repertoire overlap (convergence)
+#   # The pairwise repertoire clonal overlap (clones defined based on 100%
+#   # similarity of CDR3 amino acid sequence), was calculated across repertoires,
+#   # as previously described
+#
+#   stopifnot("clonotype must be a character vector"= is.character(clonotype))
+#
+#   if (!missing(distinct_by)) {
+#     stopifnot("'distinct_by' must be a character vector"= is.character(clonotype))
+#     stopifnot('distinct_by must be with equal lengths'= length(clonotype) != length(distinct_by))
+#     # TODO
+#   }
+#
+#   cc <- vctrs::vec_count(clonotype, "none")
+#   cc <- setNames(cc, c("clonotype", "cr_level"))
+#   cc
+# }
 
 # cr_level.character <- function(v) {
 #   cc <- vctrs::vec_count(v, "none")
