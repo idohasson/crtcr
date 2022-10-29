@@ -6,3 +6,8 @@
 # intersect_percentage_function <- function(x,y){
 #   c(length(intersect(x,y)))/min(c(length(x), length(y)))
 # }
+
+# intersect_percentage_function(rep_list[[1]], rep_list[[1]])
+
+
+

@@ -1,28 +1,35 @@
-#' claculate the CR level in each clonotype in every sample
+#' Make a table that specifies the CR values for each individual's clonotypes.
 #'
-#' @description Here, we define CR level as the number of different NT sequences encoding a specific AA sequence.
+#' @description claculate the CR level in each clonotype in every sample.
+#' The number of various NT sequences encoding a particular AA sequence
+#' is defined as the CR level in this context.
 #'
 #' @param clonotype_list
 #'
-#' @return
+#' @return return a matrix with the cr-level of the individual in the column
+#' in each row of the clonotype
+#'
 #' @export
 #'
 #' @examples
-#' # Generate a random list of letters (as the clonotype sequences) from the letters vector.
-#' l <- replicate(6, sample(LETTERS, sample(13:18, 1, replace = TRUE)), simplify = FALSE)
-#' cr_level_table(l) # number of vectors a letter found in
 #'
+#' # From the letter vector representing the clonotype sequences,
+#' # generate a random list of letters.
+#' l <- replicate(6, sample(LETTERS, sample(13:18, 1, replace = TRUE)), simplify = FALSE)
+#'
+#' cr_level_matrix(l)
 #'
 cr_level_matrix <- function(clonotype_list) {
-
-  fl <- lapply(clonotype_list, as_factor)
-
-  fl <- setNames(fl, seq_along(fl))
-
-  df <- map_dfr(fl, vec_count, .id = "sample")
-
-  df <- rename(df, clonotype = "key")
-
+  # Checking if the input list is named
+  if (is.null(names(clonotype_list))) {
+    # Assign the sequence of numbers to the names of the clonotype_list.
+    names(clonotype_list) <- seq_along(clonotype_list)
+  }
+  # It takes a list of clonotypes
+  df <- clonotype_list %>%
+  # and counts the number of times each clonotype appears in each sample.
+    purrr::map_dfr(vec_count, .id = "sample") %>% rename(clonotype = "key")
+  # sums the counts for each clonotype and sample vector.
   tapply(df$count, df[c("clonotype", "sample")], sum, default = 0)
 
 }

@@ -1,8 +1,8 @@
-library("dplyr")
-library("readr")
-dfl <- list.files("../../../dataset/clonotypes/Beta/", full.names = TRUE)[-7] %>%
-# dfl <- list.files("../../../Datasets/Multiple sampled mice/data/Beta/", full.names = TRUE)[-7] %>%
-  lapply(read_tsv, show_col_types = FALSE)
+# library("dplyr")
+# library("readr")
+# dfl <- list.files("../../../dataset/clonotypes/Beta/", full.names = TRUE)[-7] %>%
+# # dfl <- list.files("../../../Datasets/Multiple sampled mice/data/Beta/", full.names = TRUE)[-7] %>%
+#   lapply(read_tsv, show_col_types = FALSE)
 #
 # get_clonotype(dfl, "aaSeqCDR3")
 # unique_clonotypes(dfl, "aaSeqCDR3") %>% lengths

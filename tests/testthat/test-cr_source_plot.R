@@ -8,7 +8,7 @@ test_that("multiplication works", {
 
   il <- list(g1 = clone1, g2 = clone2)
 
-  cr_source(il)
+  # cr_source(il)
 
 
 })

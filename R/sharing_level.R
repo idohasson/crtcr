@@ -1,4 +1,3 @@
-
 #' count clonotype-sharing among individuals
 #'
 #' @description for a given list of amino acid sequences vectors of each individual/sample count number of samples each clonotype is presented
@@ -6,6 +5,7 @@
 #' @param clonotype_list list of character vectors
 #'
 #' @return data frame - number of vectors each sequence presented in
+#'
 #' @export
 #'
 #' @examples
@@ -25,43 +25,3 @@ share_level <- function(clonotype_list) {
 }
 
 # barchart(Titanic, scales = list(x = "free"), auto.key = list(title = "Survived"))
-
-share_prop <- function(clone_list, ...) {
-  # list(clone_list, ...)
-  fl <- lapply(l, as_factor)
-  names(fl) <- letters[seq_along(fl)]
-
-  map_dfr(fl, fct_count, .id = "S") %>%
-    xtabs(formula = n ~ f + S)
-
-  f <- fct_c(!!!fl)
-
-  fct_count(f) %>%
-    xtabs(formula = n ~ f)
-
-  function(clones) {
-    fct_count(factor(clones))
-  }
-
-  function(clones) {
-    cr_lvl(clones) %>%
-      xtabs(formula = n ~ f + sample)
-  }
-
-  cr_table(clone_list, ...) %>%
-    reshape2::melt(id = "type") %>%
-    xtabs(formula = value ~ variable + type)
-  # %>%
-  #   proportions("type")
-}
-
-
-
-sharing_level_per_gruop <- function(dtl) {
-
-  acast(dtl,
-        aaSeqCDR3 ~ group,
-        value.var = "sample",
-        fun.aggregate = n_distinct)
-
-}
