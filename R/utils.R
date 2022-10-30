@@ -1,3 +1,31 @@
+#' Title
+#'
+#' @param nt_vec
+#'
+#' @return
+#' @export
+#'
+#' @examples
+translate <- function(nt_vec) {
+
+  # code <- c('A'= 0, 'C' = 1, 'G' = 2, 'T' = 3)
+  # aa_code <- "KQE*TPASRRG*ILVLNHDYTPASSRGCILVFKQE*TPASRRGWMLVLNHDYTPASSRGCILVF"
+  code <- c(T = 0, C = 1, A = 2, G = 3)
+  # aa_code <- "FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG"
+  aa_code <- strsplit("FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG", "")[[1]]
+
+  nt_to_aa <- function(s) aa_code[code[s[seq(1, length(s) ,3)]] * 16 +
+                                  code[s[seq(2, length(s) ,3)]] * 4 +
+                                  code[s[seq(3, length(s) ,3)]] + 1]
+
+  strsplit(nt_vec, "") %>%
+    lapply(nt_to_aa) %>%
+    sapply(paste, collapse="")
+
+}
+translate(rep$nSeqCDR3)
+
+
 # library("dplyr")
 # library("readr")
 # dfl <- list.files("../../../dataset/clonotypes/Beta/", full.names = TRUE)[-7] %>%
