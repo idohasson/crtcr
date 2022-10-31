@@ -6,7 +6,10 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-TODO:https://datawookie.dev/blog/2014/08/plotting-flows-with-riverplot/
+
+# Convergent Recombination of TCR Clones
+
+# Guide to crtcr R package
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -15,114 +18,133 @@ knitr::opts_chunk$set(
 )
 ```
 
-
-
-
-```{r}
-library("stringi")
-
-
-rand_aa <- function(vec_size, l=5) {
-  do.call(paste0, Map(stri_rand_strings, n=vec_size, length=l, pattern = '[A-C]'))
-}
-
-group_list <- list(control = replicate(5, rand_aa(20), simplify = FALSE),
-               precancer = replicate(5, rand_aa(20), simplify = FALSE),
-               cancer = replicate(5, rand_aa(20), simplify = FALSE))
-
-map_dfr(group_list, length)
-
-#   list(test = replicate(sample_size, rand_aa(aa_size), simplify = FALSE),
-#        control = replicate(sample_size, rand_aa(aa_size), simplify = FALSE))
-
-
-# group_gen <- function(sample_size, aa_size) {
-#   list(test = replicate(sample_size, rand_aa(aa_size), simplify = FALSE),
-#        control = replicate(sample_size, rand_aa(aa_size), simplify = FALSE))
-# }
-
-```
+## Installation
 
 ```{r}
 
-gen_sample <- function(clone_size) list2DF(setNames(replicate(2, rand_aa(clone_size, 5), simplify = FALSE), LETTERS[1:2]))
-
-group_gen <- function(sample_n, clone_n) {
-  replicate(sample_n, gen_sample(clone_n), simplify = FALSE)
-}
-
-group_list <- replicate(3, group_gen(3, 10), simplify = FALSE)
-
-flat_groups <- map(group_list, get_flat_group, "A", c("A", "B"))
-names(flat_groups) <- paste("group", seq(length(group_list)), sep = "")
-
-group_count(flat_groups)
-
-clonotype_count <- share_level_per_gruop(flat_groups)
-
-cr_type(clonotype_count)
-
-
-map(x, get_clonotype, "A", c("A", "B"))
-
-get_clonotype(x, "A", c("A", "B"))
-
 ```
 
+## Data transformation - clones vs. clonotype
 
-```{r setup}
-# library(crtcr)
-library("dplyr")
-library("ggplot2")
-# library("alluvial")
-# devtools::install_github('thomasp85/ggforce')
-library("ggforce")
-# devtools::install_github("corybrunson/ggalluvial")
-library("ggalluvial")
-library("ggparallel")
-
-```
+same sequence different clone example
 
 ```{r}
-A_col <- "darkorchid1"
-B_col <- "darkorange1"
-C_col <- "skyblue1"
-alpha <- 0.7 # transparency value
 
-fct_levels <- c("private", "exclusive", "inclusive")
 ```
 
+### Data types
 
 ```{r}
-dat_raw <- data.frame(Cancer  = sample(c("private", "exclusive", "inclusive"),100,
-                                  replace = TRUE,prob=c(0.2,0.6,0.25)),
-                  Control = sample(c("private", "exclusive", "inclusive"),100,
-                                  replace = TRUE,prob=c(0.56,0.22,0.85)),
-                  stringsAsFactors = FALSE)
-dat <- dat_raw %>%
-  group_by(Cancer,Control) %>%
-  summarise(freq = n()) %>%
-  ungroup()
+
 ```
+
+### Get clonotype function - get_clonotype
 
 ```{r}
-# @param order flag variable with three levels -1, 0, 1 for levels in
-#    decreasing order, levels in increasing order and levels unchanged. This
-#    variable can be either a scalar or a vector
 
-# "Cancer Group", "Control Group"
-ggparallel(list("Control", "Cancer"), data = dat_raw, 
-           alpha = alpha, order = 0, text.angle = 0, color="black", label=FALSE) +
-  scale_fill_manual(values  = c(A_col, B_col, C_col, A_col, B_col, C_col)) +
-  scale_color_manual(values  = c(A_col, B_col, C_col, A_col, B_col, C_col)) +
-  theme_minimal() +
-  theme(
-    legend.position = "none",
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank(),
-    axis.text.y = element_blank(),
-    axis.title.y = element_blank(),
-    axis.text.x = element_text(size = 18)
-  )
 ```
 
+## Convergent recombination level (CR-level)
+
+-   different ways to calculate by clone defenition
+-   cr level in a repertoire
+-   cr level across populations
+
+different ways to calculate by clone defenition
+
+```{r}
+
+```
+
+cr level in a repertoire
+
+```{r}
+# cr_level
+```
+
+cr level across populations
+
+```{r}
+# cr_level_matrix
+```
+
+## Clonotype sharing
+
+- single population
+  - clonotype 
+  - clone
+- multiple populations
+  - clonotype 
+  - clone
+
+single population - clonotype
+
+```{r}
+# shared_clonotype
+```
+
+single population - clone
+
+```{r}
+# shared_clone
+```
+
+multiple populations - clonotype
+
+```{r}
+# shared_population_clonotype
+```
+
+multiple populations - clone
+
+```{r}
+# shared_population_clone
+```
+
+## Public clonotypes subtypes classification
+
+example
+
+- logical
+  - is private
+  - is public
+    - is public exclusive
+    - is public inclusive
+- table
+- factor
+- list
+
+logical
+
+```{r}
+# public_cr
+```
+
+table
+
+```{r}
+# cr_table
+```
+
+factor
+
+```{r}
+# factor_cr
+```
+
+list
+
+```{r}
+# cr_list
+```
+
+
+## Clonotypes overlapping
+
+- among individuals
+- among populations
+- among sub-populations
+
+```{r}
+# cr_overlap
+```

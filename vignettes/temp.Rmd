@@ -1,53 +1,6 @@
-
 ```{r}
-library(forcats)
-library("stringi")
-rand_aa <- function(vec_size, l=5) {
-  do.call(paste0, Map(stri_rand_strings, n=vec_size, length=l, pattern = '[A-I]'))
-}
 
-groups <- list(group1 = replicate(6, rand_aa(100), simplify = FALSE),
-               group2 = replicate(6, rand_aa(100), simplify = FALSE),
-               group3 = replicate(6, rand_aa(100), simplify = FALSE),
-               group4 = replicate(6, rand_aa(100), simplify = FALSE),
-               group5 = replicate(6, rand_aa(100), simplify = FALSE),
-               group6 = replicate(6, rand_aa(100), simplify = FALSE),
-               group7 = replicate(6, rand_aa(100), simplify = FALSE),
-               group8 = replicate(6, rand_aa(100), simplify = FALSE))
-
-c <- group_count(groups[c(1:3)])
-
-
-
-# v <- list(groups$group1, groups$group2) %>%
-#   # setNames(LETTERS[1:3]) %>%
-#   map(flatten_chr) %>%
-#   map_dfr(vec_count, .id = "group")
-
-
-t1 <- groups$group1[1:3]
-t2 <- groups$group2[1:3]
-
-c1 <- groups$group1[4:6]
-c2 <- groups$group2[4:6]
-
-g1 <- list(test = t1, control = c1)
-g2 <- list(test = t2, control = c2)
-
-
-clone_count <- group_count(list(g1, g2))
-
-nrow(clone_count)
-clone_count[,"1"]
-f <- forcats::fct_recode(, gruop1 = "1", gruop2 = "2")
-
-length(v$count)
-
-
-compmeans(v$count,f)
 ```
-
-
 
 ```{r}
 
@@ -71,7 +24,6 @@ gorup_layers <- seq(length(groups)-1) %>%
 
 ```
 
-
 ```{r}
 gorup_layers["layer1",] 
 
@@ -83,8 +35,6 @@ melt.data.table(gorup_layers)
 as.matrix(gorup_layers) %>% 
   proportions(margin = 2) 
 ```
-
-
 
 ```{r}
 library(data.table)
@@ -105,14 +55,11 @@ clonotype_count %>%
 
 ```
 
-
-
 ```{r}
 gorup_layers %>% 
   pivot_longer(!layers, names_to = "type", values_to = "Freq")
 # as.data.frame()
 ```
-
 
 ```{r}
 edges = data.frame(
@@ -155,8 +102,6 @@ rp <- list(nodes = nodes, edges = edges, styles = styles)
 class(rp) <- c(class(rp), "riverplot")
 ```
 
-
 ```{r}
 plot(rp, plot_area = 0.95, yscale=0.06)
 ```
-
