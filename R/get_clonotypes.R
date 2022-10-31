@@ -1,35 +1,105 @@
+#' Title
+#'
+#' @param df data frame which include the column of the repertoire's colonotype
+#' as the CDR3s' amino acid sequences
+#' @param nt_col Clonal sequence column name (optional)
+#' @param aa_col Clonotype sequence column name (optional)
+#' @param out_type
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_clonotypes <- function(df, nt_col, aa_col, out_type="list") {  # TODO: add from_file option
+  # check that the out_type argument is one of the three allowed options.
+  out_type <- arg_match(out_type, c("list", "data.frame", "vector"))
+  # extract the nucleotide sequences from the data frame.
+  nt <- get_nt(df, nt_col)
+  stopifnot(is.character(nt))
+  # extract the amino acid sequences from the data frame.
+  aa <- get_aa(df, aa_col)
+  # check that the amino acid vector is the same length as the nucleotide vector.
+  if (is.character(aa)) stopifnot(length(aa) == length(nt))
+  # convert the nucleotide sequence to an amino acid sequence.
+  else if (is.null(aa)) aa <- translate(nt)
 
+
+  if (out_type == "list") {
+    # splits a vector into a list of vectors.
+    clonotypes <- split(nt, aa) %>%
+      # return a list of unique clonal sequences (NT) named by their
+      lapply(unique) # corresponding clonotype sequence(AA).
+
+  } else if (out_type == "data.frame") {
+    # binds columns together into a data frame.
+    clonotypes <- cbind.data.frame(clone = nt, clonotype = aa) %>%
+      # returns the unique rows of a data frame.
+      distinct(clone, .keep_all = TRUE)
+
+  } else if (out_type == "vector") { # vector
+    # binds columns together into a data frame.
+    clonotypes <- cbind.data.frame(nt, aa) %>%
+      # returns clonotype sequences (AA) by identifying unique pairing to their
+      vec_unique_loc %>% aa[.] # corresponding clonal sequence (NT).
+  }
+
+  clonotypes
+
+}
 
 #' Title
 #'
-#' @param nt character vector or character vector list of the clonotypes' necleotide sequences
+#' @param df_list
+#' @param ...
 #'
 #' @return
 #' @export
 #'
 #' @examples
 #'
+#' rep_list <- rand_group("df_list", 3, seq_len=3)
 #'
+#' lapply(rep_list, get_clonotypes, nt_col="nt", aa_col="aa", out_type="data.frame")
 #'
-get_clonotype_from_nt <- function(nt) {
-
-  if (is.list(nt)) {
-    return(lapply(nt, get_clonotype_from_nt))
-  }
-
-  seq_translate(dna(nt))
+get_clonotypes_list <- function(df_list, ..., each_unique=FALSE) {
+  # check that df_list is a list.
+  stopifnot(is.list(df_list))
+  # check that every element of df_list is a data frame.
+  stopifnot(purrr::every(df_list, is.data.frame))
+  # applies the get_clonotypes function to each element of df_list.
+  if(!each_unique) return(lapply(df_list, get_clonotypes, ...))
+  # It checks if the ellipsis_args dictionary has a key named f_arg.
+  ellipsis_args <- list2(...); f_arg <- formalArgs(get_aa)[2]
+  # If it does, it returns the value of that key. If it doesn't, it returns an empty list.
+  arg_l <- if (has_name(ellipsis_args, f_arg)) ellipsis_args[f_arg] else list()
+  # takes a list of data frames and returns a list of unique amino acid sequences.
+  lapply(df_list, function(x) unique(do.call("get_aa", append(list(df=x), arg_l))))
 }
 
-rep$nSeqCDR3[1:10] %>%
 
-  get_clonotype_from_nt
+#' Title
+#'
+#' @param df_list
+#' @param indices
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_clonotypes_grouped <- function(df_list, indices, ...) {
+  # checks if the list is named.
+  if (!is_named(df_list))
+    # If so, it sets the names of the data frames to the sequence of integers
+    names(df_list) <- as.character(seq_along(df_list)) # starting from 1.
 
-rep <- df
-rep
-# character vector
-aa_col <- "aaSeqCDR3"
-distinct_clone_by <- "nSeqCDR3"
-distinct_clone_by <- c("nSeqCDR3", "targetQualities")
+  df_list[indices] %>%
+    # Get the list of clonotypes data frames for each sample.
+    get_clonotypes_list(out_type = "data.frame",...) %>%
+    # Bind the list of clonotypes for each sample into a single data frame.
+    bind_rows(.id = "sample")
+    # Add a column to the data frame that contains the sample name.
+}
 
 #' Title
 #'
@@ -68,45 +138,7 @@ distinct_clone_by <- c("nSeqCDR3", "targetQualities")
 #' get_clonotypes(df_list)
 #'
 #'
-get_clonotypes <- function(..., aa_col, distinct_clone_by, group_rep) {
-
-}
-
-get_clonotypes.data.frame <- function(rep, aa_col, distinct_clone_by) {
-  # if is a tabele
-  if (is.data.frame(rep) | is.matrix(rep)) {
-    # table has the column
-    stopifnot(length(aa_col) == 1)
-    # stopifnot(is.character(aa_col) | is.numeric(aa_col))
-    stopifnot(is.character(aa_col) & has_name(rep, aa_col))
-    # stopifnot(is.numeric(aa_col) & (ncol(rep) < aa_col))
-
-    if (!missing(distinct_clone_by)) {
-
-      stopifnot(all(has_name(x=rep, distinct_clone_by)))
-
-      rep <- select_at(rep, union(aa_col, distinct_clone_by))
-      # rep <- distinct_at(rep, union(aa_col, distinct_clone_by))
-    }
-
-    rep <- distinct(rep)
-
-    return(pull(rep, aa_col))
-
-  }
-}
 
 
-# if provided clone parameters
-# if (!missing(distinct_clone_by)) {}
-# else {}
-# all(sapply(distinct_clone_by, has_name, x = rep))
-distict_by(union(aa_col, distinct_clone_by))
-
-if (is.character(rep)) {
-
-  return(unique(rep))
-}
 
 
-is_named(rep)

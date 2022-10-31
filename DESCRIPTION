@@ -17,10 +17,15 @@ LazyData: true
 RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 Imports: 
+    circlize (>= 0.4.15),
     magrittr,
     purrr,
+    rlang (>= 1.0.6),
     tibble,
     tidyr
 Depends: 
     dplyr,
     vctrs
+Remotes:  
+    jokergoo/circlize,
+    r-lib/rlang

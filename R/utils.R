@@ -1,128 +1,137 @@
-#' Title
+#' Translates a DNA sequence into an amino acid sequence.
 #'
 #' @param nt_vec
+#'
+#' @return
+#'
+#' @examples
+translate <- function(nt_vec) {
+  # converts the nucleotide vector to uppercase
+  nt_vec <- toupper(nt_vec)
+  # checks that each element in the vector is a DNA base.
+  stopifnot(all(grepl(pattern = "^[AGTC]+$", nt_vec)))
+
+    # a vector of integers that correspond to the nucleotide characters.
+  encoding <- c(T = 0, C = 1, A = 2, G = 3)
+  # a vector of characters that correspond to the amino acid characters.
+  decoding <- strsplit("FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG", "")[[1]]
+  # function for converting a DNA character vector into an amino acid character vector.
+  nt_to_aa <- function(nt) decoding[encoding[nt[seq(1, length(nt) ,3)]] * 16 +
+                                    encoding[nt[seq(2, length(nt) ,3)]] * 4 +
+                                    encoding[nt[seq(3, length(nt) ,3)]] + 1]
+
+  # splits the nucleotide vector into a character vector of individual nucleotides
+  strsplit(nt_vec, split = "") %>%
+    # converts each nucleotide character to an amino acid character.
+    lapply(nt_to_aa) %>%
+    # pastes the amino acid characters together into a single string.
+    sapply(paste, collapse="")
+}
+
+#' Title
+#'
+#' @param df
+#' @param AA_FIELDS
 #'
 #' @return
 #' @export
 #'
 #' @examples
-translate <- function(nt_vec) {
+search_field <- function(df, of) {
 
-  # code <- c('A'= 0, 'C' = 1, 'G' = 2, 'T' = 3)
-  # aa_code <- "KQE*TPASRRG*ILVLNHDYTPASSRGCILVFKQE*TPASRRGWMLVLNHDYTPASSRGCILVF"
-  code <- c(T = 0, C = 1, A = 2, G = 3)
-  # aa_code <- "FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG"
-  aa_code <- strsplit("FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG", "")[[1]]
+  stopifnot(is_named(df))
 
-  nt_to_aa <- function(s) aa_code[code[s[seq(1, length(s) ,3)]] * 16 +
-                                  code[s[seq(2, length(s) ,3)]] * 4 +
-                                  code[s[seq(3, length(s) ,3)]] + 1]
+  of <- arg_match(of, c("aa", "nt"))
 
-  strsplit(nt_vec, "") %>%
-    lapply(nt_to_aa) %>%
-    sapply(paste, collapse="")
+  AA_FIELDS <- c("amino_acid", "aaSeqCDR3", "cdr3aa", "CDR3 amino acid sequence",
+                 "CDR3.amino.acid.sequence", "CDR3aa", "junction_aa",
+                 "CDR3.aa", "AAseq", "Amino acid sequence", "cdrAASeq")
+
+  NT_FIELDS <- c("rearrangement", "nSeqCDR3", "CDR3 nucleotide sequence",
+                 "CDR3.nucleotide.sequence", "cdr3nt", "junction", "cdr3_nt",
+                 "CDR3.nt", "NNseq", "Junction nucleotide sequence", "cdrNucSeq")
+
+  known_fields <- case_when(of=="aa" ~ AA_FIELDS,
+                            of=="nt" ~ NT_FIELDS)
+
+  matched <- has_name(df, known_fields)
+
+  ifelse(any(matched), known_fields[which(matched)][1], NULL)
 
 }
-translate(rep$nSeqCDR3)
+
+#' Title
+#'
+#' @param df
+#' @param aa_field
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_aa <- function(df, aa_field) {
+
+  if (missing(aa_field)) aa_field <- search_field(df, "aa")
+
+  if (!is.character(aa_field)) return(NULL)
+
+  field(df, aa_field)
+
+}
 
 
-# library("dplyr")
-# library("readr")
-# dfl <- list.files("../../../dataset/clonotypes/Beta/", full.names = TRUE)[-7] %>%
-# # dfl <- list.files("../../../Datasets/Multiple sampled mice/data/Beta/", full.names = TRUE)[-7] %>%
-#   lapply(read_tsv, show_col_types = FALSE)
-#
-# get_clonotype(dfl, "aaSeqCDR3")
-# unique_clonotypes(dfl, "aaSeqCDR3") %>% lengths
-# unique_clonotypes(dfl, "aaSeqCDR3", "nSeqCDR3") %>% lengths
-#
-# AA_list <- c("A","C","D","E","F","G","H","I","K","L","M","N","P","Q","R","S","T","V","W","Y")
-# rand_aa <- function(size) paste(sample(AA_list, size, replace = TRUE), collapse = "")
-# reand_sample <- function(n_seq, size) replicate(n_seq, rand_aa(size))
-# rand_group <- function(sample_n, seq_n, seq_size) replicate(sample_n, reand_sample(seq_n, seq_size), simplify = FALSE)
+#' Title
+#'
+#' @param df
+#' @param nt_field
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_nt <- function(df, nt_field) {
 
-# group_list <- list(control = replicate(20, rand_aa(3)),
-#                    precancer = replicate(20, rand_aa(3), simplify = FALSE),
-#                    cancer = replicate(20, rand_aa(3), simplify = FALSE))
+  if (missing(nt_field)) nt_field <- search_field(df, "nt")
 
+  if (!is.character(nt_field)) return(NULL)
 
-# get_clonotype <- function(df, clone_col, unique_properties) {
-#   # df_list <- squash(population)
-#
-#   stopifnot(is.list(df_list))
-#   stopifnot(every(df, is.data.frame))
-#   stopifnot(is.character(clone_col))
-#
-#   if (!missing(unique_properties)) stopifnot(is.character(unique_properties))
-#
-#   map(df, distinct_at, unique_properties, .id = "sample") %>%
-#
-#     map(pull, clone_col)
-#
-#     # rename(clonotype = clone_col)
-#
-#   # map(df, distinct_at, unique_properties) %>%
-#
-#     # map_dfr(rename, clonotype = clone_col, .id = "sample")
-#
-#
-# }
+  field(df, nt_field)
 
-# get_clonotype <- function(df_list, clone_col) {
-#
-#   stopifnot(is.list(df_list))
-#   stopifnot(every(df_list, is.data.frame))
-#
-#   stopifnot(is.character(clone_col))
-#   stopifnot(length(clone_col) == 1)
-#
-#   if (is.null(names(df_list))) {
-#     names(df_list) <- as.character(seq_along(df_list))
-#   }
-#
-#   map(df_list, distinct_at, clone_col) %>%
-#
-#     map(vec_unique)
-#
-# }
-
-# get_clonotype(dfl, "aaSeqCDR3", "nSeqCDR3") %>% head()
+}
 
 
 
+# NT
+# immunoseq = "rearrangement"
+# MiXCR = "nSeqCDR3"
+# mitcr = "cdr3nt"
+# VDJtools = "cdr3nt"
+# migec = "CDR3 nucleotide sequence"
+# migmap = "CDR3 nucleotide sequence"
+# tcr = "CDR3.nucleotide.sequence"
+# AIRR = "junction"
+# 10x_consensus = "cdr3_nt"
+# 10x_filt_contigs = "CDR3.nt"
+# catt = "NNseq"
+# rtcr = "Junction nucleotide sequence"
+# imseq = "cdrNucSeq"
+
+# AA
+# immunoseq = "amino_acid"
+# MiXCR = "aaSeqCDR3"
+# mitcr = "cdr3aa"
+# migec = "CDR3 amino acid sequence"
+# migmap = "cdr3aa"
+# tcr = "CDR3.amino.acid.sequence"
+# VDJtools = "CDR3aa"
+# AIRR = "junction_aa"
+# 10x_filt_contigs = "CDR3.aa"
+# catt = "AAseq"
+# rtcr = "Amino acid sequence"
+# imseq = "cdrAASeq"
 
 
 
 
-
-# get_flat_group <- function(sample_list, aa_col, unique_properties) {
-#
-#   # TODO: use 'get_clonotype' to get 'clonotype_list'
-#   # map(sample_list, get_clonotype, aa_col, unique_properties)
-#   # clonotype_list <- map(sample_list, get_clonotype, "aaSeqCDR3", "nSeqCDR3")
-#
-#   clonotype_list <- map(sample_list, aa_col)
-#
-#   flatten_chr(clonotype_list)
-# }
-
-
-
-# get_group <- function(grouped) {
-#
-#   if (is.vector(grouped)) {
-#     return(vec_group_loc(grouped))
-#   }
-#
-#   vec_group_id(grouped)
-  # as_tibble(vec_group_loc(grouped))
-  # x %>%
-  #   as.data.frame %>%
-
-  # n_fields(df) == 2
-  # df %>%
-  #   as.data.frame %>%
-  #   vec_group_loc
-# }
 
 
