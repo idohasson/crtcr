@@ -27,21 +27,7 @@ share_level <- function(clonotype_list) {
 # barchart(Titanic, scales = list(x = "free"), auto.key = list(title = "Survived"))
 
 
-rep_list <- rand_group(rep_type="df_list", n_sample=10, seq_n = 100, seq_len=5)
-i1 <- 1:6; i2 <- 7:10
 
-p <- lapply(list(i1, i2), function(i) get_clonotypes_list(rep_list[i], nt_col="nt", aa_col="aa", to_df = TRUE))
-
-v_list <- lapply(p, distinct_at, .vars = c("clonotype", "sample")) %>%
-
-  lapply(pull)
-
-share_table(v_list) %>% head
-
-
-  lapply(vec_count)
-
-  lapply(function(df) head(with(df, table(clonotype, sample))))
 
 
 
