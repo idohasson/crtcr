@@ -75,7 +75,7 @@ get_aa <- function(df, aa_field) {
 
   if (!is.character(aa_field)) return(NULL)
 
-  field(df, aa_field)
+  pull(df, aa_field)
 
 }
 
@@ -95,7 +95,7 @@ get_nt <- function(df, nt_field) {
 
   if (!is.character(nt_field)) return(NULL)
 
-  field(df, nt_field)
+  pull(df, nt_field)
 
 }
 

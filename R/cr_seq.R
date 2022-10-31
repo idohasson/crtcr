@@ -1,4 +1,4 @@
-#' Create a list of clonotypes based on their respective CR-types.
+#' Split populations' clonotypes to their respective CR-subgroups.
 #'
 #' @description Make a list of the clonotypes based on the CR-types (private, exclusive & inclusive) that correspond to each one.
 #'

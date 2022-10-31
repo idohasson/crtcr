@@ -25,11 +25,15 @@ cr_level_matrix <- function(clonotype_list) {
     # Assign the sequence of numbers to the names of the clonotype_list.
     names(clonotype_list) <- seq_along(clonotype_list)
   }
-  # It takes a list of clonotypes
-  df <- clonotype_list %>%
-  # and counts the number of times each clonotype appears in each sample.
-    purrr::map_dfr(vec_count, .id = "sample") %>% rename(clonotype = "key")
+  # counts the number of times each clonotype appears in each sample.
+  df <-  purrr::map_dfr(clonotype_list, vec_count, .id = "sample") %>% rename(clonotype = "key")
   # sums the counts for each clonotype and sample vector.
   tapply(df$count, df[c("clonotype", "sample")], sum, default = 0)
+}
 
+cr_table <- function(df_list, ...) {
+
+  get_clonotypes_grouped(df_list, indices=i1, nt_col="nt", aa_col="aa")
+
+  with(clono_g1, table(clonotype, sample))
 }

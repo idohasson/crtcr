@@ -10,9 +10,23 @@
 #' @export
 #'
 #' @examples
-get_clonotypes <- function(df, nt_col, aa_col, out_type="list") {  # TODO: add from_file option
+#'
+get_clonotypes <- function(df, nt_col, aa_col, out_type="list") {
+
+  # TODO: unique clonotype vector
+  # TODO: add from_file option
   # check that the out_type argument is one of the three allowed options.
-  out_type <- arg_match(out_type, c("list", "data.frame", "vector"))
+  out_type <- arg_match(out_type, c("list", "data.frame", "vector", "unique"))
+
+  if (out_type == "unique") {
+
+    # if (missing(aa_col) )
+
+    clonotypes <- get_aa(df, aa_col)
+
+    return(unique(clonotypes))
+
+  }
   # extract the nucleotide sequences from the data frame.
   nt <- get_nt(df, nt_col)
   stopifnot(is.character(nt))
@@ -61,7 +75,7 @@ get_clonotypes <- function(df, nt_col, aa_col, out_type="list") {  # TODO: add f
 #'
 #' lapply(rep_list, get_clonotypes, nt_col="nt", aa_col="aa", out_type="data.frame")
 #'
-get_clonotypes_list <- function(df_list, ..., each_unique=FALSE) {
+get_clonotypes_list2 <- function(df_list, ..., each_unique=FALSE) {
   # check that df_list is a list.
   stopifnot(is.list(df_list))
   # check that every element of df_list is a data frame.
@@ -87,18 +101,41 @@ get_clonotypes_list <- function(df_list, ..., each_unique=FALSE) {
 #' @export
 #'
 #' @examples
-get_clonotypes_grouped <- function(df_list, indices, ...) {
-  # checks if the list is named.
-  if (!is_named(df_list))
-    # If so, it sets the names of the data frames to the sequence of integers
-    names(df_list) <- as.character(seq_along(df_list)) # starting from 1.
+get_clonotypes_list <- function(df_list, to_df=FALSE, ..., indices) {
+  # check that df_list is a list.
+  stopifnot(is.list(df_list))
+  # check that every element of df_list is a data frame.
+  stopifnot(purrr::every(df_list, is.data.frame))
+  # checks if the list is named, and if so, it sets the names of the data frames
+  # to the sequence of integers starting from 1.
+  if (!is_named(df_list)) names(df_list) <- as.character(seq_along(df_list))
 
-  df_list[indices] %>%
-    # Get the list of clonotypes data frames for each sample.
-    get_clonotypes_list(out_type = "data.frame",...) %>%
+  # df_list <- df_list[indices]
+
+  if (!missing(indices)) {
+
+    lapply(indices, function(i) get_clonotypes_list(df_list[i], to_df, ...)) %>%
+
+      returnValue()
+
+  }
+
+
+
+  if (to_df) {
+
+    df <- df_list %>%
+    # Get the list of clonotypes data frames for each repertoire.
+    get_clonotypes_list(out_type = "data.frame", ...) %>%
     # Bind the list of clonotypes for each sample into a single data frame.
     bind_rows(.id = "sample")
-    # Add a column to the data frame that contains the sample name.
+
+    return(df)
+
+  }
+
+  lapply(df_list, get_clonotypes, ...)
+
 }
 
 #' Title

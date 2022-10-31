@@ -1,3 +1,9 @@
+# clonotype_sharing
+
+
+
+# shared_clonotype
+# df_list to numerical vector
 #' count clonotype-sharing among individuals
 #'
 #' @description for a given list of amino acid sequences vectors of each individual/sample count number of samples each clonotype is presented
@@ -13,9 +19,9 @@
 #' l <- replicate(6, sample(LETTERS, sample(13:18, 1, replace = TRUE)), simplify = FALSE)
 #' share_level(l) # number of vectors a letter found in
 #'
-share_level <- function(clonotype_list) {
+shared_clonotype <- function(rep_list, clonotype_col) {
   # make sure each vector has unique sequences
-  clonotype_list <- lapply(clonotype_list, unique)
+  clonotype_list <- get_clonotypes_list(rep_list, aa_col=clonotype_col, out_type="unique")
   # flatten the list of lists into a single list
   clonotype <- unlist(clonotype_list)
   # generate a frequency table of the clonotype sample collection
@@ -24,24 +30,13 @@ share_level <- function(clonotype_list) {
   as.data.frame(clonotype_n, responseName = c("sharing"))
 }
 
-# barchart(Titanic, scales = list(x = "free"), auto.key = list(title = "Survived"))
+rand_group(rep_type="df_list", n_sample=10, seq_n = 100, seq_len=5) %>%
+
+  share_level(clonotype_col = "aa")
 
 
-rep_list <- rand_group(rep_type="df_list", n_sample=10, seq_n = 100, seq_len=5)
-i1 <- 1:6; i2 <- 7:10
+# shared_clone
 
-p <- lapply(list(i1, i2), function(i) get_clonotypes_list(rep_list[i], nt_col="nt", aa_col="aa", to_df = TRUE))
+# shared_population_clonotype
 
-v_list <- lapply(p, distinct_at, .vars = c("clonotype", "sample")) %>%
-
-  lapply(pull)
-
-share_table(v_list) %>% head
-
-
-  lapply(vec_count)
-
-  lapply(function(df) head(with(df, table(clonotype, sample))))
-
-
-
+# shared_population_clone
