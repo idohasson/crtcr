@@ -2,13 +2,25 @@
 % Please edit documentation in R/cr_level.R
 \name{cr_level}
 \alias{cr_level}
-\title{Title}
+\title{calculate the convergent recombination level (CR level) of a sample's clonotypes}
 \usage{
-cr_level(df, aa_col, match_var)
+cr_level(clonotype, match_clones_with)
 }
 \arguments{
-\item{match_var}{}
+\item{clonotype}{character vectors}
+
+\item{match_clones_with}{same size as 'clonotype' character vectors}
 }
 \description{
-Title
+Determine the convergent recombination level (CR level) by counting the number of times each clonotype occurs.
+}
+\examples{
+
+# From the letter vector representing the clonotype sequences,
+# generate a random list of letters.
+clonotype_vec <- sample(LETTERS[1:10], 20, replace = TRUE)
+
+clone_vec <- sample(LETTERS[1:2], 20, replace = TRUE)
+
+
 }

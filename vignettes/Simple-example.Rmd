@@ -20,13 +20,35 @@ knitr::opts_chunk$set(
 
 ## Installation
 
-```{r}
+CRAN
 
+```{r}
+install.packages("crtcr")
+```
+
+GitHub
+
+```{r}
+# devtools::install_github("systemsbiomed/crtcr")
 ```
 
 ## Data transformation - clones vs. clonotype
 
-same sequence different clone example
+### same sequence different clone example
+
+differentiating by the nucleotide sequence
+
+```{r}
+
+```
+
+differentiating by the the V-segments of the CDR3 amino acid sequence
+
+```{r}
+
+```
+
+differentiating by multiple attributes of the CDR3 amino acid sequence like the CDR3's nucleotide sequence and also its V- and J-segment
 
 ```{r}
 
@@ -34,11 +56,31 @@ same sequence different clone example
 
 ### Data types
 
+### for cr-level functions
+
+repertoire's clonotypes - of individual/sample - as a characrer vector - as a data frame
+
+### for share-level functions
+
+population's clonotypes - group of individuals with characteristic in common (such as test or control group) - as a list of characrer vectors - as a list of data frames - a data frame with id column
+
+### for cr-type functions
+
+multiple populations' clonotypes - multiple groups to be compared - as list of - list of character vectors - population vectors - as list of - list of data frames - population's combined data frame with id column - as a data frame with with two id columns, one for the individual and one for the group
+
+get_clonotype
+
 ```{r}
 
 ```
 
-### Get clonotype function - get_clonotype
+get_group_clonotype
+
+```{r}
+
+```
+
+get_multiple_group_clonotype
 
 ```{r}
 
@@ -46,36 +88,44 @@ same sequence different clone example
 
 ## Convergent recombination level (CR-level)
 
--   different ways to calculate by clone defenition
--   cr level in a repertoire
--   cr level across populations
+the right calculation is based on how a clone is defined. use the previous function to adjust data or the 'clone_by' field
 
-different ways to calculate by clone defenition
+-   CR-level of a clonotype
+-   CR-level across repertoire
+-   CR-level in a group
+-   Compare CR-level by different "clone definitions"
 
-```{r}
+cr_level - this function execute the following by the of argument
 
-```
-
-cr level in a repertoire
+cr_level_clonotype - CR-level value of a clonotype in a repertoire
 
 ```{r}
 # cr_level
 ```
 
-cr level across populations
+cr_level_rep - CR-level of all clonotype in a repertoire
 
 ```{r}
 # cr_level_matrix
 ```
 
-## Clonotype sharing
+cr_level_group - CR-level across multiple populations' clonotypes
 
-- single population
-  - clonotype 
-  - clone
-- multiple populations
-  - clonotype 
-  - clone
+```{r}
+
+```
+
+cr_level_compare - computes CR-level for every clone definition
+
+```{r}
+
+```
+
+## repertoires sharing-level
+
+-   of a population's clonotype
+-   of multiple populations' clonotype
+-   sharing-level conditioned by clone's property
 
 single population - clonotype
 
@@ -101,49 +151,25 @@ multiple populations - clone
 # shared_population_clone
 ```
 
-## Public clonotypes subtypes classification
+## Convergent recombination classification
 
-example
+## Public clonotype subtypes
 
-- logical
-  - is private
-  - is public
-    - is public exclusive
-    - is public inclusive
-- table
-- factor
-- list
+[explin]
 
-logical
+-   private and public
+-   public exclusive
+-   public inclusive
 
-```{r}
-# public_cr
-```
+### CR functions:
 
-table
+logical operation - is private - is public - is public exclusive - is public inclusive
 
-```{r}
-# cr_table
-```
+Data transformation - add a column - split data frame - clonotype factor - clonotype label - clonotype list
 
-factor
+Significant values by CR-type - CR-level to CR-type - share-level to CR-type - clone count - clone frequency
 
-```{r}
-# factor_cr
-```
-
-list
-
-```{r}
-# cr_list
-```
-
-
-## Clonotypes overlapping
-
-- among individuals
-- among populations
-- among sub-populations
+Pairwise resemblance (overlapping, similarity, correlation, distance, etc.) - individual-wise - population-wise - sub-populations-wise
 
 ```{r}
 # cr_overlap

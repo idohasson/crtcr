@@ -5,7 +5,7 @@
 #   shared_clonotype(clonotype_col = "aa")
 shared_clonotype <- function(rep_list, clonotype_col) {
 
-  if (every(rep_list, is.data.frame))
+  if (purrr::every(rep_list, is.data.frame))
 
     rep_list <- lapply(rep_list, get_aa, clonotype_col)
 
@@ -35,7 +35,7 @@ shared_clonotype <- function(rep_list, clonotype_col) {
 #   shared_clone(clone_col = "nt")
 shared_clone <- function(rep_list, clone_col) {
 
-  if (every(rep_list, is.data.frame))
+  if (purrr::every(rep_list, is.data.frame))
 
     rep_list <- lapply(rep_list, get_nt, clone_col)
 
@@ -51,7 +51,7 @@ shared_clone <- function(rep_list, clone_col) {
 # shared_population_clonotype(rep_list, "aa", list(1:5, 6:10))
 shared_population_clonotype <- function(rep_list, clonotype_col, population_i) {
 
-  stopifnot(every(rep_list, is.data.frame))
+  stopifnot(purrr::every(rep_list, is.data.frame))
 
   get_clonotype_aa <- function(indices)
     lapply(rep_list[indices], get_aa, clonotype_col)
@@ -71,7 +71,7 @@ shared_population_clonotype <- function(rep_list, clonotype_col, population_i) {
 #   shared_population_clone("nt", list(1:5, 6:10))
 shared_population_clone <- function(rep_list, clone_col, population_i) {
 
-  stopifnot(every(rep_list, is.data.frame))
+  stopifnot(purrr::every(rep_list, is.data.frame))
 
   get_clone_nt <- function(indices)
     lapply(rep_list[indices], get_nt, clone_col)
@@ -130,7 +130,7 @@ share_level <- function(clonotype_list) {
 #'
 share_table <- function(populations_list) {
 
-  stopifnot(every(populations_list, is.list))
+  stopifnot(purrr::every(populations_list, is.list))
 
   if (vec_depth(populations_list) == 3)
     populations_list <- map_depth(populations_list, 2, unique)

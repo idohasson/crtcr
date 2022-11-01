@@ -94,28 +94,20 @@ rand_rep_df <- function(...) {
 #' @param rep_type
 #'
 #' @return
-#' @export
 #'
 #' @examples
-rand_group <- function(rep_type, n_sample, ..., named=TRUE) {
-
-  rep_ <- type <- try(rlang::arg_match(rep_type, c("aa_vector", "nt_vector", "df_list")))
-
-  if (rep_type == "aa_vector") {
-
-    rand_f <- function() rand_rep_vec(seq_type="aa", ...)
-
-  } else if (rep_type == "nt_vector") {
-
-    rand_f <- function() rand_rep_vec(seq_type="nt", ...)
-
-  } else if (rep_type == "df_list") {
-
-    rand_f <- function() rand_rep_df(...)
-  }
-
-  replicate(n_sample, rand_f(), simplify = FALSE) %>%
-
-    setNames(paste0("rep", seq_along(.)))
-
+rand_group <- function(n_sample=5, seq_n = rpois(n_sample, 1E3), seq_l=3) {
+  if (length(seq_n) > 1)
+    lapply(seq_n, function(n) rand_rep_df(seq_n = n, seq_len=seq_l))
+  else
+    replicate(n_sample, rand_rep_df(seq_n = seq_n, seq_len=seq_l), simplify = FALSE)
 }
+
+rand_populations <- function(n_groups, ...) {
+
+  f <- rand_group(...)
+
+  replicate(n_groups, f, simplify = FALSE)
+}
+
+
