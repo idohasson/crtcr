@@ -11,7 +11,7 @@
 #
 # populations <- setNames(list(cr1, cr2), names_g)
 # cr_overlap(populations)
-cr_overlap <- function(subpopulations, func=intersect_percentage) {
+cr_overlap <- function(subpopulations, func=intersect_percentage) { # TODO: overlap as number of intersect. not precentile
 
   cross(subpopulations) %>%
 
@@ -26,11 +26,16 @@ cr_overlap <- function(subpopulations, func=intersect_percentage) {
 # aa_vec2 <- rand_rep_vec("aa", 10000, 5)
 #
 # intersect_percentage(aa_vec1, aa_vec2)
-## # https://github.com/GreiffLab/immuneREF/blob/master/R/repertoire_overlap.R
-intersect_percentage <- function(x, y){
-  c(length(intersect(x,y)))/min(c(length(x), length(y)))
+# cr_simmilarity
+intersect_percentage <- function(x, y) { # overlap coefficient
+  length(intersect(x, y)) / min(length(x), length(y))
 }
+# TODO: morisita
 
+# cr_dissimilarity
+jaccard_index <- function(x, y){
+  length(intersect(x, y)) / length(union(x, y))
+}
 
 
 

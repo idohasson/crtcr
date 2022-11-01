@@ -20,12 +20,12 @@ Imports:
     circlize (>= 0.4.15),
     magrittr,
     purrr,
-    rlang (>= 1.0.6),
     tibble,
     tidyr
 Depends: 
     dplyr,
+    rlang (>= 1.0.6),
     vctrs
-Remotes:  
+Remotes: 
     jokergoo/circlize,
     r-lib/rlang

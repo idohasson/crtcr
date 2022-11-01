@@ -1,6 +1,10 @@
 # bit_sharing
 # bit_unique
-
+# bitC <- function(x) noquote(vapply(as.double(x), function(x) { # split one double
+#   b <- substr(as.character(rev(numToBits(x))), 2L, 2L)
+#   paste0(c(b[1L], " ", b[2:12], " | ", b[13:64]), collapse = "")
+# }, ""))
+# bitC(17)
 
 #' Label a clonotype list with the appropriate CR classifications.
 #'
