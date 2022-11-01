@@ -1,0 +1,108 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(dplyr)
+
+load_mixcr_output<-function(filename,AA_length_of_seqs=0){
+  #reads in txt file (mixcr output) and returns rep
+  #if a length is specified returns only sequences of the specified lenght
+  #otherwise will return full rep
+  repertoire_rep_all_lengths<-read.table(filename,header=TRUE,dec=".",sep="\t")
+
+  if(AA_length_of_seqs==0){
+    repertoire_rep_return<-repertoire_rep_all_lengths
+  } else{
+    repertoire_rep_return<-repertoire_rep_all_lengths[nchar(as.character(repertoire_rep_all_lengths$AA..Seq.CDR3))==AA_length_of_seqs & nchar(as.character(repertoire_rep_all_lengths$N..Seq..CDR3))==(AA_length_of_seqs*3),]
+  }
+
+  cat("ADD NEW NAMES!!!")
+
+  return(repertoire_rep_return)
+}
+
+paths <- list.files("../../../dataset/clonotypes/Beta/", full.names = TRUE)
+
+rep_list <- lapply(paths, load_mixcr_output)
+
+```
+Clone extraction for CR level
+
+```{r}
+
+df <- rep_list[[1]]; clonotype_col <- "aaSeqCDR3" ;clone_by <- "nSeqCDR3"
+
+clone_fields <- c(clone_by, clonotype_col)
+
+stopifnot(all(hasName(df, clone_fields)))
+
+clone_df <- distinct_at(df, .vars = c(clone_by, clonotype_col))
+
+head(clone_df,3)
+
+```
+
+
+```{r}
+
+cr_level <- function(clone_df, clonotype_col) {
+  
+  pull(clone_df, clonotype_col) %>% 
+    
+    vec_count(sort = "location")
+  
+}
+
+crlvl <- cr_level(clone_list[[1]], "aaSeqCDR3")
+head(crlvl,4)
+
+```
+
+Clone extraction for share level
+
+```{r}
+
+clone_list <- lapply(rep_list, distinct_at, "aaSeqCDR3")
+
+```
+
+share level of repertoire gruop
+```{r}
+# sharing_level
+shared <- vec_count(unlist(clone_list, use.names = FALSE), sort = "location")
+```
+
+share level of populations
+
+```{r}
+
+clone_gen <- function(n, l=3) rand_rep_vec("aa", seq_n = n, seq_len = l)
+
+clone_gen(10)
+gruop_gen <- function(n_rep, seq_n=rgeom(n_rep, 1E-3)) lapply(n_rep, clone_gen, seq_n)
+
+lengths(gruop_gen(5))
+
+
+
+rgeom(n_rep, 1E-3)
+
+populations <- 
+
+lengths(populations)
+
+unlist(populations, recursive = FALSE) %>% lengths
+
+```
+
+
+
+
+
+
+
+
+
+
