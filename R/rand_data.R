@@ -1,12 +1,4 @@
 
-#' Title
-#'
-#' @param n_codons
-#'
-#' @return
-#' @export
-#'
-#' @examples
 rand_nt <- function(n_codons) {
 
   coding_codon <- function() {
@@ -24,14 +16,7 @@ rand_nt <- function(n_codons) {
     paste(collapse = "")
 }
 
-#' Title
-#'
-#' @param n
-#'
-#' @return
-#' @export
-#'
-#' @examples
+
 rand_aa <- function(n) {
 
   AA_list <- c("A","C","D","E","F",
@@ -44,16 +29,7 @@ rand_aa <- function(n) {
     paste(collapse = "")
 }
 
-#' Title
-#'
-#' @param vec_len
-#' @param seq_len
-#' @param type
-#'
-#' @return
-#' @export
-#'
-#' @examples
+
 rand_rep_vec <- function(seq_type, seq_n = 10, seq_len=13) {
 
   seq_type <- try(rlang::arg_match(seq_type, c("aa", "nt")))
@@ -70,15 +46,7 @@ rand_rep_vec <- function(seq_type, seq_n = 10, seq_len=13) {
   sapply(seq_len, rand_f)
 }
 
-#' Title
-#'
-#' @param df_size
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
+
 rand_rep_df <- function(...) {
 
   clone_vec <- rand_rep_vec(seq_type = "nt", ...)
@@ -87,15 +55,7 @@ rand_rep_df <- function(...) {
 
 }
 
-#' Title
-#'
-#' @param n_sample
-#' @param ...
-#' @param rep_type
-#'
-#' @return
-#'
-#' @examples
+
 rand_group <- function(n_sample=5, seq_n = rpois(n_sample, 1E3), seq_l=3) {
   if (length(seq_n) > 1)
     lapply(seq_n, function(n) rand_rep_df(seq_n = n, seq_len=seq_l))
@@ -103,7 +63,7 @@ rand_group <- function(n_sample=5, seq_n = rpois(n_sample, 1E3), seq_l=3) {
     replicate(n_sample, rand_rep_df(seq_n = seq_n, seq_len=seq_l), simplify = FALSE)
 }
 
-rand_populations <- function(n_groups, ...) {
+rand_populations <- function(n_groups=2, ...) {
 
   f <- rand_group(...)
 

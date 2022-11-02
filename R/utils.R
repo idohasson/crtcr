@@ -5,6 +5,9 @@
 #' @return
 #'
 #' @examples
+
+
+
 translate <- function(nt_vec) {
   # converts the nucleotide vector to uppercase
   nt_vec <- toupper(nt_vec)
@@ -59,8 +62,8 @@ search_field <- function(df, of) {
                             of=="nt" ~ NT_FIELDS)
 
   matched <- has_name(df, known_fields)
+
   known_fields[which(matched)][1]
-  # ifelse(any(matched), known_fields[which(matched)][1], NULL)
 
 }
 
