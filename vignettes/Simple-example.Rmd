@@ -119,21 +119,38 @@ cr_level - this function execute the following by the of argument
 cr_level_clonotype - CR-level value of a clonotype in a repertoire
 
 ```{r}
-# cr_level_clonotype
-cr_level_clonotype()
+
+rand_rep_df(seq_n=1000, seq_l=3) %>%
+  
+  cr_level_clonotype(c("S", "T", "M"), "aa","nt")
 
 ```
 
 cr_level_rep - CR-level of all clonotype in a repertoire
 
 ```{r}
-# cr_level_rep
+
+aa_vec <- pull(rand_rep_df(100), "aa") %>% 
+  
+cr_level_rep(aa_vec)
+
+
 ```
 
 cr_level_group - CR-level across multiple populations' clonotypes
 
 ```{r}
-# cr_level_group
+
+rep_list <- rand_group(seq_n = 3)
+
+rep_list <- cr_level_group(rep_list, "aa", "nt")
+
+# rep_list <- rand_group(n_sample = 6, seq_n = 100) %>% map(pull, "aa")
+
+# cr_tcl <- cr_level_group(rep_list)
+
+head(cr_tcl)
+
 ```
 
 cr_level_compare - computes CR-level for every clone definition
@@ -149,13 +166,18 @@ cr_level_compare - computes CR-level for every clone definition
 -   sharing-level conditioned by clone's property
 
 ```{r}
-# shared_cr
+l <- replicate(6, sample(LETTERS, sample(13:18, 1, replace = TRUE)), simplify = FALSE)
+share_level(l) # number of vectors a letter found in
 ```
 
 single population - clonotype
 
 ```{r}
+
+
 # shared_clonotype
+
+
 ```
 
 single population - clone

@@ -9,6 +9,14 @@ cr_time_series(groups)
 \arguments{
 \item{groups}{}
 }
+\value{
+df
+}
 \description{
 Title
+}
+\examples{
+
+1+1
+
 }

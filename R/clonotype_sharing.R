@@ -116,7 +116,7 @@ share_level <- function(clonotype_list) {
 #'
 #' @param clonotype_list list of character vectors
 #'
-#' @return
+#' @return df
 #' @export
 #'
 #' @examples

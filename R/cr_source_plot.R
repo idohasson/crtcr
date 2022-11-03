@@ -4,11 +4,16 @@
 #'
 #' @param input_list
 #'
-#' @return
-#'
-#' @importFrom  circlize get.cell.meta.data
+#' @return NULL
 #'
 #' @export
+#'
+#' @importFrom circlize circos.initialize circos.track circos.par circos.clear circos.barplot circos.link get.cell.meta.data mm_h circos.rect circos.par
+#' @importFrom grDevices adjustcolor
+#' @importFrom methods formalArgs
+#' @importFrom dplyr filter
+#' @importFrom stats rpois setNames
+#' @importFrom utils hasName
 #'
 #' @examples
 #'
@@ -33,18 +38,19 @@ cr_source <- function(input_list) {
 
   n <- nchar(seq[1])
 
-  circlize::circos.par(RESET = TRUE,
+  circos.par(
     cell.padding = c(0, 0, 0, 0),
     track.margin = c(0.005, 0.005),
     gap.degree = c(rep(2, n-1), 5, 5),
     start.degree = 90,
     clock.wise = FALSE,
-    points.overflow.warning = FALSE
+    points.overflow.warning = FALSE,
+    RESET = TRUE
     )
 
-  circlize::circos.initialize(sectors, xlim = axes, sector.width = sw)
+  circos.initialize(sectors, xlim = axes, sector.width = sw)
 
-  circlize::circos.track(sectors=seq, ylim = c(0, n), bg.border = NA,
+  circos.track(sectors=seq, ylim = c(0, n), bg.border = NA,
                          track.height = 2/3, panel.fun = function(x, y) {
 
     nt_col <- strsplit(get.cell.meta.data("sector.index"), split = "")[[1]] %>%
@@ -54,15 +60,15 @@ cr_source <- function(input_list) {
                                  "T" = "dodgerblue",
                                  "C" = "palegreen")) %>% rev()
 
-    circlize::circos.rect(.25, 1:n - 1, rep(.75, n), 1:n,
+    circos.rect(.25, 1:n - 1, rep(.75, n), 1:n,
                 col = nt_col, border = adjustcolor("black", alpha.f=.1))
-    # circlize::circos.rect(get.cell.meta.data("xlim")[1], .15,
+    # circos.rect(get.cell.meta.data("xlim")[1], .15,
     #                       get.cell.meta.data("xlim")[2], .85,
     #             col = "azure3", border = adjustcolor("black", alpha.f=.1))
 
 
 
-    # circlize::circos.text(circlize::CELL_META$xcenter, circlize::CELL_META$ycenter, circlize::CELL_META$sector.index)
+    # circos.text(CELL_META$xcenter, CELL_META$ycenter, CELL_META$sector.index)
   })
 
   colors <- c(adjustcolor("red", alpha.f=.6),
@@ -81,14 +87,14 @@ cr_source <- function(input_list) {
 
     bind_rows(.id = "to") %>% rev() %>%
 
-    circlize::arrange_links_evenly() %>%
+    arrange_links_evenly() %>%
 
     mutate(color = as.character(factor(sector2, labels = colors)))
 
 
   for (i in seq(nrow(link_df))) {
 
-    circlize::circos.link(link_df[i, "sector1"], c(.15, .85),
+    circos.link(link_df[i, "sector1"], c(.15, .85),
 
                           link_df[i, "sector2"], link_df[i, c("pos1", "pos2")],
 
@@ -98,7 +104,7 @@ cr_source <- function(input_list) {
 
   }
 
-  circlize::circos.clear()
+  circos.clear()
 }
 
 

@@ -9,6 +9,9 @@ share_table(populations_list)
 \arguments{
 \item{clonotype_list}{list of character vectors}
 }
+\value{
+df
+}
 \description{
 Counts the number of times each clonotype appears in a sample vector
 }

@@ -2,10 +2,13 @@
 #'
 #' @param groups
 #'
-#' @return
+#' @return df
 #' @export
 #'
 #' @examples
+#'
+#' 1+1
+#'
 cr_time_series <- function(groups) {
 
   clonotype_count <- group_count(groups)

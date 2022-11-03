@@ -97,6 +97,7 @@ factor_cr <- function(group_count) {
 #' @description Make a list of the clonotypes based on the CR-types (private, exclusive & inclusive) that correspond to each one.
 #'
 #' @param clonotype_list a character vector list of the clonotypes found in each individual group
+#' @param ...
 #'
 #' @return list of distinct clonotype groups named by the corisponding CR-types: 'private', 'exclusive', 'inclusive'
 #'
@@ -104,7 +105,7 @@ factor_cr <- function(group_count) {
 #'
 #' @examples
 #'
-#' clonotype_list <- replicate(3, rand_rep(rpois(1, 10)), simplify = FALSE)
+#' clonotype_list <- rand_group(3, 3, 3)
 #'
 #' cr_seq(clonotype_list)
 #'

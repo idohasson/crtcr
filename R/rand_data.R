@@ -3,17 +3,13 @@ rand_nt <- function(n_codons) {
 
   coding_codon <- function() {
 
-    codon <- sample(c("A", "G", "T", "C"), 3, rep = TRUE) %>%
+    codon <- paste(sample(c("A","G","T","C"), 3, rep = TRUE), collapse = "")
 
-      paste(collapse = "")
-
-    ifelse(codon %in% c("TGA", "TAA", "TAG"), coding_codon(), codon)
+    ifelse(codon %in% c("TGA","TAA","TAG"), coding_codon(), codon)
 
   }
 
-  replicate(n_codons, coding_codon()) %>%
-
-    paste(collapse = "")
+  paste(replicate(n_codons, coding_codon()), collapse = "")
 }
 
 rand_nt_vec <- function(n=10, mu=5) {
