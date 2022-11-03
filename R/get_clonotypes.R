@@ -141,9 +141,6 @@ get_multiple_group_clonotype <- function(df_list, ..., group_to_df=FALSE, indice
 
 }
 
-
-
-
 get_clonotypes_list <- function(df_list, to_df=FALSE, ..., indices) {
   # check that df_list is a list.
   stopifnot(is.list(df_list))

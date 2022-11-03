@@ -1,10 +1,4 @@
-#' Translates a DNA sequence into an amino acid sequence.
-#'
-#' @param nt_vec
-#'
-#' @return
-#'
-#' @examples
+
 translate <- function(nt_vec) {
   # converts the nucleotide vector to uppercase
   nt_vec <- toupper(nt_vec)
@@ -28,15 +22,7 @@ translate <- function(nt_vec) {
     sapply(paste, collapse="")
 }
 
-#' Title
-#'
-#' @param df
-#' @param AA_FIELDS
-#'
-#' @return
-#' @export
-#'
-#' @examples
+
 search_field <- function(df, of) {
 
   stopifnot(is_named(df))
@@ -60,15 +46,7 @@ search_field <- function(df, of) {
 
 }
 
-#' Title
-#'
-#' @param df
-#' @param aa_field
-#'
-#' @return
-#' @export
-#'
-#' @examples
+
 get_aa <- function(df, aa_field) {
 
   if (missing(aa_field)) aa_field <- search_field(df, "aa")
@@ -80,15 +58,7 @@ get_aa <- function(df, aa_field) {
 }
 
 
-#' Title
-#'
-#' @param df
-#' @param nt_field
-#'
-#' @return
-#' @export
-#'
-#' @examples
+
 get_nt <- function(df, nt_field) {
 
   if (missing(nt_field)) nt_field <- search_field(df, "nt")

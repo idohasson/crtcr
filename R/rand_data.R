@@ -16,7 +16,11 @@ rand_nt <- function(n_codons) {
     paste(collapse = "")
 }
 
-rand_nt_vec <- function(n=10, mu=5) replicate(n, rand_nt(rpois(1,mu)+1))
+rand_nt_vec <- function(n=10, mu=5) {
+
+  replicate(n, rand_nt(rpois(1,mu)+1))
+
+}
 
 rand_aa <- function(n) {
 
@@ -29,7 +33,6 @@ rand_aa <- function(n) {
 
     paste(collapse = "")
 }
-
 
 rand_rep_vec <- function(seq_type, seq_n = 10, seq_len=13) {
 
@@ -47,7 +50,6 @@ rand_rep_vec <- function(seq_type, seq_n = 10, seq_len=13) {
   sapply(seq_len, rand_f)
 }
 
-
 rand_rep_df <- function(...) {
 
   clone_vec <- rand_rep_vec(seq_type = "nt", ...)
@@ -55,7 +57,6 @@ rand_rep_df <- function(...) {
   cbind.data.frame(nt = clone_vec, aa = translate(clone_vec))
 
 }
-
 
 rand_group <- function(n_sample=5, seq_n = rpois(n_sample, 1E3), seq_l=3) {
   if (length(seq_n) > 1)
@@ -70,5 +71,3 @@ rand_populations <- function(n_groups=2, ...) {
 
   replicate(n_groups, f, simplify = FALSE)
 }
-
-
