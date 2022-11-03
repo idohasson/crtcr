@@ -17,4 +17,5 @@ Title
 g <- list(rep1=rand_rep_vec(seq_type = "nt", 7, rep(5, 7)),
           rep2=rand_rep_vec(seq_type = "nt", 9, rep(5, 9)))
 
+
 }

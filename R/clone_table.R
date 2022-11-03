@@ -1,6 +1,4 @@
-library(dplyr)
-library(forcats)
-library(purrr)
+
 
 clone_table <- function(df, clone_nt, clonotype, to_vec=FALSE) {
 
