@@ -16,6 +16,7 @@ rand_nt <- function(n_codons) {
     paste(collapse = "")
 }
 
+rand_nt_vec <- function(n=10, mu=5) replicate(n, rand_nt(rpois(1,mu)+1))
 
 rand_aa <- function(n) {
 

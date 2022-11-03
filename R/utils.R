@@ -5,9 +5,6 @@
 #' @return
 #'
 #' @examples
-
-
-
 translate <- function(nt_vec) {
   # converts the nucleotide vector to uppercase
   nt_vec <- toupper(nt_vec)
@@ -37,10 +34,6 @@ translate <- function(nt_vec) {
 #' @param AA_FIELDS
 #'
 #' @return
-#'
-#' @importFrom rlang is_named arg_match has_name
-#' @importFrom dplyr case_when
-#'
 #' @export
 #'
 #' @examples
@@ -63,7 +56,7 @@ search_field <- function(df, of) {
 
   matched <- has_name(df, known_fields)
 
-  known_fields[which(matched)][1]
+  ifelse(any(matched), known_fields[which(matched)][1], NULL)
 
 }
 
