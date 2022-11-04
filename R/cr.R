@@ -1,4 +1,8 @@
-library(vctrs)
+# library(vctrs)
+# library(dplyr)
+# library(utils)
+# library(magrittr)
+# library(rlang)
 
 new_clone <- function(x = character()) {
   vec_assert(x, character())
@@ -26,11 +30,6 @@ as_clone.character <- function(x) {
   value <- as.character(toupper(x))
   new_clone(value)
 }
-
-
-
-
-
 
 #################### Utility functions ####################
 
@@ -71,171 +70,142 @@ translate <- function(nt_vec) {
   sapply(aa_vec, paste, collapse="")
 }
 
+nt2df <- function(nt) {
+  # check all AGTC
+  cbind.data.frame(clone=nt, clonotype=translate(nt))
+
+}
+
+
 rand_clone <- clone_gen()
-
 rand_rep <- function(n, mu=3) rand_clone(rpois(n, mu)+1)
+rand_gruop <- function(rep_n=6, n=10, mu=3) replicate(rep_n, rand_rep(n, mu), simplify = FALSE)
+rand_subgruops <- function(group_n=3, rep_n=6, n=100, mu=3) replicate(group_n, rand_gruop(rep_n, n, mu), simplify = FALSE)
+rand_subgruops() %>% cr_share_table()
+# rand_gruop() %>% map(nt2df)
 
+#################### Manual ####################
+
+#   Clonal sequence: a string includes only of A, G, C, T characters
+#
+#   Clonotype: The CDR3's sequence as a string composed of the amino acid
+#   character symbols (not strict for additional symbols).
+#
+#   Repertoire: - a collection of CDR3s' clones. Clone sequences are considered
+#   identical by their NT sequence. Distinction attributes such as V/J segments
+#   might be added in later versions. any pair of sequences or length-one data
+#   types pair should work as well if provided as data frame with two columns
+#
+#
+#
+#   'rep_vec' - clonotype vector construction
+#
+#   Function arguments:
+#   - Character vector - clonal sequences which are of strings composed of
+#     A, G, C and T characters only as the codons (DNA) for translation.
+#   - Data frame, first column with the clonal sequence (NT strings as described
+#     in previous option) and the corresponding clonotype sequence (AA) in
+#     second column
+#
+#
+#
+#
+#   'rep_set' (table of 'rep_vec') - clonotype table construction
+#
+#   Group - a collection of repertoires:
+#
+#   Function arguments:
+#   - list of character vectors
+#   - list of data frames
+#   - data frame
+#
+#
+#
+#
+#   'cr_vec' ('rep_set' CR-type vector)
+#
+#   ## Required for convergent recombination public classification (CR-class)
+#   3D entry representing clone:
+#   - Clonal sequence (NT) + optional addition of the corresponding clonotype
+#   sequence (AA) to avoid translation computation
+#   - Repertoire identification.
+#   - Group identification.
+
+#   Sub-Groups - sub-sets of the collection repertoires:
+#
+#   Function arguments:
+#   - Depth-two-list of ('cr_vec'):
+#     - a group of repertoires as list of ('rep_set' -> 'cr_vec') :
+#       - character vectors ('rep_vec' -> 'rep_set' -> 'cr_vec') - NT vectors
+#       - data frames ('rep_vec' -> 'rep_set' -> 'cr_vec') - two-columns-Data-frames REP_ID + NT (order-sensitive)
+#     - data frame ('rep_set' -> 'cr_vec') - List of Three-columns-Data-frames REP_ID + NT + AA  (order-sensitive)
+#
+#   - list of one of the forms:
+#     - character vectors + list of indices ('rep_set' -> 'cr_vec') - to the sub-group each vector (clonal sequences) belongs
+#     - data frames + list of indices ('rep_set' -> 'cr_vec') - to the sub-group each data frame (clonal sequences + clonotype) belongs
+#
+#   ('cr_vec')
+#   - data frame - Three-columns-Data-frame (order-sensitive) GROUP_ID + REP_ID + NT (or GROUP_ID + REP_ID + NT + AA)
+#
 
 
 #################### Data-type ####################
 
 
 
-nt=rand_rep(10) # NT character vector
-ntl=rpois(10, 10) %>%  # list of NT character vector
-  lapply(rand_rep, mu=1)
-df=rand_rep(10)   %>% # Two-column-data-frame of NT and AA
-  cbind.data.frame(clone=., clonotype=translate(.))
-dfl=rpois(10, 10) %>% # List of two-column-data-frame of NT and AA
-  lapply(. %>% rand_rep(., mu=1) %>%
-  cbind.data.frame(clone=., clonotype=translate(.)))
-dfg=rpois(10, 10) %>% # Three-Column Data frame of repertoire-ID, NT and AA
-  lapply(. %>% rand_rep(., mu=1) %>%
-  cbind.data.frame(clone=., clonotype=translate(.))) %>%
-  setNames(which(!have_name(.))) %>%
-  bind_rows(.id = "rep_id")
+
+#################### Prepare input data ####################
+
+build_df <- function(rep,...) {
+
+  rep <- list2(rep,...)
+
+  if (vec_is_list(rep) & length(rep)==1)
+      rep %<>% pluck(1)
+
+  if (is.vector(rep)) {
+
+    if(is.vector(pluck(rep, 1))) {
+
+      if (is.character(pluck(rep, 1, 1)))
+        rep %<>% modify_depth(2, nt2df)
 
 
-# #################### Valid input data ####################
+      if (is.data.frame(pluck(rep, 1, 1)))
+        rep %<>% map(bind_rows, .id = "rep_id")
 
-# ## Required for convergent recombination public classification (CR-class)
+    }
 
-# 3D entry representing each of the clone's:
-# - Clonal sequence (NT) + optional addition of the corresponding clonotype sequence (AA) to avoid translation computation
-# - Repertoire identification
-# - Group identification
+    if(is.data.frame(pluck(rep, 1)))
+        rep %<>% bind_rows(.id = "group")
+  }
 
-# - Clonal sequence - a string includes only of A, G, C, T characters
-# - Clonotype - The CDR3's sequence as a string composed of the amino acid character symbols (not strict for additional symbols)
-# - Repertoire - a collection of CDR3s' clones. Clone sequences are considered identical by their nucleation sequences. Distinction attributes such as V/J segments might be added in later versions. any pair of sequences or length-one data types pair should work as well if provided as data frame with two columns
-#   - Character vector of the clonal sequences which are of strings composed of A, G, C and T characters only as the codons (DNA) for translation.
-#   - Data frame, first column with the clonal sequence (NT strings as described in previous option) and the corresponding clonotype sequence (AA) in second column
-# - Group of repertoires:
-#   - list of character vectors
-#   - list of data frames
-#   - data frame
-# - Sub-Groups of repertoire collections:
-#   - list of repertoires:
-#       - list of character vectors
-#       - list of data frames + list of indices vectors
-#       - data frame
-#   - list of character vector + list of indices to the sub-group each vector (clonal sequences) belongs
-#   - list of character vector + list of indices to the sub-group each data frame (clonal sequences + clonotype) belongs
-#   - data frame
-#
+  if (length(rep)==3 & is.character(rep[[3]]))
 
-# in one of the forms of:
-# - Three-columns-Data-frame (order-sensitive) GROUP_ID + REP_ID + NT (or GROUP_ID + REP_ID + NT + AA)
-# - List of groups as two-columns-Data-frame (order-sensitive) REP_ID + NT (or REP_ID + NT + AA) as
-# - Depth-two-list of NT vectors, each as a repertoire (order-sensitive two-columns-Data-frame NT + AA)
-# -
-# -
+    rep %<>% cbind(clonotype=translate(pull(.)))
+
+  if (!is.data.frame(rep) | ncol(rep) != 4) print("ERROR")
+
+  distinct_at(rep, -4, .keep_all = TRUE) %>%
+
+  set_colnames(c("group", "rep_id", "clone", "clonotype"))
+
+}
 
 
-              #################### NT input ####################
+#################### share-level table ####################
+cr_share_table <- function(rep_gruops,...) { # DF
+  build_df(rep_gruops,...) %>%
+  with(table(clonotype, group)) %>%
+  as.data.frame.array()
+}
 
-
-
-#### To clone DF ####
-nt %>% unique %>%
-       cbind.data.frame(clone=., clonotype=translate(.))
-                    #### To CR-level table ####
-nt %>% unique %>%
-       translate %>% table %>%
-       as.data.frame(responseName="CRlvl") %>%
-       rename(clonotype=".")
-
-
-              #################### NT-list input ####################
-
-                        #### To clone DF ####
-ntl %>% lapply(. %>% unique %>%
-               cbind.data.frame(clone=., clonotype=translate(.)))
-
-                    #### To CR-level table list ####
-ntl %>% lapply(. %>% unique %>%
-               translate %>% table %>%
-               as.data.frame(responseName="CRlvl") %>%
-               rename(clonotype="."))
-
-              #################### DF input ####################
-                          #### DF input ####
-
-                        #### To clone DF ####
-df %>% unique()
-                      #### To CR-level table ####
-df %>% unique() %>% with(table(clonotype)) %>%
-       as.data.frame(responseName ="CRlvl")
-
-
-            #################### DF-list input ####################
-
-                          #### To clone-DF list ####
-dfl %>% lapply(. %>% unique)
-                      #### To clone clone-group-DF ####
-dfl %>% lapply(unique) %>%
-   setNames(which(!have_name(.))) %>%
-   bind_rows(.id = "rep_id")
-
-                      #### To group-CR-level table ####
-x <- list(dfl[1:5], dfl[6:10]) %>%
-  lapply(bind_rows, .id = "rep_id") %>%
-  bind_rows(.id = "group") %$%
-  tapply(clone, cbind.data.frame(group, rep_id, clonotype), n_distinct) %>%
-  ftable(row.vars = "clonotype")
-
-                          #### To averaged-CR ####
-library(magrittr)
-dfl %>% lapply(unique) %>%
-        setNames(which(!have_name(.))) %>%
-        bind_rows(.id = "rep_id") %>%
-        with(table(clonotype, rep_id))
-
-  # %$%
-  #       xtabs(formula = CRlvl ~ clonotype + rep_id)
-                # tapply(CRlvl, rep_id, mean)
-                # tapply(CRlvl, clonotype, mean)
-
-
-                    #### To share-level table ####
-list(dfl[1:5], dfl[6:10]) %>%
-  setNames(which(!have_name(.))) %>%
-  lapply(bind_rows, .id = "rep_id") %>%
-  bind_rows(.id = "group") %>%
-  with(table(clonotype, group))
-
-  # bind_rows(.id = "group") %$%
-  # tapply(rep_id, cbind.data.frame(clonotype, group), n_distinct)
-  # tapply(group, cbind.data.frame(clonotype, rep_id), n_distinct)
-
-dfl %>% lapply(. %>% unique %>% with(table(clonotype)) %>%
-                as.data.frame(responseName ="CRlvl")) %>%
-                bind_rows() %$% tapply(CRlvl, clonotype, length)
-                      #### To group-share-level table ####
-dfl %>% lapply(unique) %>%
-        setNames(which(!have_name(.))) %>%
-        bind_rows(.id = "rep_id") %>%
-        with(table(clonotype)) %>%
-        as.data.frame() %>%
-  filter(clonotype == "S")
-
-
-
-          #################### group DF input ####################
-
-
-
-
-                        #### To clone-group-DF ####
-dfg %>% unique()
-                      #### To share-level table ####
-dfg %>% unique() %>%
-        with(table(clonotype, rep_id))
-
-
-
-
-
+#################### CR-level table ####################
+cr_level <- function(rep_gruops,...) { # DF
+  build_df(rep_gruops,...) %>%
+  with(table(clonotype, group, rep_id)) %>%
+  as.data.frame.array()
+}
 
 
 

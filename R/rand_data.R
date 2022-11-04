@@ -61,9 +61,3 @@ rand_group <- function(n_sample=5, seq_n = rpois(n_sample, 1E3), seq_l=3) {
     replicate(n_sample, rand_rep_df(seq_n = seq_n, seq_len=seq_l), simplify = FALSE)
 }
 
-rand_populations <- function(n_groups=2, ...) {
-
-  f <- rand_group(...)
-
-  replicate(n_groups, f, simplify = FALSE)
-}
