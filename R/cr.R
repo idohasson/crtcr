@@ -10,19 +10,28 @@
 
 
 
-# clone_gen <- function() {
-#
-#   coding_seq <- function(n_codons) {
-#
-#     coding_codon <- function() {
-#       codon <- paste(sample(c("A","G","T","C"), 3, rep = TRUE), collapse = "")
-#       ifelse(codon %in% c("TGA","TAA","TAG"), coding_codon(), codon)
-#     }
-#     paste(replicate(n_codons, coding_codon()), collapse = "")
-#   }
-#
-#   Vectorize(coding_seq, "n_codons")
-# }
+#' generate sequence with coding codons
+#'
+#' @return string
+#' @export
+#'
+#' @examples
+#'
+#' nt_gen <- clone_gen()
+#' nt_gen(3)
+clone_gen <- function() {
+
+  coding_seq <- function(n_codons) {
+
+    coding_codon <- function() {
+      codon <- paste(sample(c("A","G","T","C"), 3, replace = TRUE), collapse = "")
+      ifelse(codon %in% c("TGA","TAA","TAG"), coding_codon(), codon)
+    }
+    paste(replicate(n_codons, coding_codon()), collapse = "")
+  }
+
+  Vectorize(coding_seq, "n_codons")
+}
 
 #' translate the NT sequence to AA sequence
 #'
@@ -58,22 +67,21 @@ translate <- function(nt_vec) {
   sapply(aa_vec, paste, collapse="")
 }
 
-#' Pair NT vector to AA to a new DF
-#'
-#' @param nt char vector
-#'
-#' @return df
-#' @export
-#'
-#' @examples
-#'
-#' nt2df(c("AGT", "ATT"))
-#'
-nt2df <- function(nt) {
-  # check all AGTC
-  cbind.data.frame(clone=nt, clonotype=translate(nt))
-
-}
+#' #' Pair NT vector to AA to a new DF
+#' #'
+#' #' @param nt char vector
+#' #'
+#' #' @return df
+#' #' @export
+#' #'
+#' #' @examples
+#' #'
+#' #' nt2df(c("AGT", "ATT"))
+#' #'
+#' nt2df <- function(nt) {
+#'   # check all AGTC
+#'   cbind.data.frame(clone=nt, clonotype=translate(nt))
+#' }
 
 
 # rand_clone <- clone_gen()
@@ -153,7 +161,7 @@ nt2df <- function(nt) {
 
 #################### Prepare input data ####################
 
-# build_df <- function(...) {
+# group_join <- function(...) {
 #
 #   rep <- list2(...)
 #   # n_args <- function(...) length(list2(...))
@@ -192,17 +200,17 @@ nt2df <- function(nt) {
 # }
 
 
-#################### share-level table ####################
-        # clonotype sharing between individuals #
-
-# Previous studies have shown that the extent of sharing and the
-# clonotypic frequency of TCRb sequences are significantly corre
-# lated with their production efficiencies in simulations of a random
-# recombination process because of the phenomenon of convergent
-# recombination. https://doi.org/10.1073/pnas.1319389111
-
+# #################### share-level table ####################
+#         # clonotype sharing between individuals #
+#
+# # Previous studies have shown that the extent of sharing and the
+# # clonotypic frequency of TCRb sequences are significantly corre
+# # lated with their production efficiencies in simulations of a random
+# # recombination process because of the phenomenon of convergent
+# # recombination. https://doi.org/10.1073/pnas.1319389111
+#
 # cr_share <- function(..., by=c("clonotype", "rep_id")) { # DF
-#   build_df(...) %>%
+#   group_join(...) %>%
 #   select_at(by) %>%
 #   distinct() %>%
 #   table()
@@ -220,7 +228,7 @@ nt2df <- function(nt) {
 # tbl[1:10,] %>%
 # apply(1, max, na.rm = TRUE)
 
-# share_tbl <- rand_subgruops() %>% build_df() %>%
+# share_tbl <- rand_subgruops() %>% group_join() %>%
 #               cr_share(by=c("clonotype", "rep_id"))
 # cr_class(input_reps, by=c("clonotype", "group"))
 
@@ -246,7 +254,7 @@ nt2df <- function(nt) {
 # }
 
 # cr_level <- function(rep_gruops,...) { # DF
-#   build_df(rep_gruops,...) %>%
+#   group_join(rep_gruops,...) %>%
 #   with(table(clonotype, group, rep_id)) %>%
 #   as.data.frame.array()
 # }
@@ -273,11 +281,11 @@ nt2df <- function(nt) {
 # names_g <- c("Cancer", "Pre-Cancer", "Control")
 
 # pop <- rand_subgruops(3, rpois(1, 4), rpois(1, 1E2), 3)
-# rep_df <- build_df(pop)
+# rep_df <- group_join(pop)
 
-# mouse <- list(Cancer=rand_gruop(1000), Control=rand_gruop(1000)) %>% build_df() %>% cr_list
-# monkey <- list(Cancer=rand_gruop(1000), Control=rand_gruop(1000)) %>% build_df() %>% cr_list
-# human <- list(Cancer=rand_gruop(1000), Control=rand_gruop(1000)) %>% build_df() %>% cr_list
+# mouse <- list(Cancer=rand_gruop(1000), Control=rand_gruop(1000)) %>% group_join() %>% cr_list
+# monkey <- list(Cancer=rand_gruop(1000), Control=rand_gruop(1000)) %>% group_join() %>% cr_list
+# human <- list(Cancer=rand_gruop(1000), Control=rand_gruop(1000)) %>% group_join() %>% cr_list
 
 # populations <- list(mouse, monkey, human) %>%
 # setNames(c("Mouse", "Monkey", "Human"))
