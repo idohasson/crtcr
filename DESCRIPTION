@@ -12,16 +12,6 @@ RoxygenNote: 7.2.1
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-Imports: 
-    circlize,
-    dplyr,
-    grDevices,
-    magrittr (>= 2.0.3),
-    methods,
-    purrr,
-    rlang,
-    stats,
-    tibble,
-    utils
-Remotes: 
-    tidyverse/magrittr
+
+
+

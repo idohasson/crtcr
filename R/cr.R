@@ -1,53 +1,40 @@
-library(vctrs)
-library(dplyr)
-library(utils)
-library(magrittr)
-library(rlang)
-library(purrr)
+# library(vctrs)
+# library(dplyr)
+# library(utils)
+# library(magrittr)
+# library(rlang)
+# library(purrr)
 
-new_clone <- function(x = character()) {
-  vec_assert(x, character())
-  new_vctr(x, class = "clone")
-}
-
-clone <- function(x = character()) {
-  x <- vec_cast(x, character())
-  new_clone(x)
-}
-
-is_clone <- function(x) {
-  inherits(x, "clone")
-}
-
-as_clone <- function(x, ...) {
-  UseMethod("as_clone")
-}
-
-as_clone.default <- function(x, ...) {
-  vec_cast(x, new_clone())
-}
-
-as_clone.character <- function(x) {
-  value <- as.character(toupper(x))
-  new_clone(value)
-}
 
 #################### Utility functions ####################
 
 
-clone_gen <- function() {
 
-  coding_seq <- function(n_codons) {
+# clone_gen <- function() {
+#
+#   coding_seq <- function(n_codons) {
+#
+#     coding_codon <- function() {
+#       codon <- paste(sample(c("A","G","T","C"), 3, rep = TRUE), collapse = "")
+#       ifelse(codon %in% c("TGA","TAA","TAG"), coding_codon(), codon)
+#     }
+#     paste(replicate(n_codons, coding_codon()), collapse = "")
+#   }
+#
+#   Vectorize(coding_seq, "n_codons")
+# }
 
-    coding_codon <- function() {
-      codon <- paste(sample(c("A","G","T","C"), 3, rep = TRUE), collapse = "")
-      ifelse(codon %in% c("TGA","TAA","TAG"), coding_codon(), codon)
-    }
-    paste(replicate(n_codons, coding_codon()), collapse = "")
-  }
-  Vectorize(coding_seq, "n_codons")
-}
-
+#' translate the NT sequence to AA sequence
+#'
+#' @param nt_vec a character vector
+#'
+#' @return a character vector
+#' @export
+#'
+#' @examples
+#'
+#' translate("ATG")
+#'
 translate <- function(nt_vec) {
   # converts the nucleotide vector to uppercase
   # nt_vec <- toupper(nt_vec)
@@ -71,6 +58,17 @@ translate <- function(nt_vec) {
   sapply(aa_vec, paste, collapse="")
 }
 
+#' Pair NT vector to AA to a new DF
+#'
+#' @param nt char vector
+#'
+#' @return df
+#' @export
+#'
+#' @examples
+#'
+#' nt2df(c("AGT", "ATT"))
+#'
 nt2df <- function(nt) {
   # check all AGTC
   cbind.data.frame(clone=nt, clonotype=translate(nt))
@@ -78,10 +76,10 @@ nt2df <- function(nt) {
 }
 
 
-rand_clone <- clone_gen()
-rand_rep <- function(n, mu=3) rand_clone(rpois(n, mu)+1)
-rand_gruop <- function(rep_n=6, n=10, mu=3) replicate(rep_n, rand_rep(n, mu), simplify = FALSE)
-rand_subgruops <- function(group_n=3, rep_n=6, n=100, mu=3) replicate(group_n, rand_gruop(rep_n, n, mu), simplify = FALSE)
+# rand_clone <- clone_gen()
+# rand_rep <- function(n, mu=3) rand_clone(rpois(n, mu)+1)
+# rand_gruop <- function(rep_n=6, n=10, mu=3) replicate(rep_n, rand_rep(n, mu), simplify = FALSE)
+# rand_subgruops <- function(group_n=3, rep_n=6, n=100, mu=3) replicate(group_n, rand_gruop(rep_n, n, mu), simplify = FALSE)
 
 #################### Manual ####################
 
@@ -155,43 +153,43 @@ rand_subgruops <- function(group_n=3, rep_n=6, n=100, mu=3) replicate(group_n, r
 
 #################### Prepare input data ####################
 
-build_df <- function(...) {
-
-  rep <- list2(...)
-  # n_args <- function(...) length(list2(...))
-  # f <- ... %>% list2(...)
-  # if (n_args(l)==1 & n_args(!!!l)>1) l %<>% f(!!!.)
-  if (vec_is_list(rep) & length(rep)==1)
-      rep %<>% pluck(1)
-
-  if (is.vector(rep)) {
-
-    if(is.vector(pluck(rep, 1))) {
-
-      if (is.character(pluck(rep, 1, 1)))
-        rep %<>% modify_depth(2, nt2df)
-
-
-      if (is.data.frame(pluck(rep, 1, 1)))
-        rep %<>% map(bind_rows, .id = "rep_id")
-
-    }
-
-    if(is.data.frame(pluck(rep, 1)))
-        rep %<>% bind_rows(.id = "group")
-  }
-
-  if (length(rep)==3 & is.character(rep[[3]]))
-
-    rep %<>% cbind(clonotype=translate(pull(.)))
-
-  if (!is.data.frame(rep) | ncol(rep) != 4) print("ERROR")
-
-  distinct_at(rep, -4, .keep_all = TRUE) %>%
-
-  set_colnames(c("group", "rep_id", "clone", "clonotype"))
-
-}
+# build_df <- function(...) {
+#
+#   rep <- list2(...)
+#   # n_args <- function(...) length(list2(...))
+#   # f <- ... %>% list2(...)
+#   # if (n_args(l)==1 & n_args(!!!l)>1) l %<>% f(!!!.)
+#   if (vec_is_list(rep) & length(rep)==1)
+#       rep %<>% pluck(1)
+#
+#   if (is.vector(rep)) {
+#
+#     if(is.vector(pluck(rep, 1))) {
+#
+#       if (is.character(pluck(rep, 1, 1)))
+#         rep %<>% modify_depth(2, nt2df)
+#
+#
+#       if (is.data.frame(pluck(rep, 1, 1)))
+#         rep %<>% map(bind_rows, .id = "rep_id")
+#
+#     }
+#
+#     if(is.data.frame(pluck(rep, 1)))
+#         rep %<>% bind_rows(.id = "group")
+#   }
+#
+#   if (length(rep)==3 & is.character(rep[[3]]))
+#
+#     rep %<>% cbind(clonotype=translate(pull(.)))
+#
+#   if (!is.data.frame(rep) | ncol(rep) != 4) print("ERROR")
+#
+#   distinct_at(rep, -4, .keep_all = TRUE) %>%
+#
+#   set_colnames(c("group", "rep_id", "clone", "clonotype"))
+#
+# }
 
 
 #################### share-level table ####################
@@ -203,133 +201,132 @@ build_df <- function(...) {
 # recombination process because of the phenomenon of convergent
 # recombination. https://doi.org/10.1073/pnas.1319389111
 
-cr_share <- function(..., by=c("clonotype", "rep_id")) { # DF
-  build_df(...) %>%
-  select_at(by) %>%
-  distinct() %>%
-  table()
-  # as.data.frame.array()
-}
+# cr_share <- function(..., by=c("clonotype", "rep_id")) { # DF
+#   build_df(...) %>%
+#   select_at(by) %>%
+#   distinct() %>%
+#   table()
+#   # as.data.frame.array()
+# }
 
 #################### CR-level table ####################
 
 # several clones that encoded the same amino acid sequence were found to be structurally distinct at the nucleotide level, strongly implying clonal selection and expansion is operating at the level of specific TCR-peptide interactions.
-input_reps <- rand_subgruops()
-
-f <- function(n) (max(n, na.rm = TRUE) > 1) + (sum(n != 0, na.rm = TRUE) > 1)
-
-tbl <- cr_share(input_reps, by=c("clonotype", "group"))
-tbl[1:10,] %>%
-apply(1, max, na.rm = TRUE)
+# input_reps <- rand_subgruops()
+#
+# f <- function(n) (max(n, na.rm = TRUE) > 1) + (sum(n != 0, na.rm = TRUE) > 1)
+#
+# tbl <- cr_share(input_reps, by=c("clonotype", "group"))
+# tbl[1:10,] %>%
+# apply(1, max, na.rm = TRUE)
 
 # share_tbl <- rand_subgruops() %>% build_df() %>%
 #               cr_share(by=c("clonotype", "rep_id"))
+# cr_class(input_reps, by=c("clonotype", "group"))
 
 
 
-cr_class(input_reps, by=c("clonotype", "group"))
-cr_class <- function(..., public_min=1, exclusive_min=1) { # vector
-  # TODO: check input and generate sharing table if needed
-  share_tbl <- cr_share(...)
+# cr_class <- function(..., public_min=1, exclusive_min=1) { # vector
+#   # TODO: check input and generate sharing table if needed
+#   share_tbl <- cr_share(...)
+#
+#   cr_index <- function(n) {
+#     #     numeric vector of the unique number of samples
+#     #       having a specific clonotype in every group
+#     (max(n, na.rm = TRUE) > 1) + (sum(n != 0, na.rm = TRUE) > 1)
+#   #   can't be private             multiple shared samples
+#   #   public clonotype               inclusive clonotype
+#   }
+#
+#   apply(share_tbl, 1, cr_index) %>%
+#   # private = 0 | exclusive = 1 | inclusive = 2
+#   {case_when(. == 0 ~ "private",
+#             . == 1 ~ "exclusive",
+#             . == 2 ~ "inclusive")}
+# }
 
-  cr_index <- function(n) {
-    #     numeric vector of the unique number of samples
-    #       having a specific clonotype in every group
-    (max(n, na.rm = TRUE) > 1) + (sum(n != 0, na.rm = TRUE) > 1)
-  #   can't be private             multiple shared samples
-  #   public clonotype               inclusive clonotype
-  }
+# cr_level <- function(rep_gruops,...) { # DF
+#   build_df(rep_gruops,...) %>%
+#   with(table(clonotype, group, rep_id)) %>%
+#   as.data.frame.array()
+# }
 
-  apply(share_tbl, 1, cr_index) %>%
-  # private = 0 | exclusive = 1 | inclusive = 2
-  {case_when(. == 0 ~ "private",
-            . == 1 ~ "exclusive",
-            . == 2 ~ "inclusive")}
-}
+# factor_cr <- function(group_count) {
+#
+#   compute_type <- function(tbl) {
+#           # public clonotype                    inclusive clonotype
+#           # can't be private                  multiple shared samples
+#     (rowSums(tbl, na.rm = TRUE) > 1) + (rowSums(tbl != 0, na.rm = TRUE) > 1)
+#           # private = 0   |   exclusive = 1   |   inclusive = 2
+#   }
+#
+#   group_count %>% compute_type() %>%
+#   factor(levels = c(0, 1, 2),
+#          labels = c("private", "exclusive", "inclusive"))
+# }
 
-cr_level <- function(rep_gruops,...) { # DF
-  build_df(rep_gruops,...) %>%
-  with(table(clonotype, group, rep_id)) %>%
-  as.data.frame.array()
-}
-
-factor_cr <- function(group_count) {
-
-  compute_type <- function(tbl) {
-          # public clonotype                    inclusive clonotype
-          # can't be private                  multiple shared samples
-    (rowSums(tbl, na.rm = TRUE) > 1) + (rowSums(tbl != 0, na.rm = TRUE) > 1)
-          # private = 0   |   exclusive = 1   |   inclusive = 2
-  }
-
-  group_count %>% compute_type() %>%
-  factor(levels = c(0, 1, 2),
-         labels = c("private", "exclusive", "inclusive"))
-}
-
-cr_list <- function(rep_gruops) {
-  rep_gruops %>% cr_share %>%
-  factor_cr %>% split(x = names(.))
-}
+# cr_list <- function(rep_gruops) {
+#   rep_gruops %>% cr_share %>%
+#   factor_cr %>% split(x = names(.))
+# }
 
 # names_g <- c("Cancer", "Pre-Cancer", "Control")
 
 # pop <- rand_subgruops(3, rpois(1, 4), rpois(1, 1E2), 3)
 # rep_df <- build_df(pop)
 
-mouse <- list(Cancer=rand_gruop(1000), Control=rand_gruop(1000)) %>% build_df() %>% cr_list
-monkey <- list(Cancer=rand_gruop(1000), Control=rand_gruop(1000)) %>% build_df() %>% cr_list
-human <- list(Cancer=rand_gruop(1000), Control=rand_gruop(1000)) %>% build_df() %>% cr_list
+# mouse <- list(Cancer=rand_gruop(1000), Control=rand_gruop(1000)) %>% build_df() %>% cr_list
+# monkey <- list(Cancer=rand_gruop(1000), Control=rand_gruop(1000)) %>% build_df() %>% cr_list
+# human <- list(Cancer=rand_gruop(1000), Control=rand_gruop(1000)) %>% build_df() %>% cr_list
 
-populations <- list(mouse, monkey, human) %>%
-setNames(c("Mouse", "Monkey", "Human"))
+# populations <- list(mouse, monkey, human) %>%
+# setNames(c("Mouse", "Monkey", "Human"))
 
-mat_list <- populations %>%
-combn(2, cr_overlap, FALSE)
-library(reshape2)
+# mat_list <- populations %>%
+# combn(2, cr_overlap, FALSE)
+# library(reshape2)
 
-lapply(mat_list, melt)
-mat_list %>% lapply(. %>% as.data.frame(row.names = NULL) %>% melt(.id=1:2))
-# %>% melt()
-f <- . %>%
-  # mat_list[[.]] %>%
-  as.data.frame() %$%
-  cbind(rbind(cbind(private, exclusive),
-        cbind(private, inclusive),
-        cbind(exclusive, inclusive)), dimnames(.) %>% names %>% as.character())
+# lapply(mat_list, melt)
+# mat_list %>% lapply(. %>% as.data.frame(row.names = NULL) %>% melt(.id=1:2))
+# # %>% melt()
+# f <- . %>%
+#   # mat_list[[.]] %>%
+#   as.data.frame() %$%
+#   cbind(rbind(cbind(private, exclusive),
+#         cbind(private, inclusive),
+#         cbind(exclusive, inclusive)), dimnames(.) %>% names %>% as.character())
 
-mat_list %>% map(.f = f)
+# mat_list %>% map(.f = f)
 
 # cr_overlap(populations[1:2]) %>%
 
-cr_overlap <- function(subpopulations, func=intersect_percentage) { # TODO: overlap as number of intersect. not percentile
-
-  cross(subpopulations) %>%
-
-  lapply(setNames, names(formals(func))) %>%
-
-  invoke_map(.f = func) %>%
-
-  array(dim = c(3,3), dimnames = lapply(subpopulations, names))
-
-}
+# cr_overlap <- function(subpopulations, func=intersect_percentage) { # TODO: overlap as number of intersect. not percentile
+#
+#   cross(subpopulations) %>%
+#
+#   lapply(setNames, names(formals(func))) %>%
+#
+#   invoke_map(.f = func) %>%
+#
+#   array(dim = c(3,3), dimnames = lapply(subpopulations, names))
+#
+# }
 
 # aa_vec1 <- rand_rep_vec("aa", 10000, 5)
 # aa_vec2 <- rand_rep_vec("aa", 10000, 5)
 #
 # intersect_percentage(aa_vec1, aa_vec2)
 # cr_simmilarity
-intersect_percentage <- function(x, y) { # overlap coefficient
-  length(intersect(x, y)) / min(length(x), length(y))
-}
+# intersect_percentage <- function(x, y) { # overlap coefficient
+#   length(intersect(x, y)) / min(length(x), length(y))
+# }
 
 # TODO: morisita
 
 # cr_dissimilarity
-jaccard_index <- function(x, y){
-  length(intersect(x, y)) / length(union(x, y))
-}
+# jaccard_index <- function(x, y){
+#   length(intersect(x, y)) / length(union(x, y))
+# }
 
 
-rand_subgruops() %>%
 

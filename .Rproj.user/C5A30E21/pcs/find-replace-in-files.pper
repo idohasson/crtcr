@@ -1,6 +1,6 @@
 {
     "dialog-state": {
-        "query": "share",
+        "query": "rand_rep_vec",
         "path": "",
         "regex": false,
         "caseSensitive": false,
@@ -9,7 +9,7 @@
         "useGitGrep": true,
         "excludeGitIgnore": true,
         "excludeFilePatterns": [],
-        "resultsCount": 94,
+        "resultsCount": 30,
         "errorCount": 0,
         "replaceErrors": "",
         "projectRelative": true
