@@ -1,6 +1,0 @@
-"0",""
-"0","aa_vec <- pull(rand_rep_df(100), ""aa"") %>% "
-"0","  "
-"0","cr_level_rep(aa_vec)"
-"2","Error in cr_level_rep(., aa_vec) : unused argument (aa_vec)
-"
