@@ -7,31 +7,34 @@
 
 
 #################### Utility functions ####################
-
-
-
-#' generate sequence with coding codons
 #'
-#' @return string
-#' @export
+#' #'
+#' #'
+#' #' #' generate sequence with coding codons
+#' #' #'
+#' #' #' @return string
+#' #' #' @export
+#' #' #'
+#' #' #' @examples
 #'
-#' @examples
+#' #' #' nt_gen <- clone_gen()
+#' #' #' nt_gen(3)
+#' #' clone_gen <- function() {
+#' #'
+#' #'   coding_seq <- function(n_codons) {
+#' #'
+#' #'     coding_codon <- function() {
+#' #'       codon <- paste(sample(c("A","G","T","C"), 3, replace = TRUE), collapse = "")
+#' #'       ifelse(codon %in% c("TGA","TAA","TAG"), coding_codon(), codon)
+#' #'     }
+#' #'     paste(replicate(n_codons, coding_codon()), collapse = "")
+#' #'   }
+#' #'
+#' #'   Vectorize(coding_seq, "n_codons")
+#' #' }
+#' #'
 #'
-#' nt_gen <- clone_gen()
-#' nt_gen(3)
-clone_gen <- function() {
 
-  coding_seq <- function(n_codons) {
-
-    coding_codon <- function() {
-      codon <- paste(sample(c("A","G","T","C"), 3, replace = TRUE), collapse = "")
-      ifelse(codon %in% c("TGA","TAA","TAG"), coding_codon(), codon)
-    }
-    paste(replicate(n_codons, coding_codon()), collapse = "")
-  }
-
-  Vectorize(coding_seq, "n_codons")
-}
 
 #' translate the NT sequence to AA sequence
 #'
@@ -67,21 +70,6 @@ translate <- function(nt_vec) {
   sapply(aa_vec, paste, collapse="")
 }
 
-#' #' Pair NT vector to AA to a new DF
-#' #'
-#' #' @param nt char vector
-#' #'
-#' #' @return df
-#' #' @export
-#' #'
-#' #' @examples
-#' #'
-#' #' nt2df(c("AGT", "ATT"))
-#' #'
-#' nt2df <- function(nt) {
-#'   # check all AGTC
-#'   cbind.data.frame(clone=nt, clonotype=translate(nt))
-#' }
 
 
 # rand_clone <- clone_gen()

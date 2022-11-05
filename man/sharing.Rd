@@ -4,7 +4,7 @@
 \alias{sharing}
 \title{Title}
 \usage{
-sharing(..., by = c("clonotype", "rep_id"))
+sharing(...)
 }
 \arguments{
 \item{...}{data frames or vectors}
@@ -21,9 +21,12 @@ Title
 
 nt_gen <- clone_gen()
 
-group1 <- list(sapply(rpois(100, 2)+1, nt_gen), sapply(rpois(100, 2)+1, nt_gen))
-group2 <- list(sapply(rpois(100, 2)+1, nt_gen), sapply(rpois(100, 2)+1, nt_gen))
+group1 <- list(sapply(rpois(, 5)+1, nt_gen), sapply(rpois(,5)+1, nt_gen))
+group2 <- list(sapply(rpois(100, 7)+1, nt_gen), sapply(rpois(100, 8)+1, nt_gen))
+group3 <- list(sapply(rpois(100, 2)+1, nt_gen), sapply(rpois(100, 2)+1, nt_gen))
+group4 <- list(sapply(rpois(100, 2)+1, nt_gen), sapply(rpois(100, 2)+1, nt_gen))
+group5 <- list(sapply(rpois(100, 2)+1, nt_gen), sapply(rpois(100, 2)+1, nt_gen))
 
-group_join(list(a=group1, b=group2))#'
+groups <- group_join(list(a=group1, b=group2, c=group3, d=group4, e=group5))
 
 }

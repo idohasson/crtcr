@@ -25,6 +25,7 @@ group_join <- function(...) {
 
   rep <- list2(...) # TODO: dots_list
   # TODO check valid input
+  # TODO make sure rep values are unique valid input
   if (is.vector(rep)) {
 
     if (is.vector(pluck(rep, 1))) {
@@ -56,6 +57,6 @@ group_join <- function(...) {
     colnames(rep) <- c("group", "rep_id", "clone", "clonotype")
   else stop("ERROR")
 
-  distinct(rep)
+ rep
+
 }
-?hasName()

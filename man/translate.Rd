@@ -2,7 +2,14 @@
 % Please edit documentation in R/cr.R
 \name{translate}
 \alias{translate}
-\title{translate the NT sequence to AA sequence}
+\title{#'
+#'
+#' #' generate sequence with coding codons
+#' #'
+#' #' @return string
+#' #' @export
+#' #'
+#' #' @examples}
 \usage{
 translate(nt_vec)
 }
@@ -13,6 +20,24 @@ translate(nt_vec)
 a character vector
 }
 \description{
+#' #' nt_gen <- clone_gen()
+#' #' nt_gen(3)
+#' clone_gen <- function() {
+#'
+#'   coding_seq <- function(n_codons) {
+#'
+#'     coding_codon <- function() {
+#'       codon <- paste(sample(c("A","G","T","C"), 3, replace = TRUE), collapse = "")
+#'       ifelse(codon \%in\% c("TGA","TAA","TAG"), coding_codon(), codon)
+#'     }
+#'     paste(replicate(n_codons, coding_codon()), collapse = "")
+#'   }
+#'
+#'   Vectorize(coding_seq, "n_codons")
+#' }
+#'
+}
+\details{
 translate the NT sequence to AA sequence
 }
 \examples{
