@@ -195,49 +195,78 @@ build_df <- function(...) {
 
 
 #################### share-level table ####################
-cr_share <- function(rep_gruops,...) { # DF
-  build_df(rep_gruops,...) %>%
-  with(table(clonotype, group)) %>%
-  as.data.frame.array()
+        # clonotype sharing between individuals #
+
+# Previous studies have shown that the extent of sharing and the
+# clonotypic frequency of TCRb sequences are significantly corre
+# lated with their production efficiencies in simulations of a random
+# recombination process because of the phenomenon of convergent
+# recombination. https://doi.org/10.1073/pnas.1319389111
+
+cr_share <- function(..., by=c("clonotype", "rep_id")) { # DF
+  build_df(...) %>%
+  select_at(by) %>%
+  distinct() %>%
+  table()
+  # as.data.frame.array()
 }
 
 #################### CR-level table ####################
 
+# several clones that encoded the same amino acid sequence were found to be structurally distinct at the nucleotide level, strongly implying clonal selection and expansion is operating at the level of specific TCR-peptide interactions.
+input_reps <- rand_subgruops()
 
-# replicate(4, rand_gruop(), simplify = FALSE) %>%
-  # cr_share %>% cr_vec
-cr_vec <- function(share_tbl) { # vector
-  # The share_table function takes a list of clonotypes
-  # and returns a table of clonotype frequencies.
-  # tbl <- share_table(clonotype_list)
-  # The cr_index function takes a vector of clonotype
-  # frequencies and returns a numeric vector of the
-  # unique number of samples having a specific clonotype
-  # in every group.
-  cr_index <- function(n)
+f <- function(n) (max(n, na.rm = TRUE) > 1) + (sum(n != 0, na.rm = TRUE) > 1)
+
+tbl <- cr_share(input_reps, by=c("clonotype", "group"))
+tbl[1:10,] %>%
+apply(1, max, na.rm = TRUE)
+
+# share_tbl <- rand_subgruops() %>% build_df() %>%
+#               cr_share(by=c("clonotype", "rep_id"))
+
+
+
+cr_class(input_reps, by=c("clonotype", "group"))
+cr_class <- function(..., public_min=1, exclusive_min=1) { # vector
+  # TODO: check input and generate sharing table if needed
+  share_tbl <- cr_share(...)
+
+  cr_index <- function(n) {
     #     numeric vector of the unique number of samples
     #       having a specific clonotype in every group
     (max(n, na.rm = TRUE) > 1) + (sum(n != 0, na.rm = TRUE) > 1)
   #   can't be private             multiple shared samples
   #   public clonotype               inclusive clonotype
+  }
 
-  # a numeric vector of the unique number of samples
-  # having a specific clonotype in every group.
-  cr_i <- apply(share_tbl, 1, cr_index)
-  # assign a label to each value of cr_i
+  apply(share_tbl, 1, cr_index) %>%
   # private = 0 | exclusive = 1 | inclusive = 2
-  case_when(cr_i == 0 ~ "private",
-            cr_i == 1 ~ "exclusive",
-            cr_i == 2 ~ "inclusive")
+  {case_when(. == 0 ~ "private",
+            . == 1 ~ "exclusive",
+            . == 2 ~ "inclusive")}
 }
+
 cr_level <- function(rep_gruops,...) { # DF
   build_df(rep_gruops,...) %>%
   with(table(clonotype, group, rep_id)) %>%
   as.data.frame.array()
 }
-cr_factor <- function(rep_gruops) {
-  rep_gruops %>% cr_share %>% factor_cr
+
+factor_cr <- function(group_count) {
+
+  compute_type <- function(tbl) {
+          # public clonotype                    inclusive clonotype
+          # can't be private                  multiple shared samples
+    (rowSums(tbl, na.rm = TRUE) > 1) + (rowSums(tbl != 0, na.rm = TRUE) > 1)
+          # private = 0   |   exclusive = 1   |   inclusive = 2
+  }
+
+  group_count %>% compute_type() %>%
+  factor(levels = c(0, 1, 2),
+         labels = c("private", "exclusive", "inclusive"))
 }
+
 cr_list <- function(rep_gruops) {
   rep_gruops %>% cr_share %>%
   factor_cr %>% split(x = names(.))
