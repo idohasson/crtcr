@@ -1,0 +1,3 @@
+"0","rand_rep_df(seq_n=1000, seq_l=3) %>%"
+"0","  "
+"0","  cr_level_clonotype(c(""S"", ""T"", ""M""), ""aa"",""nt"")"
