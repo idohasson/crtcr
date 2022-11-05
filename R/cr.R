@@ -1,8 +1,9 @@
-# library(vctrs)
-# library(dplyr)
-# library(utils)
-# library(magrittr)
-# library(rlang)
+library(vctrs)
+library(dplyr)
+library(utils)
+library(magrittr)
+library(rlang)
+library(purrr)
 
 new_clone <- function(x = character()) {
   vec_assert(x, character())
@@ -81,8 +82,6 @@ rand_clone <- clone_gen()
 rand_rep <- function(n, mu=3) rand_clone(rpois(n, mu)+1)
 rand_gruop <- function(rep_n=6, n=10, mu=3) replicate(rep_n, rand_rep(n, mu), simplify = FALSE)
 rand_subgruops <- function(group_n=3, rep_n=6, n=100, mu=3) replicate(group_n, rand_gruop(rep_n, n, mu), simplify = FALSE)
-rand_subgruops() %>% cr_share_table()
-# rand_gruop() %>% map(nt2df)
 
 #################### Manual ####################
 
@@ -156,10 +155,12 @@ rand_subgruops() %>% cr_share_table()
 
 #################### Prepare input data ####################
 
-build_df <- function(rep,...) {
+build_df <- function(...) {
 
-  rep <- list2(rep,...)
-
+  rep <- list2(...)
+  # n_args <- function(...) length(list2(...))
+  # f <- ... %>% list2(...)
+  # if (n_args(l)==1 & n_args(!!!l)>1) l %<>% f(!!!.)
   if (vec_is_list(rep) & length(rep)==1)
       rep %<>% pluck(1)
 
@@ -194,26 +195,112 @@ build_df <- function(rep,...) {
 
 
 #################### share-level table ####################
-cr_share_table <- function(rep_gruops,...) { # DF
+cr_share <- function(rep_gruops,...) { # DF
   build_df(rep_gruops,...) %>%
   with(table(clonotype, group)) %>%
   as.data.frame.array()
 }
 
 #################### CR-level table ####################
+
+
+# replicate(4, rand_gruop(), simplify = FALSE) %>%
+  # cr_share %>% cr_vec
+cr_vec <- function(share_tbl) { # vector
+  # The share_table function takes a list of clonotypes
+  # and returns a table of clonotype frequencies.
+  # tbl <- share_table(clonotype_list)
+  # The cr_index function takes a vector of clonotype
+  # frequencies and returns a numeric vector of the
+  # unique number of samples having a specific clonotype
+  # in every group.
+  cr_index <- function(n)
+    #     numeric vector of the unique number of samples
+    #       having a specific clonotype in every group
+    (max(n, na.rm = TRUE) > 1) + (sum(n != 0, na.rm = TRUE) > 1)
+  #   can't be private             multiple shared samples
+  #   public clonotype               inclusive clonotype
+
+  # a numeric vector of the unique number of samples
+  # having a specific clonotype in every group.
+  cr_i <- apply(share_tbl, 1, cr_index)
+  # assign a label to each value of cr_i
+  # private = 0 | exclusive = 1 | inclusive = 2
+  case_when(cr_i == 0 ~ "private",
+            cr_i == 1 ~ "exclusive",
+            cr_i == 2 ~ "inclusive")
+}
 cr_level <- function(rep_gruops,...) { # DF
   build_df(rep_gruops,...) %>%
   with(table(clonotype, group, rep_id)) %>%
   as.data.frame.array()
 }
+cr_factor <- function(rep_gruops) {
+  rep_gruops %>% cr_share %>% factor_cr
+}
+cr_list <- function(rep_gruops) {
+  rep_gruops %>% cr_share %>%
+  factor_cr %>% split(x = names(.))
+}
+
+# names_g <- c("Cancer", "Pre-Cancer", "Control")
+
+# pop <- rand_subgruops(3, rpois(1, 4), rpois(1, 1E2), 3)
+# rep_df <- build_df(pop)
+
+mouse <- list(Cancer=rand_gruop(1000), Control=rand_gruop(1000)) %>% build_df() %>% cr_list
+monkey <- list(Cancer=rand_gruop(1000), Control=rand_gruop(1000)) %>% build_df() %>% cr_list
+human <- list(Cancer=rand_gruop(1000), Control=rand_gruop(1000)) %>% build_df() %>% cr_list
+
+populations <- list(mouse, monkey, human) %>%
+setNames(c("Mouse", "Monkey", "Human"))
+
+mat_list <- populations %>%
+combn(2, cr_overlap, FALSE)
+library(reshape2)
+
+lapply(mat_list, melt)
+mat_list %>% lapply(. %>% as.data.frame(row.names = NULL) %>% melt(.id=1:2))
+# %>% melt()
+f <- . %>%
+  # mat_list[[.]] %>%
+  as.data.frame() %$%
+  cbind(rbind(cbind(private, exclusive),
+        cbind(private, inclusive),
+        cbind(exclusive, inclusive)), dimnames(.) %>% names %>% as.character())
+
+mat_list %>% map(.f = f)
+
+# cr_overlap(populations[1:2]) %>%
+
+cr_overlap <- function(subpopulations, func=intersect_percentage) { # TODO: overlap as number of intersect. not percentile
+
+  cross(subpopulations) %>%
+
+  lapply(setNames, names(formals(func))) %>%
+
+  invoke_map(.f = func) %>%
+
+  array(dim = c(3,3), dimnames = lapply(subpopulations, names))
+
+}
+
+# aa_vec1 <- rand_rep_vec("aa", 10000, 5)
+# aa_vec2 <- rand_rep_vec("aa", 10000, 5)
+#
+# intersect_percentage(aa_vec1, aa_vec2)
+# cr_simmilarity
+intersect_percentage <- function(x, y) { # overlap coefficient
+  length(intersect(x, y)) / min(length(x), length(y))
+}
+
+# TODO: morisita
+
+# cr_dissimilarity
+jaccard_index <- function(x, y){
+  length(intersect(x, y)) / length(union(x, y))
+}
 
 
-
-
-
-
-
-
-
-
+rand_subgruops() %>%
 
