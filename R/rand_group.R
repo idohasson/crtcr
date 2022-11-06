@@ -5,6 +5,9 @@
 #' @param rep_n number of vector
 #'
 #' @return list of vector
+#'
+#' @importFrom stats rpois
+#'
 #' @export
 #'
 #' @examples

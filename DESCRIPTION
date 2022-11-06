@@ -16,4 +16,7 @@ Imports:
     dplyr,
     magrittr,
     purrr,
-    rlang
+    rlang,
+    stats,
+    tibble,
+    tidyr

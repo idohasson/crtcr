@@ -17,19 +17,9 @@ CR level table
 }
 \examples{
 
-g1 <- group_gen()
-g2 <- group_gen()
-g3 <- group_gen()
-g4 <- group_gen()
-
 # generate random
-g <- list(g1, g2, g3, g4)
-
-g <- lapply(seq_along(g), function(i) g[[i]] \%>\%
-     setNames(paste0(LETTERS[i], seq_along(.))))
+g <- replicate(4, rand_group(), simplify = FALSE)
 
 cr_level(g)
-
-
 
 }

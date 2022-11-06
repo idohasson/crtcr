@@ -13,13 +13,10 @@
 #'
 #' @examples
 #'
-#' nt_gen <- clone_gen()
+#' # generate random
+#' g <- replicate(4, rand_group(), simplify = FALSE)
 #'
-#' group1 <- list(sapply(rpois(100, 2)+1, nt_gen), sapply(rpois(100, 2)+1, nt_gen))
-#' group2 <- list(sapply(rpois(100, 2)+1, nt_gen), sapply(rpois(100, 2)+1, nt_gen))
-#'
-#' group_join(list(a=group1, b=group2))
-#'
+#' group_join(g)
 #'
 group_join <- function(...) {
 
