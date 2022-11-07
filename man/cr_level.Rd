@@ -4,7 +4,7 @@
 \alias{cr_level}
 \title{CR level table}
 \usage{
-cr_level(...)
+cr_level(df, clone, clonotype, rep_id, ...)
 }
 \arguments{
 \item{...}{repertoire list / data frames vectors}
@@ -18,8 +18,11 @@ CR level table
 \examples{
 
 # generate random
-g <- replicate(4, rand_group(), simplify = FALSE)
-
-cr_level(g)
+df_lists <- replicate(4, rand_group(), FALSE)
+rand_df <- group_join(df_lists)
+names(rand_df)
+unite(col = "id", c("rep_id" ,"group"), sep = "/")
+id_df <- unite(rand_df, col = "id", c("group", "rep_id"), sep = "/")
+cr_level(df = id_df, clone = "clone", clonotype = "clonotype", rep_id = "id")
 
 }
