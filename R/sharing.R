@@ -26,11 +26,33 @@
 #'
 sharing <- function(...) { # DF
   # a vector of integers giving the numbers of the variables, or a character vector giving the names of the variables to be used for the columns of the flat contingency table.
-  group_join(...) %>%
 
-  distinct(clonotype, group) %$%
+  # Clonotype
+  df <- group_join(...)
 
-  table(clonotype, group)
+  unique_clontype_df <- distinct_at(df, all_of(vars(c("group", "rep_id", "clonotype"))))
+
+  clonotype_share_level <- unique_clontype_df %>%
+
+      select_at(all_of(vars(c("clonotype", "group")))) %>%
+
+      table
+
+  clonotype_share_level
+
+  # Clone
+  unique_clone_df <- distinct_at(df, all_of(vars(c("group", "rep_id", "clone"))), .keep_all = TRUE)
+
+  clonal_seq_share_level <- unique_clone_df %>%
+
+    select_at(all_of(vars(c("clone", "group")))) %>%
+
+    table
+
+  clonal_seq_share_level
+
+  # distinct(clonotype, group) %$%
+  # table(clonotype, group)
 
 }
 
