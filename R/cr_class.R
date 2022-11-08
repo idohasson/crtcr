@@ -30,6 +30,10 @@
 #'               i == 2 ~ "inclusive",
 #'               TRUE ~ NA)
 #' }
+#'
+#' @param share_table
+#' @param public_min
+#' @param exclusive_min
 
 
 cr_class <- function(share_table, public_min=1L, exclusive_min=1L) {
