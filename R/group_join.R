@@ -96,3 +96,41 @@ translate <- function(nt_vec) {
   # pastes the amino acid characters together into a single string.
   sapply(aa_vec, paste, collapse="")
 }
+
+#' convert list of nucleation sequences to data frame
+#'
+#' @param rep_list list
+#' @param rep_names sample names
+#'
+#' @return data frame
+#' @export
+#'
+#' @examples
+#'
+#' nt_list <- rand_group()
+#'
+#' group_df <- replist2DF(nt_list, rep_names=LETTERS[seq_along(nt_list)])
+#'
+#' head(group_df)
+#'
+replist2DF <- function(rep_list, rep_names) {
+
+  if (!missing(rep_names))
+
+    rep_list %<>% set_names(rep_names)
+
+  map_dfr(rep_list, . %>%
+
+  bind_cols(clone=., clonotype=translate(.)) %>%
+
+  distinct, .id = "rid")
+
+}
+
+
+
+
+
+
+
+
