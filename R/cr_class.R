@@ -83,7 +83,64 @@ cr_freq_class <- function(c_freq, min_freq=1, public_min=2, exclusive_max=1) {
   )
 }
 
+#TODO: update return
 
+#' logical check if a frequencies vector is considered public with optional modifications
+#'
+#' @param freq numerical vector
+#' @param min_freq minimal value to be counted as repertoire having a clonotype
+#' @param public_min minimal number of repertoire having a clonotype to be conciser public
+#' @param share_level TRUE if frequencies represent share-level (number of repertoires having a clonotype in each group), and FALSE for CR-level representation (number of same-clonotype clone in a repertoire)
+#'
+#' @return TRUE if its public, FALSE if private, and NA if none of the frequencies are sufficient
+#' @export
+#'
+#' @examples
+#'
+#' is_public(c(1, 0 , 2, 4), min_freq=3)
+#'
+is_public <- function(freq, min_freq=1L, public_min=2L, share_level=TRUE) {
+
+  if (!share_level)
+
+    return(ifelse(freq > min_freq, freq > public_min, NA))
+
+  min_i <- freq >= min_freq
+
+  if (!any(min_i, na.rm = TRUE))
+    return(NA) # none fulfilled the criteria
+
+  sum(freq[min_i], na.rm = TRUE) >= public_min
+
+}
+
+
+#TODO: check this!
+
+#' logical check if a frequencies vector is considered public-exclusive with optional modifications
+#'
+#' @param freq freq >= min_freq
+#' @param id same length vector to split the groups by
+#' @param min_freq minimal value to be counted as repertoire having a clonotype
+#' @param min_rep minimal number of repertoire having a clonotype to be conciser public
+#' @param max_group upper limit to number of groups the could be considered exclusive
+#'
+#' @return TRUE for exclusive, FALSE for inclusive, and NA if non of the groups are public
+#' @export
+#'
+#' @examples
+#'
+#' is_exclusive(c(1, 0 , 2, 4), gl(2,2), min_freq=2)
+#'
+is_exclusive <- function(freq, id, min_freq=1L, min_rep=1L, max_group=1L) {
+
+  sub_public <- tapply(freq, id, is_public, min_freq, min_rep)
+
+  if (all(is.na(sub_public))) return(NA)
+
+  sum(sub_public, na.rm = TRUE) <= max_group
+
+}
 
 
 

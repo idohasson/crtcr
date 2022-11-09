@@ -1,5 +1,3 @@
-
-
 #' random list of NT vector sequnces
 #'
 #' @param rep_n number of vector
