@@ -2,7 +2,7 @@
 % Please edit documentation in R/share_table.R
 \name{share_table}
 \alias{share_table}
-\title{Title}
+\title{Count table for number of each clonotype found in a repertoire in a specific gorup}
 \usage{
 share_table(df, clonotype, group_id, rep_id, ...)
 }
@@ -21,7 +21,7 @@ share_table(df, clonotype, group_id, rep_id, ...)
 table
 }
 \description{
-Title
+Count table for number of each clonotype found in a repertoire in a specific gorup
 }
 \examples{
 

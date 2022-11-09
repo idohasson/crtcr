@@ -1,5 +1,5 @@
 
-#' Title
+#' Count table for number of each clonotype found in a repertoire in a specific gorup
 #'
 #' @param df data frame with clonotype column, group ID coliumn and repertoire ID column
 #' @param clonotype clonotype column name
