@@ -87,34 +87,34 @@ f <- function(x) {
   )
 
 }
-
-min_freq=1; public_min=2; exclusive_max=1
-c(0,0,0,0) %>% f()
-c(0,0,0,NA) %>% f()
-c(NA,NA,NA,NA) %>% f()
-c(0,1,0,0) %>% f()
-c(0,1,0,NA) %>% f()
-c(NA,1,NA,NA) %>% f()
-c(0,1,0,1) %>% f()
-c(NA,1,NA,1) %>% f()
-c(0,0,0,2) %>% f()
-c(0,NA,0,2) %>% f()
-c(NA,NA,NA,2) %>% f()
-c(0,0,1,2) %>% f()
-# cr_class(min_freq=1, public_min=2, exclusive_max=1)
-min_freq=.1; public_min=.25; exclusive_max=1
-c(0,0,0,0) %>% f()
-c(0,0,0,NA) %>% f()
-c(NA,NA,NA,NA) %>% f()
-c(0,.1,0,0) %>% f()
-c(0,.1,0,NA) %>% f()
-c(NA,.1,NA,NA) %>% f()
-c(0,.1,0,.1) %>% f()
-c(NA,.1,NA,.1) %>% f()
-c(0,0,0,.2) %>% f()
-c(0,NA,0,.2) %>% f()
-c(NA,NA,NA,.2) %>% f()
-c(0,0,.1,.2) %>% f()
+#
+# min_freq=2; public_min=2; exclusive_max=1
+# c(0,0,0,0) %>% f()
+# c(0,0,0,NA) %>% f()
+# c(NA,NA,NA,NA) %>% f()
+# c(0,1,0,0) %>% f()
+# c(0,1,0,NA) %>% f()
+# c(NA,1,NA,NA) %>% f()
+# c(0,1,0,1) %>% f()
+# c(NA,1,NA,1) %>% f()
+# c(0,0,0,2) %>% f()
+# c(0,NA,0,2) %>% f()
+# c(NA,NA,NA,2) %>% f()
+# c(0,0,1,2) %>% f()
+# # cr_class(min_freq=1, public_min=2, exclusive_max=1)
+# min_freq=.15; public_min=.2; exclusive_max=1
+# c(0,0,0,0) %>% f()
+# c(0,0,0,NA) %>% f()
+# c(NA,NA,NA,NA) %>% f()
+# c(0,.1,0,0) %>% f()
+# c(0,.1,0,NA) %>% f()
+# c(NA,.1,NA,NA) %>% f()
+# c(0,.1,0,.1) %>% f()
+# c(NA,.1,NA,.1) %>% f()
+# c(0,0,0,.2) %>% f()
+# c(0,NA,0,.2) %>% f()
+# c(NA,NA,NA,.2) %>% f()
+# c(0,0,.1,.2) %>% f()
 
 
 
