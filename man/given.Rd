@@ -32,16 +32,5 @@ recombination public classifications based on various conditions.
 cr_freq_class(c(1,0,1,0)) # public inclusive
 cr_freq_class(c(2,0,0,0)) # public exclusive
 cr_freq_class(c(1,0,0,0)) # private
-cr_freq_class(c(0,0,0,0)) # NA if no clonotype exists
-cr_freq_class(c(1,2,0,10), min_freq=2) # public inclusive
-cr_freq_class(c(1,2,0,10), min_freq=3) # public exclusive
-cr_freq_class(c(1,2,0,10), min_freq=11) # also NA if non frequencies ai sufficient
-cr_freq_class(c(1,2,0,10), min_freq=2, exclusive_max=2) # public exclusive
-cr_freq_class(c(1,2,0,10), min_freq=1, exclusive_max=2) # public inclusive
-cr_freq_class(c(0, 1, 2, 3), min_freq=1, public_min=5) # public inclusive
-cr_freq_class(c(0, 1, 2, 4), min_freq=2, public_min=5) # public exclusive
-cr_freq_class(c(0, 1, 2, 4), min_freq=3, public_min=5) # private
-
-
 
 }

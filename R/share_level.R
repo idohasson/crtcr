@@ -1,59 +1,99 @@
-#' Count table for number of each clonotype found in a repertoire in a specific gorup
+
+#' Title
 #'
-#' @param df data frame with clonotype column, group ID coliumn and repertoire ID column
-#' @param clonotype clonotype column name
-#' @param group_id Group ID column name
-#' @param rep_id Repertoire ID column name
-#' @param ... any additional column name
+#' @description x
 #'
-#' @return table
+#' @param group_list x
+#' @param share_method x
 #'
+#' @return x
 #' @export
 #'
 #' @examples
 #'
-#' df_lists <- replicate(4, rand_group(), FALSE)
-#' rand_df <- group_join(df_lists)
-#' share_table(rand_df, "clonotype", "group", "rep_id")
+#' gl <- replicate(4, rand_group())
 #'
-share_table <- function(df, clonotype, group_id, rep_id, ...) {
+#' share_table(gl, share_method = "CRlevel")
+#'
+#'
+share_table <- function(group_list, share_method="unique") {
 
-  unique_by <- c(clonotype, group_id, rep_id, ...)
+  group_list %>%
 
-  df[unique_by] %>% distinct() %>%
+  map_dfr(share.level, method=share_method, .id = "gid") %>%
 
-    select(unique_by[1:2]) %>% table
+  spread(gid, share)
+
 }
 
 
-# gl <- replicate(3, rand_group())
-share.table <- function(group_list) {
-  # library(purrr)
-  # library(dplyr)
-  # library(tidyr)
-  # library(tibble)
-  # library(vctrs)
+#' Title
+#'
+#' @description x
+#'
+#' @param clone_list x
+#' @param method x
+#'
+#' @return x
+#' @export
+#'
+#' @examples
+#'
+#' rep_list <- rand_group()
+#'
+#' share.level(rep_list, method="relative")
+#'
+share.level <- function(clone_list, method="unique") {
 
-  stopifnot(every(group_list, is.list))
-  stopifnot(vec_depth(group_list) == 3)
-  list(list(1:5), list(1:4), list(1:6)) %>%
-    set_names(LETTERS[seq_along(.)]) %>%
-    as_tibble_col()
-  # if (clonal_seq)
-  group_list <- modify_depth(group_list, 2, translate)
+  method <- arg_match0(method, c("unique", "relative", "CRlevel", "avgCRlevel"))
 
-  map_depth(group_list, 2, unique) %>%
-  # map(flatten_chr) %>%
-  # counts the number of times each clonotype appears in a sample vector
-  # map_dfr(. %>% flatten_chr %>% table, .id = "group")
-  map(. %>% flatten_chr)
-  # takes the group column and the count column and spreads the count
-  # column into multiple columns, one for each unique value in the group
-  # column. The resulting data frame has one row for each unique value
-  # in the group column and one column for each unique value in the
-  # count column.
+  method_list <- list(
 
-  # spread(group, count, 0) %>%  # convert the resulting data frame
-  # # from long format to wide forma
-  # column_to_rownames("key")   # convert the group column into row names
+    "unique" = as_function(~ n_distinct(.y)), # unique clonal sequences
+
+    "relative" = as_function(~ n_distinct(.y) / n_distinct(.x)), # average unique clonal sequences
+
+    "CRlevel" = as_function(~ n_distinct(.x, .y)), # total CR-level
+
+    "avgCRlevel" = as_function(~ n_distinct(.x, .y) / n_distinct(.x)) # average CR-level
+  )
+
+  f <- method_list[[method]]
+
+  replist2DF(clone_list) %>%
+
+  group_by(clonotype) %>%
+
+  summarise(share=f(rid, clone))
+
 }
+
+
+
+
+#' #' Count table for number of each clonotype found in a repertoire in a specific gorup
+#' #'
+#' #' @param df data frame with clonotype column, group ID coliumn and repertoire ID column
+#' #' @param clonotype clonotype column name
+#' #' @param group_id Group ID column name
+#' #' @param rep_id Repertoire ID column name
+#' #' @param ... any additional column name
+#' #'
+#' #' @return table
+#' #'
+#' #' @export
+#' #'
+#' #' @examples
+#' #'
+#' #' df_lists <- replicate(4, rand_group(), FALSE)
+#' #' rand_df <- group_join(df_lists)
+#' #' share_table(rand_df, "clonotype", "group", "rep_id")
+#' #'
+#' share_df <- function(df, clonotype, group_id, rep_id, ...) {
+#'
+#'   unique_by <- c(clonotype, group_id, rep_id, ...)
+#'
+#'   df[unique_by] %>% distinct() %>%
+#'
+#'     select(unique_by[1:2]) %>% table
+#' }

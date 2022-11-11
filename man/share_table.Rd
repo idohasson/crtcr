@@ -2,31 +2,26 @@
 % Please edit documentation in R/share_level.R
 \name{share_table}
 \alias{share_table}
-\title{Count table for number of each clonotype found in a repertoire in a specific gorup}
+\title{Title}
 \usage{
-share_table(df, clonotype, group_id, rep_id, ...)
+share_table(group_list, share_method = "unique")
 }
 \arguments{
-\item{df}{data frame with clonotype column, group ID coliumn and repertoire ID column}
+\item{group_list}{x}
 
-\item{clonotype}{clonotype column name}
-
-\item{group_id}{Group ID column name}
-
-\item{rep_id}{Repertoire ID column name}
-
-\item{...}{any additional column name}
+\item{share_method}{x}
 }
 \value{
-table
+x
 }
 \description{
-Count table for number of each clonotype found in a repertoire in a specific gorup
+x
 }
 \examples{
 
-df_lists <- replicate(4, rand_group(), FALSE)
-rand_df <- group_join(df_lists)
-share_table(rand_df, "clonotype", "group", "rep_id")
+gl <- replicate(4, rand_group())
+
+share_table(gl, share_method = "CRlevel")
+
 
 }
