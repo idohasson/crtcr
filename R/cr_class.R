@@ -1,3 +1,48 @@
+
+# tidyr::gather(group, share_level, -clonotype, na.rm = TRUE)
+
+cr_table <- function(gruop_list) {
+
+  gruop_list %>%
+
+    map_dfr(share.level, .id = "gid") %>%
+
+    group_by(clonotype) %>%
+
+    summarise(cr=cr_freq_class(share))
+}
+
+
+
+
+# pl <- list(human=gl1, mouse=gl2) %>%
+#
+#   map(set_names, c("cancer", "control"))
+#
+#
+# pl %>% map_dfr(cr_table, .id = "pid") %>%
+#
+#   spread(pid, cr)
+
+
+
+
+
+
+
+
+
+
+
+
+#
+# gl %>%
+#
+#   map_dfr(share.level, .id = "gid")
+#
+# cr_table(gl)
+
+
 #' Sub-classification of public clonotype
 #'
 #' @description computes the CR-class of each clonotype by its frequency in each group of repertoires.
@@ -56,13 +101,13 @@ cr_class <- function(group_count, margin=1, min_freq=1, public_min=2, exclusive_
 #'
 cr_freq_class <- function(c_freq, min_freq=1, public_min=2, exclusive_max=1) {
 
-  i_freq <- c_freq >= min_freq
+  freq <- c_freq >= min_freq
   # returns TRUE if the vector of frequencies has at least one non-missing value.
-  is.not.empty <- any(i_freq, na.rm = TRUE)
+  is.not.empty <- any(freq, na.rm = TRUE)
   # returns TRUE if the sum of frequencies is greater than or equal to the minimum public frequency.
-  is.public <- sum(c_freq[i_freq], na.rm = TRUE) >= public_min
+  is.public <- sum(c_freq[freq], na.rm = TRUE) >= public_min
   # returns TRUE if the number of groups having minimal frequency value is less than or equal to the maximum exclusive frequency.
-  is.exclusive <- sum(i_freq, na.rm = TRUE) <= exclusive_max
+  is.exclusive <- sum(freq, na.rm = TRUE) <= exclusive_max
   # return the appropriate class label based on the values in the previous lines.
   dplyr::case_when(
     is.public & is.exclusive ~ "exclusive",

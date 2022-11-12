@@ -1,99 +1,146 @@
-
-#' Title
+#' Count table for number of each clonotype found in a repertoire in a specific gorup
 #'
-#' @description x
+#' @param df data frame with clonotype column, group ID coliumn and repertoire ID column
+#' @param clonotype clonotype column name
+#' @param group_id Group ID column name
+#' @param rep_id Repertoire ID column name
+#' @param ... any additional column name
 #'
-#' @param group_list x
-#' @param share_method x
+#' @return table
 #'
-#' @return x
 #' @export
 #'
 #' @examples
 #'
-#' gl <- replicate(4, rand_group())
+#' df_lists <- replicate(4, rand_group(), FALSE)
+#' rand_df <- group_join(df_lists)
+#' share_table(rand_df, "clonotype", "group", "rep_id")
 #'
-#' share_table(gl, share_method = "CRlevel")
-#'
-#'
-share_table <- function(group_list, share_method="unique") {
+share_df <- function(df, group_id, rep_id, clonotype) {
 
-  group_list %>%
+  group_by(df, group_id) %>%
 
-  map_dfr(share.level, method=share_method, .id = "gid") %>%
+    share_level(rep_id, clonotype) %>%
 
-  spread(gid, share)
+    tidyr::spread(group, share_level)
 
+  # tidyr::gather(group, share_level, -clonotype, na.rm = TRUE)
+
+  # unique_by <- c(clonotype, group_id, rep_id, ...)
+  #
+  # df[unique_by] %>% distinct() %>%
+  #
+  #   select(unique_by[1:2]) %>% table
 }
 
 
-#' Title
-#'
-#' @description x
-#'
-#' @param clone_list x
-#' @param method x
-#'
-#' @return x
-#' @export
-#'
-#' @examples
-#'
-#' rep_list <- rand_group()
-#'
-#' share.level(rep_list, method="relative")
-#'
-share.level <- function(clone_list, method="unique") {
+share_level <- function(data, rid, clonotype_var) {
 
-  method <- arg_match0(method, c("unique", "relative", "CRlevel", "avgCRlevel"))
+  f <- as_function(~ n_distinct(.))
 
-  method_list <- list(
+  data %>% group_by({{clonotype_var}}, .add = TRUE) %>%
 
-    "unique" = as_function(~ n_distinct(.y)), # unique clonal sequences
+    summarise(across({{rid}}, n_distinct, .names = "share"))
 
-    "relative" = as_function(~ n_distinct(.y) / n_distinct(.x)), # average unique clonal sequences
+}
 
-    "CRlevel" = as_function(~ n_distinct(.x, .y)), # total CR-level
+add_share_level <- function(data, rid, clonotype_var) {
 
-    "avgCRlevel" = as_function(~ n_distinct(.x, .y) / n_distinct(.x)) # average CR-level
-  )
+  data %>% group_by({{clonotype_var}}, .add = TRUE) %>%
 
-  f <- method_list[[method]]
-
-  replist2DF(clone_list) %>%
-
-  group_by(clonotype) %>%
-
-  summarise(share=f(rid, clone))
+    mutate(across({{rid}},  n_distinct, .names = "share"))
 
 }
 
 
 
-
-#' #' Count table for number of each clonotype found in a repertoire in a specific gorup
+#' #' Title
 #' #'
-#' #' @param df data frame with clonotype column, group ID coliumn and repertoire ID column
-#' #' @param clonotype clonotype column name
-#' #' @param group_id Group ID column name
-#' #' @param rep_id Repertoire ID column name
-#' #' @param ... any additional column name
+#' #' @description x
 #' #'
-#' #' @return table
+#' #' @param group_list x
+#' #' @param share_method x
 #' #'
+#' #' @return x
 #' #' @export
 #' #'
 #' #' @examples
 #' #'
-#' #' df_lists <- replicate(4, rand_group(), FALSE)
-#' #' rand_df <- group_join(df_lists)
-#' #' share_table(rand_df, "clonotype", "group", "rep_id")
+#' #' gl <- replicate(4, rand_group())
 #' #'
-#' share_df <- function(df, clonotype, group_id, rep_id, ...) {
+#' #' share_table(gl, share_method = "CRlevel")
+#' #'
+#' #'
+#' share_table <- function(group_list, share_method="unique") {
 #'
-#'   unique_by <- c(clonotype, group_id, rep_id, ...)
+#'   group_list %>%
 #'
-#'   df[unique_by] %>% distinct() %>%
+#'   map_dfr(share.level, method=share_method, .id = "gid") %>%
 #'
-#'     select(unique_by[1:2]) %>% table
+#'   spread(gid, share)
+#'
 #' }
+
+
+#' #' Title
+#' #'
+#' #' @param group
+#' #' @param method
+#' #'
+#' #' @return
+#' #' @export
+#' #'
+#' #' @examples
+#' #'
+#' #' g <- rand_group()
+#' #'
+#' #' share_level(g)
+#' #'
+#' #'
+#' share_level <- function(df, method="unique") {
+#'
+#'   method <- arg_match0(method, c("unique", "relative", "CRlevel", "avgCRlevel"))
+#'
+#'   method_list <- list(
+#'
+#'     "unique" = as_function(~ n_distinct(.y)), # unique clonal sequences
+#'
+#'     "relative" = as_function(~ n_distinct(.y) / n_distinct(.x)), # average unique clonal sequences
+#'
+#'     "CRlevel" = as_function(~ n_distinct(.x, .y)), # total CR-level
+#'
+#'     "avgCRlevel" = as_function(~ n_distinct(.x, .y) / n_distinct(.x)) # average CR-level
+#'   )
+#'
+#'   f <- method_list[[method]]
+#'
+#'   share_level(df, )
+#'   # f(df)
+#'
+#'   # group_by(df, clonotype) %>%
+#'   #
+#'   # summarise(share=f(rid, clone))
+#'
+#' }
+
+
+
+
+
+# rand_df %>%
+  # group_by(group, rep_id) %>%
+  # cr_level(clone, clonotype) %>%
+  # group_by(group) %>%
+  # share_level(rep_id, clonotype) %>%
+  # tidyr::spread(group, share_level) %>%
+  # tidyr::gather(group, share_level, -clonotype, na.rm = TRUE)
+
+  # add_share_level(rep_id, clonotype) %>%
+  # group_by(group, clonotype) %>%
+  # summarise(avgCR_level=mean(CR_level) / share_level, .groups = "drop_last")
+  # mutate(avg=CR_level/share_level)
+  # filter(clonotype=="A") %>% as.data.frame()
+
+
+
+

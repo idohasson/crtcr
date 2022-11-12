@@ -13,6 +13,21 @@ library(tidyr)
 
 
 ```{r}
+
+rand_df %>%
+
+  group_by(group, .add = FALSE) %>%
+  #
+  add_share_level(clonotype, rep_id) %>%
+  # cr_level(clone, clonotype) %>%
+
+  # group_by(group, .add = FALSE) %>%
+  group_by(group, rep_id, .add = FALSE) %>%
+
+  # add_share_level(clonotype, rep_id)
+  add_cr_level(clone, clonotype) %>% filter(clonotype=="A")
+
+
 g <- replicate(4, rand_group(), simplify = FALSE)
 lengths(g)
 ```
