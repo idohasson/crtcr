@@ -17,11 +17,17 @@ cr_level <- function(clonal_sequence, clonotype_sequence) {
 
     clonotype_sequence <- translate(clonal_sequence)
 
-  if(n_distinct(clonotype_sequence) == 1) {
-    return(n_distinct(clonal_sequence))
-  }
+  # if(n_distinct(clonotype_sequence) == 1) {
+  #   return(n_distinct(clonal_sequence))
+  # }
 
-  tapply(clonal_sequence, clonotype_sequence, n_distinct)
+  results <- tapply(clonal_sequence, clonotype_sequence, n_distinct)
+
+  if (length(results)==1)
+    return(unname(results))
+  else
+    return(results)
+
 
 }
 

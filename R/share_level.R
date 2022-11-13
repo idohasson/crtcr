@@ -26,7 +26,13 @@
 #' share_level(sample_id, clonotype_vec)
 #'
 share_level <- function(rep_id, clonotype) {
-  tapply(rep_id, clonotype, n_distinct)
+
+  results <- tapply(rep_id, clonotype, n_distinct)
+
+  if (length(results)==1)
+    return(unname(results))
+  else
+    return(results)
 }
 
 
@@ -59,7 +65,7 @@ share_level_df <- function(data, clonotype_var, rid, ...) {
 
   group_by(data, {{clonotype_var}}, ..., .add = TRUE) %>%
 
-  summarise(across({{rid}}, n_distinct, .names = "share"))
+  summarise(across({{rid}}, n_distinct, .names = "share"), .groups = "drop")
 
 }
 
@@ -87,15 +93,19 @@ share_level_table <- function(df, clonotype_var, rid, gid, ...) {
 
   df %>%
 
-    unite("id", c({{gid}}, ...), sep = "/", ) %>%
+    # unite("id", c({{gid}}, ...), sep = "/", ) %>%
 
-    select(clonotype = {{clonotype_var}}, id, rep={{rid}})  %>%
+    select(clonotype = {{clonotype_var}}, rep={{rid}}, groups={{gid}}, ...)  %>%
 
-    group_by(clonotype, id, .add = FALSE) %>%
+    group_by( clonotype, groups, ..., .add = FALSE) %>%
 
     summarise(share = n_distinct(rep)) %>%
 
-    xtabs(formula = share ~ clonotype + id)
+    xtabs(formula = share ~ .)
+
+    # table("clonotype")
+
+    # xtabs(formula = share ~ clonotype + id)
 
 
 
