@@ -1,4 +1,4 @@
-#' is clonotype public by each group share-level
+#' is clonotype public by sub-groups share-level
 #'
 #' @param shared numerical vector
 #' @param min_shared minimal value to be counted as repertoire having a clonotype
@@ -23,15 +23,93 @@
 #'
 #' is_public(c(0,1,2,3), min_shared=3, min_public = 5) # FALSE (private clonotype)
 #'
-is_public <- function(shared, min_shared=1L, min_public=2L) {
+is_public <- function(shared, min_shared=1, min_public=2*min_shared) {
 
-  total_shared <- sum(shared[shared >= min_shared], na.rm = TRUE)
+  in_sub_gruop <- shared >= min_shared
 
-  if (total_shared==0L) return(NA)
+  if (!any(in_sub_gruop, na.rm = FALSE)) return(NA)
 
-  total_shared >= min_public
+  sum(shared[in_sub_gruop], na.rm = TRUE) >= min_public
+
+  # total_shared <- sum(shared[shared >= min_shared], na.rm = TRUE)
+
+  # if (total_shared==0) return(NA)
+
+  # total_shared >= min_public
 
 }
+
+
+
+
+# is_public(1,0,0)
+# is_public(c(0,2,0))
+# is_public(c(0,0,0))
+# is_public(c(.1,0,0))
+# is_public(.05,0,0, min_public = .1)
+# is_public(c(.1,0,0), min_public = .5)
+# is_public(c(.1,.1,0), min_public = .5)
+# is_public(c(.2,0,0), min_public = .5)
+# is_public(c(.2,.2,0), min_public = 2)
+# is_public(c(.2,.2,.1), min_public = 1)
+
+
+is_public <- function(..., min_public=2) {
+
+  in_rep <- c(...)>0
+
+  in_group <- sum(in_rep, na.rm = TRUE)
+
+  if (in_rep == 0)
+    return(NA)
+
+  if (min_public <= 1)
+    in_group <- in_group / length(in_rep)
+
+  in_group >= min_public
+
+}
+
+
+# rbind()
+
+
+l <- list(LETTERS[1:3], LETTERS[3:5], LETTERS[3], LETTERS[2:6])
+
+# df <- l %>%
+  # lapply(vctrs::vec_count) %>%
+l %>%
+  lapply(table) %>%
+  bind_cols()
+
+l %>%
+  lapply(data.frame) %>%
+  dplyr::bind_rows(.id = "rid") %>%
+  table %>% apply("rid", is_public)
+  # do.call(what = rbind)
+
+df %>%
+  group_by(key) %>%
+  summarise(public=is_public(count))
+
+sapply(l, data.frame)
+
+dplyr::bind_rows(l, .id = "id")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
