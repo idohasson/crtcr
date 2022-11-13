@@ -1,13 +1,3 @@
-# proc <- function(x, method="distinct"){
-#
-#   if (method=="distinct") FUN <- n_distinct
-#   else if (method=="mean") FUN <- mean
-#   else if (method=="total") FUN <- sum
-#
-#   return(FUN(x))
-# }
-# # proc(c(5,6,7,8),sum)
-# # proc(c(2,3,4,5),mean)
 
 #' Share-level of the group's repertoires
 #'
@@ -63,7 +53,7 @@ share_level <- function(rep_id, clonotype) {
 #'
 share_level_df <- function(data, clonotype_var, rid, ...) {
 
-  group_by(data, {{clonotype_var}}, ..., .add = TRUE) %>%
+  group_by(data, {{clonotype_var}}, ..., .add = FALSE) %>%
 
   summarise(across({{rid}}, n_distinct, .names = "share"), .groups = "drop")
 
@@ -89,31 +79,12 @@ share_level_df <- function(data, clonotype_var, rid, ...) {
 #'
 #'  share_level_table(df, aa, rep_id, group_id)
 #'
-share_level_table <- function(df, clonotype_var, rid, gid, ...) {
+share_level_table <- function(df, clonotype_var, rid, ...) {
 
   df %>%
 
-    # unite("id", c({{gid}}, ...), sep = "/", ) %>%
-
-    select(clonotype = {{clonotype_var}}, rep={{rid}}, groups={{gid}}, ...)  %>%
-
-    group_by( clonotype, groups, ..., .add = FALSE) %>%
-
-    summarise(share = n_distinct(rep)) %>%
+    share_level_df({{clonotype_var}}, {{rid}}, ...) %>%
 
     xtabs(formula = share ~ .)
-
-    # table("clonotype")
-
-    # xtabs(formula = share ~ clonotype + id)
-
-
-
-  # tapply(rep, bind_cols(clonotype=clonotype, group=id), n_distinct)
-  # unite(df, "id", c({{gid}}, ...), sep = "/", ) %>%
-  #
-  # select(clonotype = {{clonotype_var}}, rep={{rid}}, id) %$%
-  #
-  # tapply(rep, bind_cols(clonotype=clonotype, group=id), n_distinct)
 
 }

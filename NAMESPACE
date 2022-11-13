@@ -2,6 +2,7 @@
 
 export(clonalSeq2DF)
 export(cr_class)
+export(cr_class_tbl)
 export(cr_level)
 export(cr_level_df)
 export(cr_level_table)

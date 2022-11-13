@@ -4,7 +4,7 @@
 \alias{share_level_table}
 \title{Title x}
 \usage{
-share_level_table(df, clonotype_var, rid, gid, ...)
+share_level_table(df, clonotype_var, rid, ...)
 }
 \arguments{
 \item{df}{x}
@@ -13,9 +13,9 @@ share_level_table(df, clonotype_var, rid, gid, ...)
 
 \item{rid}{x}
 
-\item{gid}{x}
-
 \item{...}{x}
+
+\item{gid}{x}
 }
 \value{
 x

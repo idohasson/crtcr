@@ -1,4 +1,3 @@
-# tidyr::gather(group, share_level, -clonotype, na.rm = TRUE)
 
 #' CR-class of a clonotype by its share-level among groups.
 #'
@@ -41,42 +40,14 @@ cr_class <- function(shared, min_shared=1, min_public=2, max_exclusive=1) {
   ) # returns NA if none of the above conditions are met.
 }
 
-# #
-#
-# #' Sub-classification of public clonotype
-# #'
-# #' @description computes the CR-class of each clonotype by its frequency in each group of repertoires.
-# #'
-#
-# @param group_count numerical vector / or multiple dimensional data-type (data frame / matrix / array) of number of colonotype in each group
-# @param margin the dimension to apply
-# @param min_freq minimal value per group
-# @param public_min minimum total sum of the
-# @param exclusive_max maximum number of groups that could be conciser exclusive
-#
-# @return character vector
-# @export
-#
-# @examples
-#
-# df_lists <- replicate(4, rand_group(), FALSE)
-# rand_df <- group_join(df_lists)
-# tbl <- share_table(rand_df, "clonotype", "group", "rep_id")
-# cr_class(head(tbl, 5))
-#
-# # cr_class_table <- function(group_count, margin=1, min_freq=1, public_min=2, exclusive_max=1) {
-#   if (is.vector(group_count)) # checking whether the input is a vector.
-#     # If it is, then it’s a simple count and we can just use the compute_type function.
-#     cr_freq_class(group_count, min_freq, public_min, exclusive_max)
-#     # If the input is not a vector, then we need to check whether the object has dimensions (it’s a array / matrix / data frame).
-#   else if (!is.null(dim(group_count)))
-#     # If it is, then we need to apply the compute_type function to each row.
-#     apply(group_count, margin, cr_freq_class, min_freq, public_min, exclusive_max)
-#     # input is not a vector, matrix, or data frame, then we need to stop because we don’t know how to handle it.
-#   else stop("Invalid input")
-#
-# }
-#
+cr_class_df <- function(rep_groups, clonotype, rid, gid, ..., min_freq=1, public_min=2, exclusive_max=1) {
+
+  share_level_df(rep_groups, {{clonotype}}, {{rid}}, {{gid}}, ...) %>%
+
+    group_by({{clonotype}}, ..., .add = FALSE) %>%
+
+    summarise(cr_class=cr_class(share, min_freq, public_min, exclusive_max), .groups = "drop")
+}
 
 
 #' Title x
@@ -98,27 +69,14 @@ cr_class <- function(shared, min_shared=1, min_public=2, max_exclusive=1) {
 #' groupList2DF(l) %>% dplyr::rename(group="gid") %>% dplyr::mutate(pid=gl(2,1,nrow(.)))  %>% cr_class_df(clonotype, rid, group, pid)
 #'
 #'
-cr_class_df <- function(rep_groups, clonotype, rid, gid, ..., min_freq=1, public_min=2, exclusive_max=1) {
+cr_class_tbl <- function(rep_groups, clonotype, rid, gid, ..., min_freq=1, public_min=2, exclusive_max=1) {
 
-  share_level_df(rep_groups, {{clonotype}}, {{rid}}, {{gid}}, ...) %>%
+  cr_class_df(rep_groups, clonotype, rid, gid, ..., min_freq, public_min, exclusive_max) %>%
 
-  group_by({{clonotype}}, {{gid}}, ...) %>%
-
-  summarise(cr=cr_class(share))
-
-  # if (is.vector(group_count)) # checking whether the input is a vector.
-  #   # If it is, then it’s a simple count and we can just use the compute_type function.
-  #   cr_freq_class(group_count, min_freq, public_min, exclusive_max)
-  #   # If the input is not a vector, then we need to check whether the object has dimensions (it’s a array / matrix / data frame).
-  # else if (!is.null(dim(group_count)))
-  #   # If it is, then we need to apply the compute_type function to each row.
-  #   apply(group_count, margin, cr_freq_class, min_freq, public_min, exclusive_max)
-  #   # input is not a vector, matrix, or data frame, then we need to stop because we don’t know how to handle it.
-  # else stop("Invalid input")
+    table()
 
 }
 
-# groupList2DF(l) %>% dplyr::rename(group="gid") %>% dplyr::mutate(pid=gl(2,1,nrow(.)))  %>% share_level_table(clonotype, rid, group, pid)
 
 
 
