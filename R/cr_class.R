@@ -40,13 +40,40 @@ cr_class <- function(shared, min_shared=1, min_public=2, max_exclusive=1) {
   ) # returns NA if none of the above conditions are met.
 }
 
-cr_class_df <- function(rep_groups, clonotype, rid, gid, ..., min_freq=1, public_min=2, exclusive_max=1) {
+#' Title x
+#'
+#' @param rep_groups  x
+#' @param clonotype x
+#' @param rid x
+#' @param gid x
+#' @param ... x
+#' @param min_shared x
+#' @param min_public x
+#' @param exclusive_max c
+#'
+#' @return x
+#' @export
+#'
+#' @examples
+#'
+#' p <- replicate(4, rand_group(), FALSE)
+#'
+#' df <- groupList2DF(p)
+#'
+#' df <- cbind(df, pid=ifelse(as.numeric(df$gid)%%2, "human", "mouse"))
+#'
+#' head(df)
+#'
+#' cr_df <- cr_class_df(df, clonotype, rid, gid, pid)
+#' head(cr_df)
+#'
+cr_class_df <- function(rep_groups, clonotype, rid, gid, ..., min_shared=1, min_public=2, exclusive_max=1) {
 
   share_level_df(rep_groups, {{clonotype}}, {{rid}}, {{gid}}, ...) %>%
 
     group_by({{clonotype}}, ..., .add = FALSE) %>%
 
-    summarise(cr_class=cr_class(share, min_freq, public_min, exclusive_max), .groups = "drop")
+    summarise(cr_class=cr_class(share, min_shared, min_public, exclusive_max), .groups = "drop")
 }
 
 
@@ -57,8 +84,8 @@ cr_class_df <- function(rep_groups, clonotype, rid, gid, ..., min_freq=1, public
 #' @param rid x
 #' @param gid x
 #' @param ... x
-#' @param min_freq  x
-#' @param public_min  x
+#' @param min_shared x
+#' @param min_public x
 #' @param exclusive_max x
 #'
 #' @return x
@@ -66,12 +93,20 @@ cr_class_df <- function(rep_groups, clonotype, rid, gid, ..., min_freq=1, public
 #'
 #' @examples
 #'
-#' groupList2DF(l) %>% dplyr::rename(group="gid") %>% dplyr::mutate(pid=gl(2,1,nrow(.)))  %>% cr_class_df(clonotype, rid, group, pid)
+#' p <- replicate(4, rand_group(), FALSE)
+#' df <- groupList2DF(p)
 #'
+#' cr_tbl <- cr_class_tbl(df, clonotype, rid, gid)
+#' head(cr_tbl)
 #'
-cr_class_tbl <- function(rep_groups, clonotype, rid, gid, ..., min_freq=1, public_min=2, exclusive_max=1) {
+#' df <- cbind(df, pid=ifelse(as.numeric(df$gid)%%2, "human", "mouse"))
+#'
+#' cr_tbl <- cr_class_tbl(df, clonotype, rid, gid, pid)
+#' head(cr_tbl)
+#'
+cr_class_tbl <- function(rep_groups, clonotype, rid, gid, ..., min_shared=1, min_public=2, exclusive_max=1) {
 
-  cr_class_df(rep_groups, clonotype, rid, gid, ..., min_freq, public_min, exclusive_max) %>%
+  cr_class_df({{rep_groups}}, {{clonotype}}, {{rid}}, {{gid}}, ..., min_shared = min_shared, min_public = min_public, exclusive_max = exclusive_max) %>%
 
     table()
 

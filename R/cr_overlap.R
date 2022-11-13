@@ -1,4 +1,13 @@
-
+# p <- replicate(4, rand_group(), FALSE)
+# df <- groupList2DF(p)
+#
+# cr_tbl <- cr_class_tbl(df, clonotype, rid, gid)
+# head(cr_tbl)
+#
+# df <- cbind(df, pid=ifelse(as.numeric(df$gid)%%2, "human", "mouse"))
+#
+# cr_tbl <- cr_class_tbl(df, clonotype, rid, gid, pid)
+# head(cr_tbl)
 
 
 # rep_list <- list(human=list(cancer=rand_group(),

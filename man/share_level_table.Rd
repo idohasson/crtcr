@@ -14,8 +14,6 @@ share_level_table(df, clonotype_var, rid, ...)
 \item{rid}{x}
 
 \item{...}{x}
-
-\item{gid}{x}
 }
 \value{
 x

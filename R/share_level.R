@@ -65,7 +65,6 @@ share_level_df <- function(data, clonotype_var, rid, ...) {
 #' @param clonotype_var x
 #' @param rid x
 #' @param ... x
-#' @param gid x
 #'
 #' @return x
 #' @export
