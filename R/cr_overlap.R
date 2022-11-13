@@ -9,6 +9,7 @@
 # cr_tbl <- cr_class_tbl(df, clonotype, rid, gid, pid)
 # head(cr_tbl)
 
+# ?cor()
 
 # rep_list <- list(human=list(cancer=rand_group(),
 #                             control=rand_group()),

@@ -56,17 +56,18 @@ cr_level <- function(clonal_sequence, clonotype_sequence) {
 #' cr_level_df(dplyr::group_by(df2, rid))
 #'
 #'
-cr_level_df <- function(df, clonal_var, clonotype_var) {
+cr_level_df <- function(df, ..., clonal_var, clonotype_var) {
 
-  if (missingArg(clonotype_var))
-    clonotype_var <- as.name(nth(names(df), -1))
+  if (missingArg(clonotype_var)) {
+    df <- dplyr::mutate(df, clonotype=translate({{clonal_var}}))
+    clonotype_var <- as.name(dplyr::last(names(df)))
+  }
 
-  if (missingArg(clonal_var))
-    clonal_var <- as.name(nth(names(df), -2))
+  df %>%
 
-  group_by(df, {{clonotype_var}}, .add = TRUE) %>%
+  group_by({{clonotype_var}}, ..., .add = FALSE) %>%
 
-  summarise(across({{clonal_var}}, cr_level, .names = "CR_level"))
+  summarise(across({{clonal_var}}, n_distinct, .names = "CR_level"), .groups = "drop")
 
 }
 
@@ -84,20 +85,27 @@ cr_level_df <- function(df, clonal_var, clonotype_var) {
 #'
 #' @examples
 #'
+#'
 #' df <- data.frame(nt=c("ATG","TTC","TAT","TTT","ATG","ATG"),
-#' aa=c("M","F","Y","F","M","M"),
-#' rep_id = gl(3,1, 6),
-#' group_id = gl(2, 3, labels = c("cancer", "control")))
+#'                  aa=c("M","F","Y","F","M","M"),
+#'                  rep_id = gl(3,1, 6),
+#'                  group_id = gl(2, 3, labels = c("cancer", "control")))
 #'
-#' cr_level_table(df, clone_var = nt, clonotype_var = aa, group_id, rep_id)
+#' cr_level_tbl(df, clone_var = nt, clonotype_var = aa, group_id, rep_id)
 #'
-cr_level_table <- function(df, clone_var, clonotype_var, ...) {
+cr_level_tbl <- function(df, ..., clonal_var, clonotype_var) {
 
-  unite(df, "id", ..., sep = "/", ) %>%
+  cr_level_df(df, ..., clonal_var={{clonal_var}}, clonotype_var={{clonotype_var}}) %>%
 
-    select(clone = {{clone_var}}, clonotype = {{clonotype_var}}, id) %$%
+  xtabs(formula = CR_level ~ .)
 
-    tapply(clone, bind_cols(clonotype=clonotype, id=id), n_distinct)
+  # xtabs(formula = CR_level ~ .)
+  # unite(df, "id", ..., sep = "/", ) %>%
+
+    # select(clone = {{clone_var}}, clonotype = {{clonotype_var}}, ...)
+
+
+    # tapply(clone, bind_cols(clonotype=clonotype, id=id), n_distinct)
 
 }
 

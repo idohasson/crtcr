@@ -4,7 +4,7 @@
 \alias{cr_level_df}
 \title{Convergent Recombination level (CR-level)}
 \usage{
-cr_level_df(df, clonal_var, clonotype_var)
+cr_level_df(df, ..., clonal_var, clonotype_var)
 }
 \arguments{
 \item{df}{c}

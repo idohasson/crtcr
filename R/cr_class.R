@@ -73,7 +73,7 @@ cr_class_df <- function(rep_groups, clonotype, rid, gid, ..., min_shared=1, min_
 
     group_by({{clonotype}}, ..., .add = FALSE) %>%
 
-    summarise(cr_class=cr_class(share, min_shared, min_public, exclusive_max), .groups = "drop")
+    summarise(cr=cr_class(share, min_shared, min_public, exclusive_max), share=sum(share), .groups = "drop")
 }
 
 
@@ -108,7 +108,7 @@ cr_class_tbl <- function(rep_groups, clonotype, rid, gid, ..., min_shared=1, min
 
   cr_class_df({{rep_groups}}, {{clonotype}}, {{rid}}, {{gid}}, ..., min_shared = min_shared, min_public = min_public, exclusive_max = exclusive_max) %>%
 
-    table()
+    xtabs(formula = share ~ .)
 
 }
 
