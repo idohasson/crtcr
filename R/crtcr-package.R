@@ -13,6 +13,7 @@
 #' @importFrom dplyr pull
 #' @importFrom dplyr select
 #' @importFrom dplyr summarise
+#' @importFrom magrittr %$%
 #' @importFrom magrittr %<>%
 #' @importFrom magrittr %>%
 #' @importFrom methods hasArg
@@ -22,6 +23,8 @@
 #' @importFrom rlang arg_match0
 #' @importFrom rlang as_function
 #' @importFrom stats setNames
+#' @importFrom stats xtabs
 #' @importFrom tidyr spread
+#' @importFrom tidyr unite
 ## usethis namespace: end
 NULL

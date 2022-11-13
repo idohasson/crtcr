@@ -2,30 +2,27 @@
 % Please edit documentation in R/share_level.R
 \name{share_level}
 \alias{share_level}
-\title{Compute the share level of clonotypes in a group}
+\title{Share-level of the group's repertoires}
 \usage{
-share_level(data, rid, clonotype_var)
+share_level(rep_id, clonotype)
 }
 \arguments{
-\item{data}{data frame}
+\item{rep_id}{repertoire ID vector}
 
-\item{rid}{repertoire identification column name}
-
-\item{clonotype_var}{clonotype sequence column name}
+\item{clonotype}{clonotype sequences vector}
 }
 \value{
-dataframe
+share-level vector named by clonotype sequence
 }
 \description{
-Compute the share level of clonotypes in a group
+Share-level of the group's repertoires
 }
 \examples{
 
-require(dplyr)
+sample_id <- rep(c("A", "B"), each=3)
 
-rand_group() \%>\%
-groupList2DF() \%>\%
-group_by(gid) \%>\%
-share_level(rid, clonotype)
+clonotype_vec <- c("M", "F", "I", "F", "L", "L")
+
+share_level(sample_id, clonotype_vec)
 
 }

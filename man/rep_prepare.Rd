@@ -2,13 +2,22 @@
 % Please edit documentation in R/rep_prepare.R
 \name{rep_prepare}
 \alias{rep_prepare}
-\title{Title}
+\title{Title x}
 \usage{
 rep_prepare(...)
 }
 \arguments{
-\item{...}{}
+\item{...}{x}
+}
+\value{
+x
 }
 \description{
-Title
+Title x
+}
+\examples{
+
+1
+
+
 }

@@ -63,3 +63,39 @@ cr_level_df <- function(df, clonal_var, clonotype_var) {
   summarise(across({{clonal_var}}, cr_level, .names = "CR_level"))
 
 }
+
+
+
+#' CR-level throughout all sub-groups matrix
+#'
+#' @param df data frame
+#' @param clone_var clonal seq variable name
+#' @param clonotype_var clonotype seq variable name
+#' @param ... repertoire ID and any other group ID column
+#'
+#' @return matrix
+#' @export
+#'
+#' @examples
+#'
+#' df <- data.frame(nt=c("ATG","TTC","TAT","TTT","ATG","ATG"),
+#' aa=c("M","F","Y","F","M","M"),
+#' rep_id = gl(3,1, 6),
+#' group_id = gl(2, 3, labels = c("cancer", "control")))
+#'
+#' cr_level_table(df, clone_var = nt, clonotype_var = aa, group_id, rep_id)
+#'
+cr_level_table <- function(df, clone_var, clonotype_var, ...) {
+
+  unite(df, "id", ..., sep = "/", ) %>%
+
+    select(clone = {{clone_var}}, clonotype = {{clonotype_var}}, id) %$%
+
+    tapply(clone, bind_cols(clonotype=clonotype, id=id), n_distinct)
+
+}
+
+
+
+
+

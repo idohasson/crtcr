@@ -2,7 +2,7 @@
 % Please edit documentation in R/is_public.R
 \name{is_public}
 \alias{is_public}
-\title{logical check if a frequencies vector is considered public with optional modifications}
+\title{is clonotype public by each group share-level}
 \usage{
 is_public(shared, min_shared = 1L, min_public = 2L)
 }
@@ -17,7 +17,7 @@ is_public(shared, min_shared = 1L, min_public = 2L)
 TRUE if its public, FALSE if private, and NA if none of the frequencies are sufficient
 }
 \description{
-logical check if a frequencies vector is considered public with optional modifications
+is clonotype public by each group share-level
 }
 \examples{
 

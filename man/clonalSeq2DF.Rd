@@ -23,9 +23,5 @@ clonal_seq <- c("ATG", "TTC", "TTC", "TTT", "ATG", "ATG")
 
 clonalSeq2DF(clonal_seq)
 
-df <- data.frame(cdr3_nt=clonal_seq)
-
-clonalSeq2DF(df)
-
 
 }

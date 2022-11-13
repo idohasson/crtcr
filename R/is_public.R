@@ -1,4 +1,4 @@
-#' logical check if a frequencies vector is considered public with optional modifications
+#' is clonotype public by each group share-level
 #'
 #' @param shared numerical vector
 #' @param min_shared minimal value to be counted as repertoire having a clonotype
@@ -32,3 +32,7 @@ is_public <- function(shared, min_shared=1L, min_public=2L) {
   total_shared >= min_public
 
 }
+
+
+
+
