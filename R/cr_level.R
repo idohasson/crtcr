@@ -1,51 +1,65 @@
+#' Convergent Recombination level (CR-level)
+#'
+#' @param clonal_sequence x
+#' @param clonotype_sequence x
+#'
+#' @return data frame
+#'
+#' @export
+#'
+#' @examples
+#'
+#' cr_level(c("ATG", "TTT", "ATC", "TTC", "TTG", "TTA"))
+#'
+cr_level <- function(clonal_sequence, clonotype_sequence) {
+
+  if (missingArg(clonotype_sequence))
+
+    clonotype_sequence <- translate(clonal_sequence)
+
+  if(n_distinct(clonotype_sequence) == 1) {
+    return(n_distinct(clonal_sequence))
+  }
+
+  tapply(clonal_sequence, clonotype_sequence, n_distinct)
+
+}
 
 
-df <- rep2DF(r)
+#' Convergent Recombination level (CR-level)
+#'
+#' @param df c
+#' @param clonal_var c
+#' @param clonotype_var x
+#'
+#' @return x
+#' @export
+#'
+#' @examples
+#'
+#' clone_vec <- c("ATG", "TTT", "ATC", "TTC", "TTG", "TTA")
+#'
+#' (df <- rep2DF(clone_vec))
+#'
+#' cr_level_df(df, clone, clonotype)
+#'
+#' clone_list <- list(c("ATG", "TTT", "ATC"), c("TTC", "TTG", "TTA"))
+#'
+#' (df2 <- repList2DF(clone_list))
+#'
+#' cr_level_df(dplyr::group_by(df2, rid))
+#'
+#'
+cr_level_df <- function(df, clonal_var, clonotype_var) {
 
+  if (missingArg(clonotype_var))
+    clonotype_var <- as.name(nth(names(df), -1))
 
-cr_level(group_df)
+  if (missingArg(clonal_var))
+    clonal_var <- as.name(nth(names(df), -2))
 
-df %>%
-  group_by(clonotype, .add = TRUE) %>%
-  summarise(n_distinct(clone))
+  group_by(df, {{clonotype_var}}, .add = TRUE) %>%
 
-
-
-
-# tarnslate_clone <- function(data, clone_var) {
-#   # rand_df[-4] %>% tarnslate_clone(clone)
-#   mutate(data, across({{clone_var}}, translate, .names = "clonotype"))
-# }
-#
-# add_cr_level <- function(data, clone_var, clonotype_var) {
-#   # rand_df %>% add_cr_level(clone, clonotype)
-#   # rand_df[-4] %>% add_cr_level(clone)
-#   # rand_df %>% add_cr_level(clone)
-#
-#   if (quo_is_missing(enquo(clonotype_var))) {
-#     data %<>% tarnslate_clone({{clone_var}})
-#     clonotype_var <- quo(clonotype)
-#   }
-#
-#   data %>% group_by({{clonotype_var}}, .add = TRUE) %>%
-#
-#     mutate(across({{clone_var}},  n_distinct, .names = "CR_level"))
-#
-# }
-#
-cr_level <- function(data, clone_var, clonotype_var) {
-  # EXAMPLE:
-  # rand_df %>% group_by(group, rep_id) %>% cr_level(clone, clonotype)
-  # rand_df[-4] %>% group_by(group, rep_id) %>% cr_level(clone)
-
-  if (missing(clone_var))
-    clone_var <- as.name(nth(names(data), -2))
-
-  if (missing(clonotype_var))
-    clonotype_var <- as.name(nth(names(data), -1))
-
-  data %>% group_by({{clonotype_var}}, .add = TRUE) %>%
-
-    summarise(across({{clone_var}}, n_distinct, .names = "CR_level"), .groups = "drop_last")
+  summarise(across({{clonal_var}}, cr_level, .names = "CR_level"))
 
 }

@@ -1,19 +1,132 @@
-clonalSeq2DF <- function(clonal_seq) {
+#
+# nt_vec <- c("ATG", "TTC", "TTT", "TTT", "ATG", "ATG")
+#
+# (vec_list <- replicate(n = 2, nt_vec, simplify = FALSE))
+# rep_prepare(vec_list)
+#
+# (d2_vec_list <- replicate(n = 2, vec_list, simplify = FALSE))
+# rep_prepare(d2_vec_list)
+#
+#
+# df <- data.frame(nt=c("ATG","TTC","TTT","TTT","ATG","ATG"), aa=c("M","F","F","F","M","M"))
+#
+# (df_list <- replicate(n = 2, df, simplify = FALSE))
+# rep_prepare(df_list, nt, aa)
+# rep_prepare(df_list, nt)
+#
+# (d2_df_list <- replicate(n = 2, vec_list, simplify = FALSE))
+# rep_prepare(d2_df_list, nt, aa)
+# rep_prepare(d2_df_list, nt)
+#
+#
+# replicate(n = 2, simplify = FALSE) %>%
+# rep_prepare()
+
+
+#' Title
+#'
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+rep_prepare <- function(...) {
+
+  if(rlang::dots_n(...) > 1)
+    data <- rlang::dots_values(...)
+  else
+    data <- rlang::dots_splice(...)
+
+  depth <- purrr::vec_depth(data)
+  return(data)
+  if (depth==1) {
+    data <- rep2DF(data)
+  } else if (depth==2) {
+    data <- repList2DF(data)
+  } else if (depth==3) {
+    data <- groupList2DF(data)
+  } else stop("invalid list depth")
+
+  data
+}
+
+
+# c("ATG", "TTC", "TTT", "TTT", "ATG", "ATG") %>%
+#   data.frame(x=., y=translate(.)) %>% rep_prepare(clone_var="x", clonotype_var="y")
+
+#' repertoire's clonal sequence to data frame with clonotype sequence
+#'
+#' @param clonal_seq character vector / data frame
+#' @param clone_var (optional) for data frame with more than one column, provide the CDR3's clonal sequence (nucleation sequence) column name
+#'
+#' @return data frame
+#' @export
+#'
+#' @examples
+#'
+#' clonal_seq <- c("ATG", "TTC", "TTC", "TTT", "ATG", "ATG")
+#'
+#' clonalSeq2DF(clonal_seq)
+#'
+#' df <- data.frame(cdr3_nt=clonal_seq)
+#'
+#' clonalSeq2DF(df)
+#'
+#'
+clonalSeq2DF <- function(clonal_seq, clone_var) {
+
+  if (!is.character(clonal_seq)) {
+
+    if (missingArg(clone_var))
+      clonal_seq <- pull(clonal_seq)
+    else
+      clonal_seq <- pull(clonal_seq, clone_var)
+
+  }
 
   data.frame(clone=clonal_seq, clonotype=translate(clonal_seq))
 
 }
 
-rep2DF <- function(rep, clone_var, clonnotype_var) {
 
-  if (is.character(rep))
+
+#' repertoire to data frame with clonal sequence and clonotype sequence
+#'
+#' @param rep character vector or dataframe
+#' @param clone_var column name of the clonal sequences
+#' @param clonotype_var (optional) column name of the clonotype sequences
+#'
+#' @return dataframe
+#' @export
+#'
+#' @examples
+#'
+#' clonal_seq <- c("ATG", "TTC", "TTC", "TTT", "ATG", "ATG")
+#' rep2DF(clonal_seq)
+#'
+#' df1 <- data.frame(cdr3_nt=clonal_seq)
+#' rep2DF(df1)
+#' rep2DF(df1, clone_var=cdr3_nt)
+#'
+#' clonotype_seq <- c("M", "F", "F", "F", "M", "M")
+#'
+#' df2 <- data.frame(cdr3_nt=clonal_seq, cdr3_aa=clonotype_seq)
+#' rep2DF(df2, clone_var=cdr3_nt, clonotype_var=cdr3_aa)
+#' rep2DF(df2, clone_var=cdr3_nt) # translate 'cdr3_nt' to amino acid sequences
+#'
+#'
+rep2DF <- function(rep, clone_var, clonotype_var) {
+
+  if (!is.data.frame(rep) | length(rep)==1)
+
     return(clonalSeq2DF(rep))
 
   clonal_seq <- pull(rep, {{clone_var}})
 
-  if (methods::hasArg(clonnotype_var)) {
+  if (hasArg(clonotype_var)) {
 
-    clonotype_seq <- pull(rep, {{clonnotype_var}})
+    clonotype_seq <- pull(rep, {{clonotype_var}})
 
   } else {
 
@@ -25,22 +138,80 @@ rep2DF <- function(rep, clone_var, clonnotype_var) {
 
 }
 
+
+
+
+
+#' list of repertoire to data frame
+#'
+#' @param rep_list list of character vectors or data frames
+#' @param ... for data frames with more than one column, clonal sequence column name is needed. adding also clonotype column name is suggested
+#'
+#' @return data frame
+#' @export
+#'
+#' @examples
+#'
+#' vec_list <- list(
+#' A=c("ATG", "TTC", "TTT"),
+#' B=c("TTT", "ATG", "ATG")
+#' )
+#' vec_list
+#'
+#' repList2DF(vec_list)
+#'
+#' df_list <- list(
+#'   A=data.frame(nt=c("ATG", "TTC", "TTT"),
+#'                aa=c("M", "F", "F")),
+#'   B=data.frame(nt=c("TTT", "ATG", "ATG"),
+#'                aa=c("F", "M", "M"))
+#' )
+#'
+#' df_list
+#'
+#' repList2DF(df_list, nt)
+#' repList2DF(df_list, nt, aa)
+#'
 repList2DF <- function(rep_list, ...) {
 
-  purrr::map_if(rep_list, is.data.frame, rep2DF, ..., .else = clonalSeq2DF) %>%
+  lapply(rep_list, rep2DF, ...) %>%
 
-  # lapply(rep_list, clonalSeq2DF, ...) %>%
-
-    bind_rows(.id = "rid")
+  bind_rows(.id = "rid")
 
 }
 
+
+
+#' join groups of repertoire list into a dataframe
+#'
+#' @param group_list list-of-list of character vector or data frames
+#' @param ... for data frames with more than one column, clonal sequence column name is needed. adding also clonotype column name is suggested
+#'
+#' @return data frame
+#' @export
+#'
+#' @examples
+#'
+#' vec_list1 <- list(
+#' A=c("ATG", "TTC", "TTT"),
+#' B=c("TTT", "ATG", "ATG")
+#' )
+#' vec_list2 <- list(
+#'   C=c("ATG", "TTC", "TTT"),
+#'   D=c("TTT", "ATG", "ATG")
+#' )
+#'
+#' grouped_rep_list <- list(group1=vec_list1,group2=vec_list2)
+#'
+#' groupList2DF(grouped_rep_list)
+#'
 groupList2DF <- function(group_list, ...) {
 
   lapply(group_list, repList2DF, ...) %>%
 
     bind_rows(.id = "gid")
 }
+
 
 translate <- function(nt_vec) {
   # converts the nucleotide vector to uppercase

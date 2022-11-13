@@ -1,6 +1,6 @@
 {
     "dialog-state": {
-        "query": "spread",
+        "query": "rand_group",
         "path": "",
         "regex": false,
         "caseSensitive": true,
@@ -9,7 +9,7 @@
         "useGitGrep": true,
         "excludeGitIgnore": true,
         "excludeFilePatterns": [],
-        "resultsCount": 7,
+        "resultsCount": 28,
         "errorCount": 0,
         "replaceErrors": "",
         "projectRelative": true
