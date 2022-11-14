@@ -1,28 +1,86 @@
+#
+# f <- function(..., margin) {
+#     if (is.numeric(v))
+#       return(sum(as.logical(v), na.rm = TRUE))
+#     else
+#       return(n_distinct(v, na.rm = TRUE))
+#
+#   # f1 <- function(v) sum(as.logical(v), na.rm = TRUE)
+#   # f2 <- function(v) n_distinct(v, na.rm = TRUE)
+#
+#
+#   if (every(..., is_bare_atomic, n=1)) {
+#
+#     if (!missing(margin))
+#       return(apply(..., margin, f))
+#
+#     v <- unlist(c(...))
+#
+#
+#   } else if (is.list(...)) {
+#     l <- rlang::dots_splice(..., .preserve_empty = TRUE)
+#     return(tapply(l[[1]], do.call(cbind, l[-1]), f))
+#   }
+#
+#   # l <- rlang::dots_splice(..., .preserve_empty = TRUE)
+#
+#   # if (rlang::dots_n(...) == 1) {
+#   #
+#   #   if (is_bare_vector(...)) {
+#   #
+#   #     if (is_bare_numeric(...)) {
+#   #
+#   #       if (is.null(dim(...)))
+#   #         return(f1(...))
+#   #       else
+#   #         return(apply(..., margin, f1))
+#   #     }
+#   #   }
+#   #
+#   # } else {
+#   #   l <- rlang::dots_splice(..., .preserve_empty = TRUE)
+#   #   if (group) {
+#   #
+#   #     if (n_distinct(lengths(l))==1) {
+#   #       return(tapply(l[[1]], do.call(cbind, l[-1]), f))
+#   #     } else stop("")
+#   #   }
+#   # }
+#
+#   # return(f2(...))
+# }
+#
+# # f.vector <- function(...) {
+# #   if (is_bare_vector(...) & is_bare_numeric(...))
+# #       return(sum(as.logical(...), na.rm = TRUE))
+# #
+# #   return(n_distinct(... ,na.rm = TRUE))
+# # }
+#
+
 
 #' Share-level of the group's repertoires
 #'
-#' @param clonotype clonotype sequences vector
-#' @param rep_id repertoire ID vector
+#' @param ...
 #'
 #' @return share-level vector named by clonotype sequence
 #' @export
 #'
 #' @examples
 #'
-#' sample_id <- rep(c("A", "B"), each=3)
+#' rep1 <- c('CGGGTGAAG', 'CGGGTG', 'CGGGTGAAG','CACGAA','AAGGGGTCCGTG')
+#' rep2 <- c('AAGGGGTCCGTC','CGGGTGAAG','AAAGGGTCCGTT','CGGGTCAAG')
+#' rep3 <- c('AAGGGGTCAGTC','CGTGTGAAG','AAGGGGTCCGTT','CGGGTCAAG')
 #'
-#' clonotype_vec <- c("M", "F", "I", "F", "L", "L")
+#' share_level(rep1, rep2, rep3)
 #'
-#' share_level(sample_id, clonotype_vec)
+#' share_level(c(rep1, rep2), c(rep2, rep3))
 #'
-share_level <- function(rep_id, clonotype) {
+#'
+share_level <- function(...) {
 
-  results <- tapply(rep_id, clonotype, n_distinct)
+  sum(as.logical(c(...)), na.rm = TRUE)
 
-  if (length(results)==1)
-    return(unname(results))
-  else
-    return(results)
 }
 
 
@@ -80,10 +138,12 @@ share_level_df <- function(data, clonotype_var, rid, ...) {
 #'
 share_level_table <- function(df, clonotype_var, rid, ...) {
 
+  # tapply(df[[1]], df[c(2,4)], n_distinct)
+
   df %>%
 
-    share_level_df({{clonotype_var}}, {{rid}}, ...) %>%
+  share_level_df({{clonotype_var}}, {{rid}}, ...) %>%
 
-    xtabs(formula = share ~ .)
+  xtabs(formula = share ~ .)
 
 }

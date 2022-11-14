@@ -52,25 +52,43 @@ is_public <- function(shared, min_shared=1, min_public=2*min_shared) {
 # # is_public(c(.2,0,0), min_public = .5)
 # # is_public(c(.2,.2,0), min_public = 2)
 # # is_public(c(.2,.2,.1), min_public = 1)
+
+
+is_public <- function(..., min_public=2) {
+
+  in_rep <- c(...)>0
+
+  in_group <- sum(in_rep, na.rm = TRUE)
+
+  if (in_rep == 0)
+    return(NA)
+
+  if (min_public <= 1)
+    in_group <- in_group / length(in_rep)
+
+  in_group >= min_public
+
+}
+
+# rand_group()
+
+# df <- repList2DF(g) %>%
+#   mutate(gid=ifelse(rid>3, "human", "mouse"))
+
+
+# tbl <- mutate(df, rep_id=seq(rep_id)) %>%
+#   with(table(aa, rep_id, group_id))
+
+# group_sample_i <- apply(tbl, "gid", . %>% colSums() %>% as.logical() %>% which)
+# tbl[,group_sample_i$human,"human"]
+
+
+# tbl <- with(df, table(clonotype, rid))
+# super_public <- apply(tbl, "clonotype", is_public, min_public=3)
+# tbl[super_public, ]
+
+
 #
-#
-# is_public <- function(..., min_public=2) {
-#
-#   in_rep <- c(...)>0
-#
-#   in_group <- sum(in_rep, na.rm = TRUE)
-#
-#   if (in_rep == 0)
-#     return(NA)
-#
-#   if (min_public <= 1)
-#     in_group <- in_group / length(in_rep)
-#
-#   in_group >= min_public
-#
-# }
-#
-# #
 # # # rbind()
 # #
 #

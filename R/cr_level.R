@@ -76,5 +76,4 @@ cr_level_df <- function(df, ..., clone_var, clonotype_var) {
   group_by(df, {{clonotype_var}}, ..., .add = FALSE) %>%
 
     summarise(across({{clone_var}}, n_distinct, .names = "CR_level"), .groups = "drop")
-
 }

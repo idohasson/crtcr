@@ -15,7 +15,7 @@
 #'
 rand_group <- function(rep_n=rpois(1, 10)) {
 
-  seq_n <- sample(1E2:1E3, rep_n)
+  seq_n <- sample(1E1:1E2, rep_n)
 
   clone_gen <- function() {
 
@@ -35,7 +35,7 @@ rand_group <- function(rep_n=rpois(1, 10)) {
     Vectorize(coding_seq, "n_codons")
   }
 
-  nt_gen <- clone_gen(); l_mu <- 3
+  nt_gen <- clone_gen(); l_mu <- 1
 
   lapply(seq_n, function(n) nt_gen(rpois(n, l_mu)+1))
 

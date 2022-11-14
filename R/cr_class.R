@@ -115,7 +115,33 @@ cr_class_tbl <- function(rep_groups, clonotype, rid, gid, ..., min_shared=1, min
 
 
 
+is_public <- function(..., min_public=2) {
 
+  freq <- c(...)
+
+  rep_freq <- share_level(freq)
+
+  if (rep_freq == 0)
+
+    return(NA)
+
+  else if (min_public > 1)
+
+    return(rep_freq >= min_public)
+
+  else
+
+    return(rep_freq / length(freq) >= min_public)
+
+}
+
+
+
+is_super_public <- function(...) {
+
+  is_public(..., min_public=.5)
+
+}
 
 
 
