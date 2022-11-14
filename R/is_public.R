@@ -74,23 +74,18 @@ is_public <- function(..., min_public=2) {
 # rbind()
 
 
-l <- list(LETTERS[1:3], LETTERS[3:5], LETTERS[3], LETTERS[2:6])
-
-
-purrr::map_dfr(l, table)
+# l <- list(LETTERS[1:3], LETTERS[3:5], LETTERS[3], LETTERS[2:6])
+#
+# is_public_list(l)
 
 
 is_public_list <- function(..., min_public=2) {
 
-  rep_list <- rlang::dots_splice(...)
+  rep_list <- rlang::dots_splice(...) %>% rlang::squash()
 
-  rep_list <- rlang::squash(rep_list)
+  if (checkmate::testNamed(rep_list)) rep_list %<>% setNames(seq(.))
 
-  rep_list <- rlang::squash(rep_list)
-
-  tbl <- purrr::map_dfr(rep_list, table)
-
-  as.data.frame(t(tbl))
+  purrr::map_dfr(rep_list, table) %>% t %>% as.data.frame()
 
 }
 

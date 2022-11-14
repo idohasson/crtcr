@@ -2,22 +2,22 @@
 % Please edit documentation in R/is_public.R
 \name{is_public}
 \alias{is_public}
-\title{is clonotype public by each group share-level}
+\title{is clonotype public by sub-groups share-level}
 \usage{
-is_public(shared, min_shared = 1L, min_public = 2L)
+is_public(..., min_public = 2)
 }
 \arguments{
+\item{min_public}{minimal number of repertoire having a clonotype to be conciser public}
+
 \item{shared}{numerical vector}
 
 \item{min_shared}{minimal value to be counted as repertoire having a clonotype}
-
-\item{min_public}{minimal number of repertoire having a clonotype to be conciser public}
 }
 \value{
 TRUE if its public, FALSE if private, and NA if none of the frequencies are sufficient
 }
 \description{
-is clonotype public by each group share-level
+is clonotype public by sub-groups share-level
 }
 \examples{
 

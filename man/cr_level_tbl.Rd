@@ -2,24 +2,24 @@
 % Please edit documentation in R/cr_level.R
 \name{cr_level_tbl}
 \alias{cr_level_tbl}
-\title{CR-level throughout all sub-groups matrix}
+\title{Convergent Recombination level}
 \usage{
-cr_level_tbl(df, ..., clonal_var, clonotype_var)
+cr_level_tbl(df, ..., clone_var, clonotype_var)
 }
 \arguments{
 \item{df}{data frame}
 
 \item{...}{repertoire ID and any other group ID column}
 
-\item{clonotype_var}{clonotype seq variable name}
-
 \item{clone_var}{clonal seq variable name}
+
+\item{clonotype_var}{clonotype seq variable name}
 }
 \value{
 matrix
 }
 \description{
-CR-level throughout all sub-groups matrix
+Convergent Recombination level
 }
 \examples{
 

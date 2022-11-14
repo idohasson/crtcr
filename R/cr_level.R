@@ -1,113 +1,80 @@
-#' Convergent Recombination level (CR-level)
+#' Convergent recombination level (CR-level) of clonal sequences
 #'
-#' @param clonal_sequence x
-#' @param clonotype_sequence x
+#' @description
+#' calculate unique number of nucleotide sequences encoding a specific amino
+#' acid sequence. This value associated with TCR repertoire clonal sequences
+#' and termed as "CR-level" (convergent recombination level).
 #'
-#' @return data frame
+#' @param ... nucleotide sequences
+#' @param always_named name single value. Default `TRUE`.
 #'
+#' @return CR-level integer vector (named by the clonotype)
 #' @export
-#'
 #' @examples
+#' cr_level("ATGTTT", "ATCTTC", "ATGTTC", "AAA")
 #'
-#' cr_level(c("ATG", "TTT", "ATC", "TTC", "TTG", "TTA"))
-#'
-cr_level <- function(clonal_sequence, clonotype_sequence) {
+cr_level <- function(..., always_named=FALSE) {
 
-  if (missingArg(clonotype_sequence))
+  clonal_sequence <- c(...)
 
-    clonotype_sequence <- translate(clonal_sequence)
+  clonal_sequence %<>%
 
-  # if(n_distinct(clonotype_sequence) == 1) {
-  #   return(n_distinct(clonal_sequence))
-  # }
+    split(translate(.)) %>%
 
-  results <- tapply(clonal_sequence, clonotype_sequence, n_distinct)
+    sapply(n_distinct)
 
-  if (length(results)==1)
-    return(unname(results))
+  if (always_named | !testScalar(clonal_sequence))
+
+    return(clonal_sequence)
+
   else
-    return(results)
 
+    return (unname(clonal_sequence))
 
 }
 
 
-#' Convergent Recombination level (CR-level)
+#' Convergent Recombination level for data frame's clonal sequence column
 #'
-#' @param df c
-#' @param clonal_var c
-#' @param clonotype_var x
+#' @description
+#' calculate unique number of nucleotide sequences encoding a specific amino
+#' acid sequence. This value associated with TCR repertoire clonal sequences
+#' and termed as "CR-level" (convergent recombination level).
 #'
-#' @return x
+#'
+#' @param df data frame
+#' @param ... Column names to group the clones by as distinct repertoires
+#' @param clone_var Column name of CDR3's nucleotide sequence
+#' @param clonotype_var (optional) Column name of CDR3's amino acid sequence
+#'
+#' @return data frame
 #' @export
 #'
 #' @examples
 #'
-#' clone_vec <- c("ATG", "TTT", "ATC", "TTC", "TTG", "TTA")
+#' df <- data.frame(
+#'   group_id=gl(2,4,8,labels = c('cancer','control')),
+#'   sample_id=gl(4,2,8,labels = LETTERS[1:4]),
+#'   nt=c('CGGGTGAAG', 'CGGGTGAAG','CACGAA','AAGGGGTCCGTG',
+#'        'AAGGGGTCCGTC','CGGGTGAAG','AAGGGGTCCGTT','CGGGTCAAG'),
+#'   aa=c('RVK','RVK','HE','KGSV','KGSV','RVK','KGSV','RVK')
+#' )
 #'
-#' (df <- rep2DF(clone_vec))
+#' cr_level_df(df, clone_var=nt, clonotype_var=aa)
 #'
-#' cr_level_df(df, clone, clonotype)
+#' cr_level_df(df, clone_var=nt)
 #'
-#' clone_list <- list(c("ATG", "TTT", "ATC"), c("TTC", "TTG", "TTA"))
+#' cr_level_df(df, group_id, sample_id, clone_var=nt, clonotype_var=aa)
 #'
-#' (df2 <- repList2DF(clone_list))
-#'
-#' cr_level_df(dplyr::group_by(df2, rid))
-#'
-#'
-cr_level_df <- function(df, ..., clonal_var, clonotype_var) {
+cr_level_df <- function(df, ..., clone_var, clonotype_var) {
 
   if (missingArg(clonotype_var)) {
-    df <- dplyr::mutate(df, clonotype=translate({{clonal_var}}))
-    clonotype_var <- as.name(dplyr::last(names(df)))
+    df <- mutate(df, clonotype=translate({{clone_var}}))
+    clonotype_var <- as.name('clonotype')
   }
 
   group_by(df, {{clonotype_var}}, ..., .add = FALSE) %>%
 
-  summarise(across({{clonal_var}}, n_distinct, .names = "CR_level"), .groups = "drop")
+    summarise(across({{clone_var}}, n_distinct, .names = "CR_level"), .groups = "drop")
 
 }
-
-
-
-#' CR-level throughout all sub-groups matrix
-#'
-#' @param df data frame
-#' @param clone_var clonal seq variable name
-#' @param clonotype_var clonotype seq variable name
-#' @param ... repertoire ID and any other group ID column
-#'
-#' @return matrix
-#' @export
-#'
-#' @examples
-#'
-#'
-#' df <- data.frame(nt=c("ATG","TTC","TAT","TTT","ATG","ATG"),
-#'                  aa=c("M","F","Y","F","M","M"),
-#'                  rep_id = gl(3,1, 6),
-#'                  group_id = gl(2, 3, labels = c("cancer", "control")))
-#'
-#' cr_level_tbl(df, clone_var = nt, clonotype_var = aa, group_id, rep_id)
-#'
-cr_level_tbl <- function(df, ..., clonal_var, clonotype_var) {
-
-  cr_level_df(df, ..., clonal_var={{clonal_var}}, clonotype_var={{clonotype_var}}) %>%
-
-  xtabs(formula = CR_level ~ .)
-
-}
-
-
-cr_level_list <- function(...) {
-
-    map_dfr(.x = rlang::dots_splice(...),
-            .f = . %>% data.frame(clone=., clonotype=translate(.)),
-            .id = "rid") %>%
-
-    distinct %>% with(table(clonotype, rid))
-
-}
-
-

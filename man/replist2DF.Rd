@@ -4,12 +4,12 @@
 \alias{repList2DF}
 \title{list of repertoire to data frame}
 \usage{
-repList2DF(rep_list, ...)
+repList2DF(...)
 }
 \arguments{
-\item{rep_list}{list of character vectors or data frames}
-
 \item{...}{for data frames with more than one column, clonal sequence column name is needed. adding also clonotype column name is suggested}
+
+\item{rep_list}{list of character vectors or data frames}
 }
 \value{
 data frame

@@ -8,6 +8,7 @@
 #' @importFrom dplyr case_when
 #' @importFrom dplyr distinct
 #' @importFrom dplyr group_by
+#' @importFrom dplyr mutate
 #' @importFrom dplyr n_distinct
 #' @importFrom dplyr nth
 #' @importFrom dplyr pull

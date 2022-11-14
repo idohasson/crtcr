@@ -2,23 +2,24 @@
 % Please edit documentation in R/cr_level.R
 \name{cr_level}
 \alias{cr_level}
-\title{Convergent Recombination level (CR-level)}
+\title{Convergent recombination level (CR-level) of clonal sequences}
 \usage{
-cr_level(clonal_sequence, clonotype_sequence)
+cr_level(..., always_named = FALSE)
 }
 \arguments{
-\item{clonal_sequence}{x}
+\item{...}{nucleotide sequences}
 
-\item{clonotype_sequence}{x}
+\item{always_named}{name single value. Default \code{TRUE}.}
 }
 \value{
-data frame
+CR-level integer vector (named by the clonotype)
 }
 \description{
-Convergent Recombination level (CR-level)
+calculate unique number of nucleotide sequences encoding a specific amino
+acid sequence. This value associated with TCR repertoire clonal sequences
+and termed as "CR-level" (convergent recombination level).
 }
 \examples{
-
-cr_level(c("ATG", "TTT", "ATC", "TTC", "TTG", "TTA"))
+cr_level("ATGTTT", "ATCTTC", "ATGTTC", "AAA")
 
 }

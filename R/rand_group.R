@@ -41,3 +41,23 @@ rand_group <- function(rep_n=rpois(1, 10)) {
 
 }
 
+
+
+
+clone_gen <- function() {
+
+  coding_seq <- function(n_codons) {
+
+    coding_codon <- function() {
+
+      codon <- paste(sample(c("A","G","T","C"), 3, replace = TRUE), collapse = "")
+
+      ifelse(codon %in% c("TGA","TAA","TAG"), coding_codon(), codon)
+
+    }
+
+    paste(replicate(n_codons, coding_codon()), collapse = "")
+  }
+
+  Vectorize(coding_seq, "n_codons")
+}

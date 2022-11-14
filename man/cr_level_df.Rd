@@ -2,36 +2,41 @@
 % Please edit documentation in R/cr_level.R
 \name{cr_level_df}
 \alias{cr_level_df}
-\title{Convergent Recombination level (CR-level)}
+\title{Convergent Recombination level for data frame's clonal sequence column}
 \usage{
-cr_level_df(df, ..., clonal_var, clonotype_var)
+cr_level_df(df, ..., clone_var, clonotype_var)
 }
 \arguments{
-\item{df}{c}
+\item{df}{data frame}
 
-\item{clonal_var}{c}
+\item{...}{Column names to group the clones by as distinct repertoires}
 
-\item{clonotype_var}{x}
+\item{clone_var}{Column name of CDR3's nucleotide sequence}
+
+\item{clonotype_var}{(optional) Column name of CDR3's amino acid sequence}
 }
 \value{
-x
+data frame
 }
 \description{
-Convergent Recombination level (CR-level)
+calculate unique number of nucleotide sequences encoding a specific amino
+acid sequence. This value associated with TCR repertoire clonal sequences
+and termed as "CR-level" (convergent recombination level).
 }
 \examples{
 
-clone_vec <- c("ATG", "TTT", "ATC", "TTC", "TTG", "TTA")
+df <- data.frame(
+  group_id=gl(2,4,8,labels = c('cancer','control')),
+  sample_id=gl(4,2,8,labels = LETTERS[1:4]),
+  nt=c('CGGGTGAAG', 'CGGGTGAAG','CACGAA','AAGGGGTCCGTG',
+       'AAGGGGTCCGTC','CGGGTGAAG','AAGGGGTCCGTT','CGGGTCAAG'),
+  aa=c('RVK','RVK','HE','KGSV','KGSV','RVK','KGSV','RVK')
+)
 
-(df <- rep2DF(clone_vec))
+cr_level_df(df, clone_var=nt, clonotype_var=aa)
 
-cr_level_df(df, clone, clonotype)
+cr_level_df(df, clone_var=nt)
 
-clone_list <- list(c("ATG", "TTT", "ATC"), c("TTC", "TTG", "TTA"))
-
-(df2 <- repList2DF(clone_list))
-
-cr_level_df(dplyr::group_by(df2, rid))
-
+cr_level_df(df, group_id, sample_id, clone_var=nt, clonotype_var=aa)
 
 }
