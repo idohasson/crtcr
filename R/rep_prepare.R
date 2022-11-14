@@ -1,3 +1,9 @@
+# library(checkmate)
+
+
+
+
+
 # https://search.r-project.org/CRAN/refmans/datawizard/html/00Index.html
 # # library("datawizard")
 #
@@ -310,11 +316,14 @@ rep2DF <- function(rep, clone_var, clonotype_var) {
 #' repList2DF(df_list, nt)
 #' repList2DF(df_list, nt, aa)
 #'
-repList2DF <- function(rep_list, ...) {
+repList2DF <- function(...) {
 
-  lapply(rep_list, rep2DF, ...) %>%
+  map_dfr(rlang::dots_splice(...), .id = "rid",
+          . %>% data.frame(clone=., clonotype=translate(.)))
 
-  bind_rows(.id = "rid")
+  # lapply(rep_list, rep2DF, ...) %>%
+  #
+  # bind_rows(.id = "rid")
 
 }
 

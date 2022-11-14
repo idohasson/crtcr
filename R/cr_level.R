@@ -63,9 +63,7 @@ cr_level_df <- function(df, ..., clonal_var, clonotype_var) {
     clonotype_var <- as.name(dplyr::last(names(df)))
   }
 
-  df %>%
-
-  group_by({{clonotype_var}}, ..., .add = FALSE) %>%
+  group_by(df, {{clonotype_var}}, ..., .add = FALSE) %>%
 
   summarise(across({{clonal_var}}, n_distinct, .names = "CR_level"), .groups = "drop")
 
@@ -99,17 +97,17 @@ cr_level_tbl <- function(df, ..., clonal_var, clonotype_var) {
 
   xtabs(formula = CR_level ~ .)
 
-  # xtabs(formula = CR_level ~ .)
-  # unite(df, "id", ..., sep = "/", ) %>%
-
-    # select(clone = {{clone_var}}, clonotype = {{clonotype_var}}, ...)
-
-
-    # tapply(clone, bind_cols(clonotype=clonotype, id=id), n_distinct)
-
 }
 
 
+cr_level_list <- function(...) {
 
+    map_dfr(.x = rlang::dots_splice(...),
+            .f = . %>% data.frame(clone=., clonotype=translate(.)),
+            .id = "rid") %>%
+
+    distinct %>% with(table(clonotype, rid))
+
+}
 
 

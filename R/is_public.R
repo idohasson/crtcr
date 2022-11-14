@@ -76,33 +76,23 @@ is_public <- function(..., min_public=2) {
 
 l <- list(LETTERS[1:3], LETTERS[3:5], LETTERS[3], LETTERS[2:6])
 
-# df <- l %>%
-  # lapply(vctrs::vec_count) %>%
-l %>%
-  lapply(table) %>%
-  bind_cols()
 
-l %>%
-  lapply(data.frame) %>%
-  dplyr::bind_rows(.id = "rid") %>%
-  table %>% apply("rid", is_public)
-  # do.call(what = rbind)
-
-df %>%
-  group_by(key) %>%
-  summarise(public=is_public(count))
-
-sapply(l, data.frame)
-
-dplyr::bind_rows(l, .id = "id")
+purrr::map_dfr(l, table)
 
 
+is_public_list <- function(..., min_public=2) {
 
+  rep_list <- rlang::dots_splice(...)
 
+  rep_list <- rlang::squash(rep_list)
 
+  rep_list <- rlang::squash(rep_list)
 
+  tbl <- purrr::map_dfr(rep_list, table)
 
+  as.data.frame(t(tbl))
 
+}
 
 
 
