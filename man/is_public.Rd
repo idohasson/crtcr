@@ -4,14 +4,14 @@
 \alias{is_public}
 \title{is clonotype public by sub-groups share-level}
 \usage{
-is_public(..., min_public = 2)
+is_public(shared, min_shared = 1, min_public = 2 * min_shared)
 }
 \arguments{
-\item{min_public}{minimal number of repertoire having a clonotype to be conciser public}
-
 \item{shared}{numerical vector}
 
 \item{min_shared}{minimal value to be counted as repertoire having a clonotype}
+
+\item{min_public}{minimal number of repertoire having a clonotype to be conciser public}
 }
 \value{
 TRUE if its public, FALSE if private, and NA if none of the frequencies are sufficient

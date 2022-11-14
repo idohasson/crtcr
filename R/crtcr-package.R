@@ -2,6 +2,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom checkmate testScalar
 #' @importFrom dplyr across
 #' @importFrom dplyr bind_cols
 #' @importFrom dplyr bind_rows

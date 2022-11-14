@@ -40,55 +40,55 @@ is_public <- function(shared, min_shared=1, min_public=2*min_shared) {
 }
 
 
-
-
-# is_public(1,0,0)
-# is_public(c(0,2,0))
-# is_public(c(0,0,0))
-# is_public(c(.1,0,0))
-# is_public(.05,0,0, min_public = .1)
-# is_public(c(.1,0,0), min_public = .5)
-# is_public(c(.1,.1,0), min_public = .5)
-# is_public(c(.2,0,0), min_public = .5)
-# is_public(c(.2,.2,0), min_public = 2)
-# is_public(c(.2,.2,.1), min_public = 1)
-
-
-is_public <- function(..., min_public=2) {
-
-  in_rep <- c(...)>0
-
-  in_group <- sum(in_rep, na.rm = TRUE)
-
-  if (in_rep == 0)
-    return(NA)
-
-  if (min_public <= 1)
-    in_group <- in_group / length(in_rep)
-
-  in_group >= min_public
-
-}
-
-
-# rbind()
-
-
-# l <- list(LETTERS[1:3], LETTERS[3:5], LETTERS[3], LETTERS[2:6])
 #
-# is_public_list(l)
-
-
-is_public_list <- function(..., min_public=2) {
-
-  rep_list <- rlang::dots_splice(...) %>% rlang::squash()
-
-  if (checkmate::testNamed(rep_list)) rep_list %<>% setNames(seq(.))
-
-  purrr::map_dfr(rep_list, table) %>% t %>% as.data.frame()
-
-}
-
+#
+# # is_public(1,0,0)
+# # is_public(c(0,2,0))
+# # is_public(c(0,0,0))
+# # is_public(c(.1,0,0))
+# # is_public(.05,0,0, min_public = .1)
+# # is_public(c(.1,0,0), min_public = .5)
+# # is_public(c(.1,.1,0), min_public = .5)
+# # is_public(c(.2,0,0), min_public = .5)
+# # is_public(c(.2,.2,0), min_public = 2)
+# # is_public(c(.2,.2,.1), min_public = 1)
+#
+#
+# is_public <- function(..., min_public=2) {
+#
+#   in_rep <- c(...)>0
+#
+#   in_group <- sum(in_rep, na.rm = TRUE)
+#
+#   if (in_rep == 0)
+#     return(NA)
+#
+#   if (min_public <= 1)
+#     in_group <- in_group / length(in_rep)
+#
+#   in_group >= min_public
+#
+# }
+#
+# #
+# # # rbind()
+# #
+#
+# # l <- list(LETTERS[1:3], LETTERS[3:5], LETTERS[3], LETTERS[2:6])
+# #
+# # is_public_list(l)
+#
+#
+# is_public_list <- function(..., min_public=2) {
+#
+#   rep_list <- rlang::dots_splice(...) %>% rlang::squash()
+#
+#   if (checkmate::testNamed(rep_list)) rep_list %<>% setNames(seq(.))
+#
+#   purrr::map_dfr(rep_list, table) %>% t %>% as.data.frame()
+#
+# }
+#
 
 
 
