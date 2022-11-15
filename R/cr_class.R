@@ -112,9 +112,6 @@ cr_class_tbl <- function(rep_groups, clonotype, rid, gid, ..., min_shared=1, min
 
 }
 
-
-
-
 is_public <- function(..., min_public=2) {
 
   freq <- c(...)
@@ -132,8 +129,18 @@ is_public <- function(..., min_public=2) {
   else
 
     return(rep_freq / length(freq) >= min_public)
-
 }
+
+is_shared_public <- function(..., min_public=2) {
+
+  shared <- sum(..., na.rm = TRUE) >= min_public
+
+  if (shared==0)
+    return(NA)
+
+  shared >= min_public
+}
+
 
 
 

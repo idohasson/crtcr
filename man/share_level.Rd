@@ -4,12 +4,10 @@
 \alias{share_level}
 \title{Share-level of the group's repertoires}
 \usage{
-share_level(rep_id, clonotype)
+share_level(...)
 }
 \arguments{
-\item{rep_id}{repertoire ID vector}
-
-\item{clonotype}{clonotype sequences vector}
+\item{...}{}
 }
 \value{
 share-level vector named by clonotype sequence
@@ -19,10 +17,13 @@ Share-level of the group's repertoires
 }
 \examples{
 
-sample_id <- rep(c("A", "B"), each=3)
+rep1 <- c('CGGGTGAAG', 'CGGGTG', 'CGGGTGAAG','CACGAA','AAGGGGTCCGTG')
+rep2 <- c('AAGGGGTCCGTC','CGGGTGAAG','AAAGGGTCCGTT','CGGGTCAAG')
+rep3 <- c('AAGGGGTCAGTC','CGTGTGAAG','AAGGGGTCCGTT','CGGGTCAAG')
 
-clonotype_vec <- c("M", "F", "I", "F", "L", "L")
+share_level(rep1, rep2, rep3)
 
-share_level(sample_id, clonotype_vec)
+share_level(c(rep1, rep2), c(rep2, rep3))
+
 
 }
