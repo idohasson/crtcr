@@ -17,7 +17,7 @@ Authors@R:
              family = "Zilberberg",
              role = "aut"))
 Description: Functions for computations relating to convergent recombination for TCR repertoire sequencesing data are included in this package. On the basis of these supplied calculations, identical clonotypes created from numerous clonal sequences and belonging exclusively to a particular immunological state are being obtained and could be used for subsequent analysis approach.
-License: MIT
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1

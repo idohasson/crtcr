@@ -1,0 +1,26 @@
+```{r}
+################### Documentations ####################
+
+#################### Manual ####################
+
+#   Clonal sequence: a string includes only of A, G, C, T characters
+#
+#   Clonotype: The CDR3's sequence as a string composed of the amino acid
+#   character symbols (not strict for additional symbols).
+#
+#   Repertoire: - a collection of CDR3s' clones. Clone sequences are considered
+#   identical by their NT sequence. Distinction attributes such as V/J segments
+#   might be added in later versions. any pair of sequences or length-one data
+#   types pair should work as well if provided as data frame with two columns
+#
+
+
+
+
+
+
+
+
+
+```
+

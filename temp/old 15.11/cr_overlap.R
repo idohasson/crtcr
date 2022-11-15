@@ -39,29 +39,29 @@
 
 
 
-# tbl_list %>% lapply(. %>% select(-clonotype) %>% cr_class)
+tbl_list %>% lapply(. %>% select(-clonotype) %>% cr_class)
 
-#' func <- intersect_percentage
-#'
-#'
-#' tbl <- group_list %>%
-#'
-#'   unlist(recursive = FALSE) %>%
-#'
-#'   share_table
-#'
-#' cr_list <- map(names(group_list), . %>%
-#'                  dplyr::starts_with(vars = names(tbl)) %>%
-#'                  select(.data = tbl) %>% cr_class %>%
-#'                  split(x = tbl$clonotype))
-#'
-#' purrr::cross(cr_list) %>%
-#'
-#'   lapply(setNames, names(formals(func))) %>%
-#'
-#'   purrr::invoke_map(.f = func) %>%
-#'
-#'   array(dim = c(3,3), dimnames = lapply(cr_list, names))
+func <- intersect_percentage
+
+
+tbl <- group_list %>%
+
+  unlist(recursive = FALSE) %>%
+
+  share_table
+
+cr_list <- map(names(group_list), . %>%
+                 dplyr::starts_with(vars = names(tbl)) %>%
+                 select(.data = tbl) %>% cr_class %>%
+                 split(x = tbl$clonotype))
+
+purrr::cross(cr_list) %>%
+
+  lapply(setNames, names(formals(func))) %>%
+
+  purrr::invoke_map(.f = func) %>%
+
+  array(dim = c(3,3), dimnames = lapply(cr_list, names))
 #'
 #' #' #' Title
 #' #' #'

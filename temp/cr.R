@@ -197,11 +197,12 @@ build_df <- function(...) {
 #################### share-level table ####################
         # clonotype sharing between individuals #
 
-# Previous studies have shown that the extent of sharing and the
-# clonotypic frequency of TCRb sequences are significantly corre
-# lated with their production efficiencies in simulations of a random
-# recombination process because of the phenomenon of convergent
-# recombination. https://doi.org/10.1073/pnas.1319389111
+# Previous studies have shown that the extent of sharing and
+# the clonotypic frequency of TCRb sequences are significantly
+# correlated with their production efficiencies in simulations
+# of a random recombination process because of the phenomenon
+# of convergent recombination.
+# https://doi.org/10.1073/pnas.1319389111
 
 cr_share <- function(..., by=c("clonotype", "rep_id")) { # DF
   build_df(...) %>%
@@ -331,5 +332,5 @@ jaccard_index <- function(x, y){
 }
 
 
-rand_subgruops() %>%
+
 

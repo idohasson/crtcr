@@ -10,25 +10,25 @@ shared_clonotype <- function(rep_list, clonotype_col) {
     rep_list <- lapply(rep_list, get_aa, clonotype_col)
 
   share_level(rep_list)
-  # clonotype_list <- lapply(rep_list, get_aa, clonotype_col) %>% lapply(unique)
-  # vec_count(unlist(clonotype_list)) %>%
-  #   setNames(c("clonotype", "shared"))
+  clonotype_list <- lapply(rep_list, get_aa, clonotype_col) %>% lapply(unique)
+  vec_count(unlist(clonotype_list)) %>%
+    setNames(c("clonotype", "shared"))
 }
 
 
-# shared_clonotype <- function(rep_list, clonotype_col) {
-#   # make sure each vector has unique sequences
-#   clonotype_list <- get_clonotypes_list(rep_list, aa_col=clonotype_col, out_type="unique")
-#   # flatten the list of lists into a single list
-#   clonotype <- unlist(clonotype_list)
-#   # generate a frequency table of the clonotype sample collection
-#   clonotype_n <- vec_count(clonotype)
-#
-#   setNames(clonotype_n, c("clonotype", "shared"))
-#
-#   # convert the frequency table into a data frame
-#   # as.data.frame(clonotype_n, responseName = c("sharing"))
-# }
+shared_clonotype <- function(rep_list, clonotype_col) {
+  # make sure each vector has unique sequences
+  clonotype_list <- get_clonotypes_list(rep_list, aa_col=clonotype_col, out_type="unique")
+  # flatten the list of lists into a single list
+  clonotype <- unlist(clonotype_list)
+  # generate a frequency table of the clonotype sample collection
+  clonotype_n <- vec_count(clonotype)
+
+  setNames(clonotype_n, c("clonotype", "shared"))
+
+  # convert the frequency table into a data frame
+  # as.data.frame(clonotype_n, responseName = c("sharing"))
+}
 
 # shared_clone
 # rand_group(rep_type="df_list", n_sample=10, seq_n = 100, seq_len=5) %>%
@@ -61,9 +61,9 @@ shared_population_clonotype <- function(rep_list, clonotype_col, population_i) {
 
   share_table(rep_list)
 
-  # lapply(rep_list[indices], get_aa, clonotype_col)
-  # share_list <- lapply(populations_list, shared_clonotype, clonotype_col=clonotype_col)
-  # purrr::reduce(share_list, full_join, by="clonotype")
+  lapply(rep_list[indices], get_aa, clonotype_col)
+  share_list <- lapply(populations_list, shared_clonotype, clonotype_col=clonotype_col)
+  purrr::reduce(share_list, full_join, by="clonotype")
 }
 
 # shared_population_clone
