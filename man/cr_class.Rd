@@ -18,7 +18,7 @@ cr_class(.data, .clonotype, .rep_id, .group_id, ...)
 \item{...}{additional variables to group by}
 }
 \value{
-data frame with 'public' column
+data frame with 'cr' column
 }
 \description{
 Public clonotype sub-class of repertoire groups

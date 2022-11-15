@@ -1,11 +1,23 @@
 Package: crtcr
-Title: What the Package Does (One Line, Title Case)
+Title: Convergent recombination of TCR repertoire
 Version: 0.1.0
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: MIT + file LICENSE
+    c(person(given = "Ido",
+             family = "Hasson",
+             role = c("aut", "cre"),
+             email = "idoh@systemsbiomed.org",
+             comment = c(ORCID = "0000-0001-8382-5638")),
+      person(given = "Sol",
+             family = "Efroni",
+             role = "aut"),
+      person(given = "Hagit",
+             family = "Philip",
+             role = "aut"),
+      person(given = "Alona",
+             family = "Zilberberg",
+             role = "aut"))
+Description: Functions for computations relating to convergent recombination for TCR repertoire sequencesing data are included in this package. On the basis of these supplied calculations, identical clonotypes created from numerous clonal sequences and belonging exclusively to a particular immunological state are being obtained and could be used for subsequent analysis approach.
+License: MIT
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
