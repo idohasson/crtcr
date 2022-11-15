@@ -4,12 +4,19 @@
 \name{crtcr-package}
 \alias{crtcr}
 \alias{crtcr-package}
-\title{crtcr: What the Package Does (One Line, Title Case)}
+\title{crtcr: Convergent recombination of TCR repertoire}
 \description{
-What the package does (one paragraph).
+Functions for computations relating to convergent recombination for TCR repertoire sequencesing data are included in this package. On the basis of these supplied calculations, identical clonotypes created from numerous clonal sequences and belonging exclusively to a particular immunological state are being obtained and could be used for subsequent analysis approach.
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
+\strong{Maintainer}: Ido Hasson \email{idoh@systemsbiomed.org} (\href{https://orcid.org/0000-0001-8382-5638}{ORCID})
+
+Authors:
+\itemize{
+  \item Sol Efroni
+  \item Hagit Philip
+  \item Alona Zilberberg
+}
 
 }
 \keyword{internal}

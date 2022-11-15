@@ -1,12 +1,22 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# crtcr!!!
+# crtcr: Convergent Recombination of TCR Repertoire
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of crtcr is to …
+A commonly used method for quantifying the degree of similarity of TCR
+repertoires is the concept of convergent recombination of T-cell
+receptors (TCRs).
+
+This R package implements this method and includes key functions that
+are involved throughout the execution of such analyses.
+
+On the basis of these supplied measurements calculations, it is possible
+to identify identical clonotypes that resulted from a range of clonal
+sequences, which may then be used for an analysis method that
+corresponds with a particular immunological state.
 
 ## Installation
 
