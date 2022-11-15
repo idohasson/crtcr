@@ -1,0 +1,106 @@
+
+
+```{r}
+df <- repList2DF(rand_group())
+head(df)
+```
+
+```{r}
+rep_df <- df[df$rid==1,]
+head(rep_df)
+```
+
+()
+```{r}
+library(dplyr)
+
+rep_df$clone %>% 
+  tapply(translate(.), n_distinct)
+  
+```
+
+```{r}
+
+df %>% 
+  
+  group_by(rid, clonnotype=translate(clone)) %>% 
+  
+  summarise(CR=n_distinct(clone), .groups = 'drop_last')
+
+
+```
+
+```{r}
+df2 <- groupList2DF(replicate(3, rand_group(), FALSE))
+head(df2)
+```
+
+
+```{r}
+df2 %>% 
+  
+  group_by(gid, rid, clonnotype=translate(clone)) %>% 
+  
+  summarise(CR=n_distinct(clone), .groups = 'drop_last')
+```
+
+```{r}
+
+df2 %>% 
+  
+  group_by(gid) %>% 
+  
+  group_by(clonnotype=translate(clone), .add = TRUE) %>% 
+    # group_by(clonotype, .add = TRUE) %>% 
+  summarise(share=n_distinct(rid), .groups = 'drop_last')
+
+```
+
+
+
+```{r}
+df3 <- df2 %>% 
+  mutate(rid=as.numeric(gid) + as.numeric(rid)-1) %>% rename(sub_group="gid")
+head(df3)
+
+```
+
+```{r}
+
+public <- function(d, seq, r, ...) {
+  
+  d2 <- d %>% 
+    
+  group_by(...) %>%
+  
+  group_by({{seq}}, .add = TRUE) %>% 
+    # group_by(clonotype, .add = TRUE) %>% 
+  # summarise(share=n_distinct(), .groups = 'keep')
+  # key_rep <- dplyr::group_keys(d)
+    # group_by({{seq}}, .add=TRUE) %>%
+    summarise(across({{r}}, n_distinct, .names = "share"), .groups = "keep")
+  
+  d2 
+}
+
+df3 %>% 
+  
+  # group_by(clonotype, .add = TRUE) %>% 
+  
+  public(clonotype, rid, sub_group)
+  
+  # summarise(public=public(rid), .groups = "drop_last")
+  # summarise(share=n_distinct(rid), .groups = "drop_last") %>% 
+  
+  # summarise(CR=cr_class(share, ))
+  # summarise(CR=sum(as.logical(share))>1) %>% 
+  # 
+  # filter(CR)
+
+
+  
+```
+
+
+
+
