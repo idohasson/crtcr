@@ -1,5 +1,8 @@
 #################### Utility ####################
 
+
+#################### Get Data functions ####################
+
 AA_FIELDS <- c("amino_acid", "aaSeqCDR3", "cdr3aa", "CDR3 amino acid sequence",
                "CDR3.amino.acid.sequence", "CDR3aa", "junction_aa",
                "CDR3.aa", "AAseq", "Amino acid sequence", "cdrAASeq")

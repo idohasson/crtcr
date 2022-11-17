@@ -1,3 +1,10 @@
+cr_level <- function(clonal_sequnces, .func, ..., check_unique=) {
+  # share_level.default
+  n_distinct(..., na.rm = TRUE)
+}
+
+cr_level.character <- function()
+
 #' Convergent recombination level (CR-level) of clonal sequences
 #'
 #' @description
@@ -9,7 +16,10 @@
 #' @param always_named name single value. Default `TRUE`.
 #'
 #' @return CR-level integer vector (named by the clonotype)
-cr_level_vec <- function(clonal_seq, always_named=FALSE) {
+cr_level_vec <- function(clonal_seq, func=translate, ...) {
+
+  apply_func <- function(.var)
+    eval(as.call(list(func, quote(.var))))
 
   tapply(clonal_seq, translate(clonal_seq), n_distinct)
 
@@ -20,5 +30,11 @@ cr_level_vec <- function(clonal_seq, always_named=FALSE) {
   # else
   #
   #   return (unname(clonal_sequence))
+
+}
+
+
+
+get_clonotype <- function(.data, func, ..., attr_vars) {
 
 }
