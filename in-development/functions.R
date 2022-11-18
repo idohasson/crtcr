@@ -1,4 +1,9 @@
 ##################### Repertoire Data #####################
+library(magrittr)
+library(purrr)
+
+dir_path <- getwd() %>% paste("/in-development/beta_MiXCR/", sep = "")
+paths <- list.files(dir_path, full.names = TRUE)
 rep_df <- read.delim(paths[1], sep = "\t", header = TRUE)
 # head(rep_df)
 aa_var <- "aaSeqCDR3"; nt_var <- "nSeqCDR3";
@@ -204,9 +209,9 @@ is_public <- function(clonotype_attr) {
 
 anyDuplicated.data.frame()
 
-dir_path <- getwd() %>% paste("/in-development/beta_MiXCR/", sep = "")
-
-paths <- list.files(dir_path, full.names = TRUE)
+# dir_path <- getwd() %>% paste("/in-development/beta_MiXCR/", sep = "")
+#
+# paths <- list.files(dir_path, full.names = TRUE)
 
 dfl <- map(paths, read.delim, nrows = 10)
 

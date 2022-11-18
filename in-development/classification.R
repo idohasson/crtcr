@@ -45,6 +45,7 @@ is_public.freq <- function(shared, min_shared=1, min_public=2*min_shared) {
   if (!any(in_sub_gruop, na.rm = FALSE)) return(NA)
 
   sum(shared[in_sub_gruop], na.rm = TRUE) >= min_public
+
 }
 
 is_public.freq <- function(..., min_public=2) {

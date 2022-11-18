@@ -9,3 +9,5 @@ notebook*
 =======
 ^revdep$
 >>>>>>> Stashed changes
+^in-development*
+^temp*
