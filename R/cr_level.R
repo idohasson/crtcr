@@ -1,38 +1,35 @@
-cr_level <- function(...) {
-  UseMethod("cr_level")
-}
-
-#' Title
+#' Convergent recombination level calculation.
 #'
-#' @param clonal_seq
-#' @param check_clonotype
+#' unique number of values / rows.
 #'
-#' @return
+#' @param clonal_seq character vector
+#' @param na.rm
+#' @param ... Data frame or vectors of equal-length.
+#'
+#' @return integer
 #' @export
 #'
 #' @examples
-cr_level.character <- function(clonal_seq, ...) {
-
-  vec_unique_count(clonal_seq)
-
-}
-
-#' Title
 #'
-#' @param clonal_seq
+#' cr_level(c("A", "B","A", "B", "B", NA))
 #'
-#' @return
-#' @export
+#' cr_level(c("s", "s", "a", "a"), c(1:3,NA), na.rm = FALSE)
 #'
-#' @examples
-cr_level.list <- function(...) {
-
-
-
-  list_all_size(clonal_seq)
+cr_level <- function(clonal_seq,..., na.rm=FALSE) {
 
   clonal_seq
 
-  # list_all_size
-}
+  clone_data <- df_list(..., .name_repair = "minimal")
 
+  clone_data <- new_data_frame(clone_data)
+
+  if (isTRUE(na.rm)) {
+
+    all_non_missing <- vec_detect_complete(clone_data)
+
+    clone_data <- vec_slice(clone_data, all_non_missing)
+
+  }
+
+  vec_unique_count(clone_data)
+}

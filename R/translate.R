@@ -12,7 +12,8 @@
 #'
 translate <- function(nt_vec) {
   # checks that each element in the vector is a DNA base.
-  stopifnot(all(grepl(pattern = "^[AGTC]+$", nt_vec)))
+  # stopifnot(all(grepl(pattern = "^[AGTC]+$", nt_vec)))
+  stopifnot(all(grepl(pattern = "^([AGTC]{3})+$", nt_vec)))
   # a vector of integers that correspond to the nucleotide characters.
   encoding <- c(T = 0, C = 1, A = 2, G = 3)
   # a vector of characters that correspond to the amino acid characters.
