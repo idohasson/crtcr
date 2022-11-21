@@ -7,9 +7,7 @@
 cr_level(..., na.rm = FALSE)
 }
 \arguments{
-\item{...}{Vectors (or list of vectors) of equal-length or data frame.}
-
-\item{rm.na}{if TRUE, ignore NA.}
+\item{...}{}
 }
 \value{
 integer
