@@ -4,14 +4,14 @@
 \alias{add_cr_level}
 \title{Add convergent recombination level to each clone record}
 \usage{
-add_cr_level(.data, .clone, ...)
+add_cr_level(.data, .clonal_seq, ...)
 }
 \arguments{
 \item{.data}{data frame which of the TCR repertoire's clone records. Each
 row of the resulting data frame contains information about a single TCR
 component sequence in one cell of a particular CDR3 sequence.}
 
-\item{.clone}{Column variable name of the CDR3's nucleotide sequence.}
+\item{.clonal_seq}{Column variable name of the CDR3's nucleotide sequence.}
 
 \item{...}{additional grouping column variables that might be necessary to
 distinguish merged data frames of multiple repertoires, or clonal sequence
@@ -34,12 +34,14 @@ interactions.
 \examples{
 
 df <- data.frame(
-group_id=gl(2,4,8,labels = c('cancer','control')),
-sample_id=gl(4,2,8,labels = LETTERS[1:4]),
-nt=c('CGCGTGAAG', 'CGGGTGAAG','CACGAA','AAGGGGTCCGTG',
-     'AAGGGGTCCGTC','CGGGTGAAG','AAGGGGTCCGTT','CGGGTGAAG'),
-aa=c('RVK','RVK','HE','KGSV','KGSV','RVK','KGSV','RVK')
+  group_id=gl(2,4,8,labels = c('cancer','control')),
+  sample_id=gl(4,2,8,labels = LETTERS[1:4]),
+  nt=c('CGCGTGAAG', 'CGGGTGAAG','CACGAA','AAGGGGTCCGTG',
+       'AAGGGGTCCGTC','CGGGTGAAG','AAGGGGTCCGTT','CGGGTGAAG'),
+  aa=c('RVK','RVK','HE','KGSV','KGSV','RVK','KGSV','RVK')
+
 )
+
 add_cr_level(df, nt)
 add_cr_level(df, nt, sample_id)
 

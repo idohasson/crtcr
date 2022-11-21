@@ -4,12 +4,14 @@
 \alias{is_public}
 \title{Public clonotype frequencies}
 \usage{
-is_public(freq, .public = 2)
+is_public(..., .public = 2)
 }
 \arguments{
-\item{freq}{Numerical vector.}
+\item{...}{x}
 
 \item{.public}{Minimum number of repertoires}
+
+\item{na.rm}{x}
 }
 \value{
 logical scalar. TRUE for public, FALSE for private (or none)
@@ -19,6 +21,16 @@ check if clonotype's frequencies throughout repertoire group are public
 }
 \examples{
 
-is_public(c(0,1,0,3))
+is_public(c("A", "B", "A"))
+
+require(dplyr)
+
+df <- data.frame(x=factor(LETTERS[sample(1:5, 10,replace = TRUE)]),
+                 y=factor(letters[sample(1:3, 10, replace = TRUE)]),
+                 clonotype=sample(c("ASD", "AWD"), 10, replace = TRUE))
+
+df \%>\%
+  group_by(clonotype) \%>\%
+  summarise(public=is_public(x,y, .public = .5))
 
 }

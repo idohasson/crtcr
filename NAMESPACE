@@ -2,8 +2,11 @@
 
 export(add_cr_level)
 export(add_share_level)
+export(cr_class)
 export(cr_level)
+export(is_exclusive)
 export(is_public)
+export(share_level)
 export(translate)
 importFrom(dplyr,"%>%")
 importFrom(dplyr,add_tally)

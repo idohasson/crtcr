@@ -38,6 +38,6 @@ add_share_level <- function(.data, .clonotype, .rep_id, ...) {
 
     group_by({{.clonotype}}, ..., .add = TRUE) %>%
 
-    add_tally(wt = n_distinct({{.rep_id}}), name = "share")
+    add_tally(wt = share_level({{.rep_id}}), name = "share")
 
 }

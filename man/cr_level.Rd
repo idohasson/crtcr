@@ -4,10 +4,14 @@
 \alias{cr_level}
 \title{Convergent recombination level calculation.}
 \usage{
-cr_level(..., na.rm = FALSE)
+cr_level(.clonal_seq, ..., cr_func = NULL, na.rm = FALSE)
 }
 \arguments{
-\item{...}{}
+\item{...}{x}
+
+\item{cr_func}{x}
+
+\item{na.rm}{x}
 }
 \value{
 integer
@@ -19,6 +23,18 @@ unique number of values / rows.
 
 cr_level(c("A", "B","A", "B", "B", NA))
 
-cr_level(c("s", "s", "a", "a"), c(1:3,NA), na.rm = FALSE)
+cr_level(c("s", "s", "a", "a"), c(1:3,NA), na.rm = TRUE)
+
+require(dplyr)
+
+my_func <- function(df){
+  df \%>\%
+    dplyr::group_by(x) \%>\%
+    dplyr::summarise(total=sum(y)) \%>\%
+    dplyr::pull() \%>\%
+    sd
+ }
+
+ cr_level(x=c("A", "B", "A"), y=1:3, cr_func = my_func)
 
 }

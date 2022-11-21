@@ -8,7 +8,7 @@
 #' @param .data data frame which of the TCR repertoire's clone records. Each
 #' row of the resulting data frame contains information about a single TCR
 #' component sequence in one cell of a particular CDR3 sequence.
-#' @param .clone Column variable name of the CDR3's nucleotide sequence.
+#' @param .clonal_seq Column variable name of the CDR3's nucleotide sequence.
 #' @param ... additional grouping column variables that might be necessary to
 #' distinguish merged data frames of multiple repertoires, or clonal sequence
 #' specification (such as V/J gene segments).
@@ -26,12 +26,14 @@
 #' @examples
 #'
 #' df <- data.frame(
-#' group_id=gl(2,4,8,labels = c('cancer','control')),
-#' sample_id=gl(4,2,8,labels = LETTERS[1:4]),
-#' nt=c('CGCGTGAAG', 'CGGGTGAAG','CACGAA','AAGGGGTCCGTG',
-#'      'AAGGGGTCCGTC','CGGGTGAAG','AAGGGGTCCGTT','CGGGTGAAG'),
-#' aa=c('RVK','RVK','HE','KGSV','KGSV','RVK','KGSV','RVK')
+#'   group_id=gl(2,4,8,labels = c('cancer','control')),
+#'   sample_id=gl(4,2,8,labels = LETTERS[1:4]),
+#'   nt=c('CGCGTGAAG', 'CGGGTGAAG','CACGAA','AAGGGGTCCGTG',
+#'        'AAGGGGTCCGTC','CGGGTGAAG','AAGGGGTCCGTT','CGGGTGAAG'),
+#'   aa=c('RVK','RVK','HE','KGSV','KGSV','RVK','KGSV','RVK')
+#'
 #' )
+#'
 #' add_cr_level(df, nt)
 #' add_cr_level(df, nt, sample_id)
 #'
@@ -40,13 +42,13 @@
 #' group_by(df, group_id) %>% add_cr_level(nt)
 #' group_by(df, group_id) %>% add_cr_level(nt, sample_id)
 #'
-add_cr_level <- function(.data, .clone, ...) {
+add_cr_level <- function(.data, .clonal_seq, ...) {
 
   .data %>%
 
-    group_by(.cr=translate({{.clone}}), ..., .add = TRUE) %>%
+    group_by(.cr=translate({{.clonal_seq}}), ..., .add = TRUE) %>%
 
-    add_tally(wt = n_distinct({{.clone}}), name = 'CR_level') %>%
+    add_tally(wt = cr_level({{.clonal_seq}}), name = 'CR_level') %>%
 
     ungroup('.cr') %>% select(!'.cr')
 }

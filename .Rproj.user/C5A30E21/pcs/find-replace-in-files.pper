@@ -1,6 +1,6 @@
 {
     "dialog-state": {
-        "query": "cr_level_tbl",
+        "query": "vctrs:::",
         "path": "",
         "regex": false,
         "caseSensitive": true,
