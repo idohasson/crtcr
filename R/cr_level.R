@@ -27,7 +27,7 @@
 #'
 #'  cr_level(x=c("A", "B", "A"), y=1:3, cr_func = my_func)
 #'
-cr_level <- function(.clonal_seq,..., cr_func=NULL, na.rm=FALSE) {
+cr_level <- function(.clonal_seq, ..., cr_func=NULL) {
 
   clone_data <- vctrs::df_list(.clonal_seq, ..., .name_repair = "minimal")
 
@@ -54,5 +54,41 @@ cr_level <- function(.clonal_seq,..., cr_func=NULL, na.rm=FALSE) {
   results
 
 }
+
+
+cr_freq <- function(.clone, .freq, across_freq=sum, across_clone=mean) {
+
+  across_clone(tapply(.freq, .clone, across_freq))
+
+}
+
+
+cr_freq(nt, freq)
+
+
+
+cr_level(nt, .id)
+
+tapply(nt, .id, cr_level)
+
+tapply(freq, list(nt, .id), sum)
+
+tapply(freq, nt, sum)
+
+
+vapply()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
