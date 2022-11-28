@@ -20,9 +20,7 @@
 #'
 unique_n <- function(..., na.rm = FALSE) {
 
-  .data <- df_list(..., .name_repair = "minimal")
-
-  .data <- new_data_frame(.data)
+  .data <- new_data_frame(df_list(..., .name_repair = "minimal"))
 
   if (isTRUE(na.rm)) {
 

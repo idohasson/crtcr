@@ -1,71 +1,39 @@
-# Convergent recombination level calculation.
-# unique number of values / rows.
+#' Convergent recombination level calculation
+#'
+#' @param .clone character vector of the clonal sequences.
+#' @param ... Additional vectors of clonal features to distinct same clonal sequences optional
+#'
+#' @return integer of unique count.
+#' @export
+#'
+#' @examples
+#'
+#' cr_level(rep(LETTERS[1:2], each=4), gl(2,2,8), gl(4,3,8))
+#'
+cr_level <- function(.clone, ...) {
 
-# nt_vec <- c("ATGTTT", "ATGTTC", "ATGTTT", "ATGTTA",
-            # "ATGTTT", "ATGTTC", "ATGTTT", "ATGTTG")
+  unique_n(.clone, ...)
 
-
-
-# cr_level(nt_vec)
-#
-# # For clones from multiple repertoires, each of the clonotype's (here, the
-# # corresponding amino acid sequences) CR-level value should be calculated
-# # separately.
-#
-# sample_id <- gl(3,2, labels = paste0("sample_", seq(3)))
-# sample_id # same length vector, indicating which sequence belong to which sample
-#           # by a unique id (character / numeric / logical / etc.)
-#
-# cr_level(nt_vec, sample_id) # Incorrect way - this is the sum of all CR-level.
-# # Alternative way
-# samples_split <- split(nt_vec, sample_id)
-# samples_split # list of clonal sequence vectors, each belongs to different sample.
-# # Repertoires' CR-level of a certain clonotype.
-# sapply(samples_split, cr_level)
-
-
-
-
-
-
-cr_level <- function(.clonal_seq, ..., cr_func=NULL) {
-
-  clone_data <- vctrs::df_list(.clonal_seq, ..., .name_repair = "minimal")
-
-  clone_data <- vctrs::new_data_frame(clone_data)
-
-  vctrs::vec_unique_count(clone_data)
-
-  # if (isTRUE(na.rm)) {
+  # apply_unique <- function(.on, ..., .apply_func) {
   #
-  #   no_na <- vctrs::vec_detect_complete(clone_data)
+  #   .by <- df_list(..., .name_repair = "minimal")
   #
-  #   clone_data <- vctrs::vec_slice(clone_data, no_na)
+  #   .by <- new_data_frame(.by)
+  #
+  #   .by <- vec_group_id(.by)
+  #
+  #   tapply(.on, .by, .apply_func)
   #
   # }
-
-  # if (is.null(cr_func)) {
-  #
-  #   results <- vctrs::vec_unique_count(clone_data)
-  #
-  # } else {
-  #
-  #   results <- cr_func(clone_data)
-  #
-  # }
-  #
-  # results
-
-
 
 }
 
 
-cr_freq <- function(.clone, .freq, across_freq=sum, across_clone=mean) {
 
-  across_clone(tapply(.freq, .clone, across_freq))
 
-}
+
+
+
 
 
 
