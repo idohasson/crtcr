@@ -2,39 +2,26 @@
 % Please edit documentation in R/is_exclusive.R
 \name{is_exclusive}
 \alias{is_exclusive}
-\title{Title x}
+\title{Is exclusive public clonotype}
 \usage{
-is_exclusive(..., .exclusive = 1)
+is_exclusive(.subgroup, ..., .exclusive = 1)
 }
 \arguments{
-\item{...}{x}
+\item{.subgroup}{sub-group identification vector.}
 
-\item{.exclusive}{x}
+\item{...}{additional identifier vectors}
 
-\item{na.rm}{x}
+\item{.exclusive}{maximal number of subgroups a clone is found in.}
 }
 \value{
-x
+TRUE for exclusive, FALSE for inclusive.
 }
 \description{
-Title x
+True for if clonotype’s present across subgroups doesn't surpass the threshold
 }
 \examples{
 
-
-require(dplyr)
-
-df <- data.frame(x=factor(LETTERS[sample(1:5, 5,replace = TRUE)]),
-                 y=factor(letters[sample(1:2, 5, replace = TRUE)]),
-                 clonotype=sample(c("ASD", "AWD"), 5, replace = TRUE, prob = c(.2,.8)))
-
-df \%>\%
-  group_by(clonotype) \%>\%
-  summarise(
-    public=is_public(x,y),
-    exclusive=is_exclusive(y)
-  )
-
-
+is_exclusive(c("A", "A", "A", "A"))
+is_exclusive(c("A", "A", "A", "A", "B"))
 
 }

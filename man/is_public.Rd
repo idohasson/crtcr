@@ -2,35 +2,26 @@
 % Please edit documentation in R/is_public.R
 \name{is_public}
 \alias{is_public}
-\title{Public clonotype frequencies}
+\title{Is public clonotype}
 \usage{
-is_public(..., .public = 2)
+is_public(.id, ..., .public = 2)
 }
 \arguments{
-\item{...}{x}
+\item{.id}{repertoire identifier vector}
 
-\item{.public}{Minimum number of repertoires}
+\item{...}{additional identifier vectors}
 
-\item{na.rm}{x}
+\item{.public}{minimum number of repertoires.}
 }
 \value{
-logical scalar. TRUE for public, FALSE for private (or none)
+TRUE for public, FALSE for private.
 }
 \description{
-check if clonotype's frequencies throughout repertoire group are public
+Is public clonotype
 }
 \examples{
 
-is_public(c("A", "B", "A"))
-
-require(dplyr)
-
-df <- data.frame(x=factor(LETTERS[sample(1:5, 10,replace = TRUE)]),
-                 y=factor(letters[sample(1:3, 10, replace = TRUE)]),
-                 clonotype=sample(c("ASD", "AWD"), 10, replace = TRUE))
-
-df \%>\%
-  group_by(clonotype) \%>\%
-  summarise(public=is_public(x,y, .public = .5))
+is_public(c("A", "A", "A", "A"))
+is_public(c("A", "A", "A", "A", "B"))
 
 }
