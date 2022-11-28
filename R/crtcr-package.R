@@ -10,5 +10,10 @@
 #' @importFrom dplyr n_distinct
 #' @importFrom dplyr select
 #' @importFrom dplyr ungroup
+#' @importFrom vctrs df_list
+#' @importFrom vctrs new_data_frame
+#' @importFrom vctrs vec_detect_complete
+#' @importFrom vctrs vec_slice
+#' @importFrom vctrs vec_unique_count
 ## usethis namespace: end
 NULL

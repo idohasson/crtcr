@@ -1,4 +1,9 @@
-#' Converts nucleotide sequence to amino acid sequence
+#' Converts nucleotides to amino acids
+#'
+#' @description
+#' Converts a character vector of nucleotide sequences (uppercase 'A','G','T','C')
+#' to their corresponding amino acid sequences by decoding consecutive triplets
+#' with the codon table.
 #'
 #' @param nt_vec DNA sequences as character vector composed with the letters
 #' "A", "G", "T" or"C" (case-sensitive to upper case).
@@ -12,20 +17,31 @@
 #'
 translate <- function(nt_vec) {
   # checks that each element in the vector is a DNA base.
-  # stopifnot(all(grepl(pattern = "^[AGTC]+$", nt_vec)))
-  stopifnot(all(grepl(pattern = "^([AGTC]{3})+$", nt_vec)))
-  # a vector of integers that correspond to the nucleotide characters.
-  encoding <- c(T = 0, C = 1, A = 2, G = 3)
-  # a vector of characters that correspond to the amino acid characters.
-  decoding <- strsplit("FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG", "")[[1]]
+  stopifnot("All strings must have consecutive triplets of 'A','G','T','C' (uppercase)"=all(grepl(pattern = "^([AGTC]{3})+$", nt_vec)))
   # function for converting a DNA character vector into an amino acid character vector.
-  nt_to_aa <- function(nt) decoding[encoding[nt[seq(1, length(nt) ,3)]] * 16 +
-                                      encoding[nt[seq(2, length(nt) ,3)]] * 4 +
-                                      encoding[nt[seq(3, length(nt) ,3)]] + 1]
-  # splits the nucleotide vector into a character vector of individual nucleotides
-  nt_vec <- strsplit(nt_vec, split = "")
-  # converts each nucleotide character to an amino acid character.
-  aa_vec <- lapply(nt_vec, nt_to_aa)
-  # pastes the amino acid characters together into a single string.
-  sapply(aa_vec, paste, collapse="")
+  nt_to_aa <- function(nt) {
+    # a vector of integers that correspond to the nucleotide characters.
+    base_i <- c(T=0, C=1, A=2, G=3)
+    # a vector of characters that correspond to the amino acid characters.
+    codon_talbe <- c("F", "F", "L", "L", "S", "S", "S", "S",
+                    "Y", "Y", "*", "*", "C", "C", "*", "W",
+                    "L", "L", "L", "L", "P", "P", "P", "P",
+                    "H", "H", "Q", "Q", "R", "R", "R", "R",
+                    "I", "I", "I", "M", "T", "T", "T", "T",
+                    "N", "N", "K", "K", "S", "S", "R", "R",
+                    "V", "V", "V", "V", "A", "A", "A", "A",
+                    "D", "D", "E", "E", "G", "G", "G", "G")
+
+    aa_index <- base_i[nt[seq(1,length(nt),3)]] * 16 +
+                base_i[nt[seq(2,length(nt),3)]] * 4 +
+                base_i[nt[seq(3,length(nt),3)]] + 1
+
+    paste(codon_talbe[aa_index], collapse="")
+
+  }
+
+  vapply(strsplit(nt_vec, NULL), nt_to_aa, character(1))
 }
+
+
+

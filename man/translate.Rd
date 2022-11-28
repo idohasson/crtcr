@@ -2,7 +2,7 @@
 % Please edit documentation in R/translate.R
 \name{translate}
 \alias{translate}
-\title{Converts nucleotide sequence to amino acid sequence}
+\title{Converts nucleotides to amino acids}
 \usage{
 translate(nt_vec)
 }
@@ -14,7 +14,9 @@ translate(nt_vec)
 Character vector of the coding amino acid sequences.
 }
 \description{
-Converts nucleotide sequence to amino acid sequence
+Converts a character vector of nucleotide sequences (uppercase 'A','G','T','C')
+to their corresponding amino acid sequences by decoding consecutive triplets
+with the codon table.
 }
 \examples{
 

@@ -1,3 +1,11 @@
+# cr_freq(nt, freq)
+# cr_level(nt, .id)
+#
+# tapply(nt, .id, cr_level)
+# tapply(freq, list(nt, .id), sum)
+# tapply(freq, nt, sum)
+#
+# vapply()
 
 cr_level_df <- function(.data, .clonal_seq, .clonotype_seq) {
 
