@@ -9,17 +9,16 @@
 #' @examples
 #'
 #' v1 <- c("A", "A", "A", "B", "A", "B")
-#' sharing_level(v1)
+#' sharing_number(v1)
 #'
 #' (v2 <- rep(1:2, each=3))
-#' sharing_level(v1, v2)
+#' sharing_number(v1, v2)
 #'
 #' (v3 <- rep(1:2, times=3))
-#' sharing_level(v1, v2, v3)
+#' sharing_number(v1, v2, v3)
 #'
-sharing_level <- function(.id, ...) {
+sharing_number <- function(.id, ...) {
 
   unique_n(.id, ...)
 
 }
-
