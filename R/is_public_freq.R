@@ -1,45 +1,47 @@
-#' Public clonotype frequencies
+
+#' Is public clonotype by frequencies
 #'
-#' check if clonotype's frequencies throughout repertoire group are public
+#' @description
 #'
-#' @param .public Minimum number of repertoires
-#' @param ... x
-#' @param na.rm x
+#' Returns True if clonotype's number of frequency values which are non-zero throughout repertoires / group, meet with the condition. if so, the clonotype is public
 #'
-#' @return logical scalar. TRUE for public, FALSE for private (or none)
+#' @param .freq numerical vector
+#' @param .public value count threshold
+#' @param na.rm if FALSE (the default), return NA when no frequency value meet with the condition
+#'
+#' @return TRUE for public, False for private clonotype
 #' @export
 #'
 #' @examples
 #'
-#' require(dplyr)
+#' is_public_freq(c(0,0,1)) # FALSE
+#' is_public_freq(c(1,2,0)) # TRUE
+#' is_public_freq(c(0,0,0)) # NA
+#' is_public_freq(c(0,0,0), na.rm = TRUE) # FALSE
 #'
-#' df <- data.frame(x=factor(LETTERS[sample(1:5, 10,replace = TRUE)]),
-#'                  y=factor(letters[sample(1:3, 10, replace = TRUE)]),
-#'                  clonotype=sample(c("ASD", "AWD"), 10, replace = TRUE))
+#' is_public_freq(c(0,0,1), .5) # FALSE
+#' is_public_freq(c(1,2,0), .5) # TRUE
+#' is_public_freq(c(1,2,0), .75) # FALSE
 #'
-#' df %>% <- <- <- <- <- <- <-
-#'   group_by(clonotype) %>%
-#'   summarise(public=is_public_freq(x,y, .public = .5))
-#'
-is_public_freq <- function(..., .public=2) {
+is_public_freq <- function(.freq, .public=2, na.rm=FALSE) {
 
-  clonotype_data <- vctrs::df_list(..., .name_repair = "minimal")
+  is_in_rep <- as.logical(.freq)
 
-  clonotype_data <- vctrs::new_data_frame(clonotype_data)
+  if (isFALSE(na.rm)) {
 
-  freq <- vctrs::vec_unique_count(clonotype_data)
+    if (!any(is_in_rep))
 
+      return(NA)
 
-  if (.public > 1)
+  }
 
-    return(freq >= .public)
+  if (.public > 1) {
 
-  else {
+    return(sum(is_in_rep) >= .public)
 
-    n_levels <- sapply(seq_along(clonotype_data),
-                       function(i) length(levels(clonotype_data[,i])))
+  } else {
 
-    return(freq / sum(n_levels) >= .public)
+    return(mean(is_in_rep) >= .public)
 
   }
 
@@ -47,17 +49,45 @@ is_public_freq <- function(..., .public=2) {
 
 
 
-# N <- sum(as.logical(freq), na.rm = TRUE)
+
+
+# is_freq <- function(.freq, .freq_func, .condition, na.rm=FALSE) {
 #
-# if (N == 0)
+#   is_non_zero <- as.logical(.freq)
+#
+#   if (isFALSE(na.rm)) {
+#
+#     if (!any(is_non_zero))
+#
+#       return(NA)
+#
+#   }
+#
+#   val <- .freq_func(is_non_zero)
+#
+#   .condition(val)
+#
+# }
+#
+# foo <- as.function(alist(a = , b = 2, a >= b))
+#
+# # foo(3,7)
+
+# N <- sum(is_in_rep, na.rm = na.rm)
+#
+# if (N == 0) {
 #
 #   return(NA)
 #
-# if (.public <= 1)
+# } else if (.public <= 1) {
 #
 #   N <- N / length(freq)
 #
-# N >= .public
+# } else {
+#
+#   N >= .public
+#
+# }
 
 # return(freq/length(levels(r_id)))
 # return(clonotype_data)

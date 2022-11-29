@@ -2,33 +2,32 @@
 % Please edit documentation in R/is_public_freq.R
 \name{is_public_freq}
 \alias{is_public_freq}
-\title{Public clonotype frequencies}
+\title{Is public clonotype by frequencies}
 \usage{
-is_public_freq(..., .public = 2)
+is_public_freq(.freq, .public = 2, na.rm = FALSE)
 }
 \arguments{
-\item{...}{x}
+\item{.freq}{numerical vector}
 
-\item{.public}{Minimum number of repertoires}
+\item{.public}{value count threshold}
 
-\item{na.rm}{x}
+\item{na.rm}{if FALSE (the default), return NA when no frequency value meet with the condition}
 }
 \value{
-logical scalar. TRUE for public, FALSE for private (or none)
+TRUE for public, False for private clonotype
 }
 \description{
-check if clonotype's frequencies throughout repertoire group are public
+Returns True if clonotype's number of frequency values which are non-zero throughout repertoires / group, meet with the condition. if so, the clonotype is public
 }
 \examples{
 
-require(dplyr)
+is_public_freq(c(0,0,1)) # FALSE
+is_public_freq(c(1,2,0)) # TRUE
+is_public_freq(c(0,0,0)) # NA
+is_public_freq(c(0,0,0), na.rm = TRUE) # FALSE
 
-df <- data.frame(x=factor(LETTERS[sample(1:5, 10,replace = TRUE)]),
-                 y=factor(letters[sample(1:3, 10, replace = TRUE)]),
-                 clonotype=sample(c("ASD", "AWD"), 10, replace = TRUE))
-
-df \%>\% <- <- <- <- <- <- <-
-  group_by(clonotype) \%>\%
-  summarise(public=is_public_freq(x,y, .public = .5))
+is_public_freq(c(0,0,1), .5) # FALSE
+is_public_freq(c(1,2,0), .5) # TRUE
+is_public_freq(c(1,2,0), .75) # FALSE
 
 }

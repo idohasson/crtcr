@@ -2,12 +2,12 @@
 
 export(add_cr_level)
 export(add_share_level)
-export(cr_class)
 export(cr_level)
 export(is_exclusive)
 export(is_exclusive_freq)
 export(is_public)
 export(is_public_freq)
+export(public_class)
 export(sharing_level)
 export(sharing_number)
 export(translate)

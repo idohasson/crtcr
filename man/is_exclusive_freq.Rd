@@ -2,39 +2,31 @@
 % Please edit documentation in R/is_exclusive_freq.R
 \name{is_exclusive_freq}
 \alias{is_exclusive_freq}
-\title{Title x}
+\title{Is exclusive public clonotype by frequencies}
 \usage{
-is_exclusive_freq(..., .exclusive = 1)
+is_exclusive_freq(.freq, .subgroup, .exclusive = 1, na.rm = FALSE)
 }
 \arguments{
-\item{...}{x}
+\item{.freq}{numerical vector}
 
-\item{.exclusive}{x}
+\item{.exclusive}{value count threshold}
 
-\item{na.rm}{x}
+\item{na.rm}{if FALSE (the default), return NA when no frequency value meet with the condition}
 }
 \value{
-x
+TRUE for exclusive, FALSE for inclusive.
 }
 \description{
-Title x
+Is exclusive public clonotype by frequencies
 }
 \examples{
 
 
-require(dplyr)
+is_exclusive_freq(c(1,1,0,0,0), c("A", "A", "B", "B", "C"))
+is_exclusive_freq(c(1,1,0,0,1), c("A", "A", "B", "B", "C"))
 
-df <- data.frame(x=factor(LETTERS[sample(1:5, 5,replace = TRUE)]),
-                 y=factor(letters[sample(1:2, 5, replace = TRUE)]),
-                 clonotype=sample(c("ASD", "AWD"), 5, replace = TRUE, prob = c(.2,.8)))
-
-df \%>\%
-  group_by(clonotype) \%>\%
-  summarise(
-    public=is_public(x,y),
-    exclusive=is_exclusive_freq(y)
-  )
-
+is_exclusive_freq(c(1,1,0,0,1), c("A", "A", "B", "B", "C"), 2)
+is_exclusive_freq(c(1,1,0,0,0), c("A", "A", "B", "B", "C"), 1/3)
 
 
 }

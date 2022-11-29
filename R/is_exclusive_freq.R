@@ -1,49 +1,68 @@
 
-#' Title x
+
+# is_exclusive_freq <- function(..., .exclusive=1) {
+#
+#   clonotype_data <- vctrs::df_list(..., .name_repair = "minimal")
+#
+#   clonotype_data <- vctrs::new_data_frame(clonotype_data)
+#
+#   freq <- vctrs::vec_unique_count(clonotype_data)
+#
+#   if (.exclusive >= 1)
+#
+#     return(freq <= .exclusive)
+#
+#   else {
+#
+#     n_levels <- sapply(seq_along(clonotype_data),
+#                        function(i) length(levels(clonotype_data[,i])))
+#
+#     return(freq / sum(n_levels) <= .exclusive)
+#
+#   }
+#
+# }
+
+#' Is exclusive public clonotype by frequencies
 #'
-#' @param ... x
-#' @param .exclusive x
-#' @param na.rm x
+#' @param .freq numerical vector
+#' @param .exclusive value count threshold
+#' @param na.rm if FALSE (the default), return NA when no frequency value meet with the condition
 #'
-#' @return x
+#' @return TRUE for exclusive, FALSE for inclusive.
 #' @export
 #'
 #' @examples
 #'
 #'
-#' require(dplyr)
+#' is_exclusive_freq(c(1,1,0,0,0), c("A", "A", "B", "B", "C"))
+#' is_exclusive_freq(c(1,1,0,0,1), c("A", "A", "B", "B", "C"))
 #'
-#' df <- data.frame(x=factor(LETTERS[sample(1:5, 5,replace = TRUE)]),
-#'                  y=factor(letters[sample(1:2, 5, replace = TRUE)]),
-#'                  clonotype=sample(c("ASD", "AWD"), 5, replace = TRUE, prob = c(.2,.8)))
-#'
-#' df %>%
-#'   group_by(clonotype) %>%
-#'   summarise(
-#'     public=is_public(x,y),
-#'     exclusive=is_exclusive_freq(y)
-#'   )
+#' is_exclusive_freq(c(1,1,0,0,1), c("A", "A", "B", "B", "C"), 2)
+#' is_exclusive_freq(c(1,1,0,0,0), c("A", "A", "B", "B", "C"), 1/3)
 #'
 #'
-#'
-is_exclusive_freq <- function(..., .exclusive=1) {
+is_exclusive_freq <- function(.freq, .subgroup, .exclusive=1, na.rm=FALSE) {
 
-  clonotype_data <- vctrs::df_list(..., .name_repair = "minimal")
+  is_in_subgroup <- tapply(.freq, .subgroup,  function(x) any(as.logical(x)))
 
-  clonotype_data <- vctrs::new_data_frame(clonotype_data)
+  # is_in_rep <- as.logical(.freq) %>%
 
-  freq <- vctrs::vec_unique_count(clonotype_data)
+  if (isFALSE(na.rm)) {
 
-  if (.exclusive >= 1)
+    if (!any(is_in_subgroup))
 
-    return(freq <= .exclusive)
+      return(NA)
 
-  else {
+  }
 
-    n_levels <- sapply(seq_along(clonotype_data),
-                       function(i) length(levels(clonotype_data[,i])))
+  if (.exclusive >= 1) {
 
-    return(freq / sum(n_levels) <= .exclusive)
+    return(sum(is_in_subgroup) <= .exclusive)
+
+  } else {
+
+    return(mean(is_in_subgroup) <= .exclusive)
 
   }
 
