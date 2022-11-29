@@ -5,29 +5,45 @@
 #' returns the publicness classifications "private," "exclusive,” and
 #' “inclusive” by the repertoires’ presence, throughout all subgroups.
 #'
+#'
 #' @param .id repertoire identifier vector
-#' @param .subgroup sub-group identification vector.
 #' @param ... additional identifier vectors.
+#' @param .subgroup sub-group identification vector. for the default value, NULL, returns "public" instead of "exclusive” / “inclusive”
+#' @param .public minimum number of repertoires.
+#' @param .exclusive maximal number of subgroups a clone is found in.
 #'
 #' @return "private" / "exclusive” / “inclusive”
 #' @export
 #'
 #' @examples
 #'
-#' public_class(c("A", "A"), c("C", "D"))
-#' public_class(c("A", "B"), c("C", "C"))
-#' public_class(c("A", "A"), c("C", "C"))
+#' public_class(c("A", "B"), .subgroup=c("C", "D"))
+#' public_class(c("A", "B"), .subgroup=c("C", "C"))
+#' public_class(c("A", "A"), .subgroup=c("C", "C"))
 #'
-public_class <- function(.id, .subgroup, ...) {
+#' public_class(c("A", "B"))
+#' public_class(c("A", "A"))
+#'
+public_class <- function(.id, ..., .subgroup=NULL, .public=2, .exclusive=1) {
 
-  PUBLIC_INDEX <- c("private", "inclusive", "exclusive")
+  is_p <- is_public(.id, ..., .public = .public)
 
-  is_p <- is_public(.id, ...)
+  if (isFALSE(is_p))
 
-  is_e <- is_exclusive(.subgroup, ...)
+    return("private")
 
-  i <- (is_p) + (is_p & is_e)
+  else if (is.null(.subgroup))
 
-  PUBLIC_INDEX[i+1]
+    return("public")
+
+  is_e <- is_exclusive(.subgroup, .exclusive, .is_public = is_p, na.rm = TRUE)
+
+  if (is_e)
+
+    return("exclusive")
+
+  else
+
+    return("inclusive")
 
 }

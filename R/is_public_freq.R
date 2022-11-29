@@ -7,7 +7,7 @@
 #'
 #' @param .freq numerical vector
 #' @param .public value count threshold
-#' @param na.rm if FALSE (the default), return NA when no frequency value meet with the condition
+#' @param na.rm if FALSE (the default), return NA when all frequency values are zero.
 #'
 #' @return TRUE for public, False for private clonotype
 #' @export
@@ -16,6 +16,7 @@
 #'
 #' is_public_freq(c(0,0,1)) # FALSE
 #' is_public_freq(c(1,2,0)) # TRUE
+#'
 #' is_public_freq(c(0,0,0)) # NA
 #' is_public_freq(c(0,0,0), na.rm = TRUE) # FALSE
 #'
