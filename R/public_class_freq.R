@@ -1,10 +1,3 @@
-public_class_freq(c(1,1,0,0,0), c("A", "A", "B", "B", "C"))
-public_class_freq(c(1,1,0,0,1), c("A", "A", "B", "B", "C"))
-public_class_freq(c(1,0,0,0,0), c("A", "A", "B", "B", "C"))
-
-public_class_freq(c(1,1,0,0,1))
-public_class_freq(c(1,0,0,0,0))
-public_class_freq(c(0,0,0,0,0))
 
 #' Public classification of a clonotype
 #'

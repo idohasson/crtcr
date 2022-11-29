@@ -1,28 +1,4 @@
 
-
-# is_exclusive_freq <- function(..., .exclusive=1) {
-#
-#   clonotype_data <- vctrs::df_list(..., .name_repair = "minimal")
-#
-#   clonotype_data <- vctrs::new_data_frame(clonotype_data)
-#
-#   freq <- vctrs::vec_unique_count(clonotype_data)
-#
-#   if (.exclusive >= 1)
-#
-#     return(freq <= .exclusive)
-#
-#   else {
-#
-#     n_levels <- sapply(seq_along(clonotype_data),
-#                        function(i) length(levels(clonotype_data[,i])))
-#
-#     return(freq / sum(n_levels) <= .exclusive)
-#
-#   }
-#
-# }
-
 #' Is exclusive public clonotype by frequencies
 #'
 #' @param .freq numerical vector

@@ -19,7 +19,18 @@
 #'
 sharing_level <- function(.id, ...) {
 
-  unique_n(.id, ...)
+  .data <- new_data_frame(df_list(.id, ..., .name_repair = "minimal"))
+
+  vctrs::vec_count(.data)
 
 }
 
+
+
+# sharing_subgroup <- function(.id, .subgroup, ...) {
+#
+#   .data <- new_data_frame(df_list(.subgroup, ..., .name_repair = "minimal"))
+#
+#   tapply(.id, .subgroup, unique_n)
+#
+# }

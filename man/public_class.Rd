@@ -4,14 +4,18 @@
 \alias{public_class}
 \title{Public classification}
 \usage{
-public_class(.id, .subgroup, ...)
+public_class(.id, ..., .subgroup = NULL, .public = 2, .exclusive = 1)
 }
 \arguments{
 \item{.id}{repertoire identifier vector}
 
-\item{.subgroup}{sub-group identification vector.}
-
 \item{...}{additional identifier vectors.}
+
+\item{.subgroup}{sub-group identification vector. for the default value, NULL, returns "public" instead of "exclusive” / “inclusive”}
+
+\item{.public}{minimum number of repertoires.}
+
+\item{.exclusive}{maximal number of subgroups a clone is found in.}
 }
 \value{
 "private" / "exclusive” / “inclusive”
@@ -22,8 +26,11 @@ returns the publicness classifications "private," "exclusive,” and
 }
 \examples{
 
-public_class(c("A", "A"), c("C", "D"))
-public_class(c("A", "B"), c("C", "C"))
-public_class(c("A", "A"), c("C", "C"))
+public_class(c("A", "B"), .subgroup=c("C", "D"))
+public_class(c("A", "B"), .subgroup=c("C", "C"))
+public_class(c("A", "A"), .subgroup=c("C", "C"))
+
+public_class(c("A", "B"))
+public_class(c("A", "A"))
 
 }

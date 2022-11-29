@@ -11,7 +11,7 @@ is_public_freq(.freq, .public = 2, na.rm = FALSE)
 
 \item{.public}{value count threshold}
 
-\item{na.rm}{if FALSE (the default), return NA when no frequency value meet with the condition}
+\item{na.rm}{if FALSE (the default), return NA when all frequency values are zero.}
 }
 \value{
 TRUE for public, False for private clonotype
@@ -23,6 +23,7 @@ Returns True if clonotype's number of frequency values which are non-zero throug
 
 is_public_freq(c(0,0,1)) # FALSE
 is_public_freq(c(1,2,0)) # TRUE
+
 is_public_freq(c(0,0,0)) # NA
 is_public_freq(c(0,0,0), na.rm = TRUE) # FALSE
 

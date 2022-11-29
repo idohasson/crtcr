@@ -41,27 +41,3 @@ add_share_level <- function(.data, .clonotype, .rep_id, ...) {
     add_tally(wt = share_level({{.rep_id}}), name = "share")
 
 }
-
-
-
-# df <- data.frame(
-#   x=c("A", "A", "A", "B", "B", "B"),
-#   y=c("C", "C", "D", "D", "E", "E"),
-#   clonotype=c("a", "b", "a", "b", "a", "b")
-# )
-#
-# share_level(df)
-#
-# require(dplyr)
-#
-# my_func <- function(df) {
-#
-#  table(df) %>%
-#
-#    rowMeans() %>%
-#
-#    sum()
-# }
-#
-# group_by(df, clonotype, x) %>%
-#   summarise(share=share_level(x,y, share_func = my_func))

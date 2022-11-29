@@ -16,7 +16,9 @@
 #' is_exclusive(c("A", "A", "A", "A"))
 #' is_exclusive(c("A", "A", "A", "A", "B"))
 #'
-is_exclusive <- function(.subgroup, ..., .exclusive=1, .is_public=NULL, na.rm=FALSE) {
+is_exclusive <- function(.subgroup, .exclusive=1, .is_public=NULL, na.rm=FALSE) {
+
+  # TODO: check public. (like in `is_exclusive_freq`)
 
   if (isFALSE(.is_public)) {
 
@@ -30,6 +32,6 @@ is_exclusive <- function(.subgroup, ..., .exclusive=1, .is_public=NULL, na.rm=FA
 
   }
 
-  unique_n(.subgroup, ...) <= .exclusive
+  vec_unique_count(.subgroup) <= .exclusive
 
 }

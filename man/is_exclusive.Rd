@@ -4,14 +4,18 @@
 \alias{is_exclusive}
 \title{Is exclusive public clonotype}
 \usage{
-is_exclusive(.subgroup, ..., .exclusive = 1)
+is_exclusive(.subgroup, .exclusive = 1, .is_public = NULL, na.rm = FALSE)
 }
 \arguments{
 \item{.subgroup}{sub-group identification vector.}
 
-\item{...}{additional identifier vectors}
-
 \item{.exclusive}{maximal number of subgroups a clone is found in.}
+
+\item{.is_public}{logical value of of wheather or not the clonotype is public. if FALSE, meaning it's private, return NA.}
+
+\item{na.rm}{return \code{FALSE} instead of \code{NA} when \code{.is_public} is FALSE}
+
+\item{...}{additional identifier vectors}
 }
 \value{
 TRUE for exclusive, FALSE for inclusive.

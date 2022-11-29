@@ -4,14 +4,16 @@
 \alias{is_exclusive_freq}
 \title{Is exclusive public clonotype by frequencies}
 \usage{
-is_exclusive_freq(.freq, .subgroup, .exclusive = 1, na.rm = FALSE)
+is_exclusive_freq(.freq, .subgroup = NULL, .exclusive = 1, na.rm = FALSE)
 }
 \arguments{
 \item{.freq}{numerical vector}
 
-\item{.exclusive}{value count threshold}
+\item{.subgroup}{identifier vector (optional)}
 
-\item{na.rm}{if FALSE (the default), return NA when no frequency value meet with the condition}
+\item{.exclusive}{maximal number of subgroups a clone is found in.}
+
+\item{na.rm}{if FALSE (the default), return NA when all frequency values are zero.}
 }
 \value{
 TRUE for exclusive, FALSE for inclusive.
@@ -23,7 +25,7 @@ Is exclusive public clonotype by frequencies
 
 
 is_exclusive_freq(c(1,1,0,0,0), c("A", "A", "B", "B", "C"))
-is_exclusive_freq(c(1,1,0,0,1), c("A", "A", "B", "B", "C"))
+
 
 is_exclusive_freq(c(1,1,0,0,1), c("A", "A", "B", "B", "C"), 2)
 is_exclusive_freq(c(1,1,0,0,0), c("A", "A", "B", "B", "C"), 1/3)

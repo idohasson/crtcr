@@ -14,21 +14,20 @@ cr_level <- function(.clone, ...) {
 
   unique_n(.clone, ...)
 
-  # apply_unique <- function(.on, ..., .apply_func) {
-  #
-  #   .by <- df_list(..., .name_repair = "minimal")
-  #
-  #   .by <- new_data_frame(.by)
-  #
-  #   .by <- vec_group_id(.by)
-  #
-  #   tapply(.on, .by, .apply_func)
-  #
-  # }
-
 }
 
 
+# apply_unique <- function(.on, ..., .apply_func) {
+#
+#   .by <- df_list(..., .name_repair = "minimal")
+#
+#   .by <- new_data_frame(.by)
+#
+#   .by <- vec_group_id(.by)
+#
+#   tapply(.on, .by, .apply_func)
+#
+# }
 
 
 
@@ -37,4 +36,23 @@ cr_level <- function(.clone, ...) {
 
 
 
-
+# cr_level_df <- function(.data, .clonal_seq, .clonotype_seq) {
+#
+#
+#
+#
+#   if (missing(.clonotype_seq)) {
+#
+#     group_by(.data, clonotype=translate({{.clonal_seq}}), .add = TRUE) %>%
+#
+#       summarise(CR_level = cr_level({{.clonal_seq}}))
+#
+#   } else {
+#
+#     group_by(.data, {{.clonotype_seq}}, .add = TRUE) %>%
+#
+#       summarise(CR_level = cr_level({{.clonal_seq}}))
+#
+#   }
+#
+# }
