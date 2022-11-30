@@ -4,7 +4,7 @@
 \alias{sharing_level}
 \title{Number of distinct repertoires}
 \usage{
-sharing_level(.id, ...)
+sharing_level(.id, share_func = unique_n)
 }
 \arguments{
 \item{.id}{vector of repertoire's identifier}

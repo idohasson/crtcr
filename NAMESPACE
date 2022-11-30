@@ -3,6 +3,7 @@
 export(add_cr_level)
 export(add_share_level)
 export(cr_level)
+export(cr_subgroup)
 export(is_exclusive)
 export(is_exclusive_freq)
 export(is_public)

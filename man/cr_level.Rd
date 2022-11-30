@@ -4,12 +4,12 @@
 \alias{cr_level}
 \title{Convergent recombination level calculation}
 \usage{
-cr_level(.clone, ...)
+cr_level(clones, ignore.na = TRUE)
 }
 \arguments{
-\item{.clone}{character vector of the clonal sequences.}
+\item{ignore.na}{if TRUE (default), NA values are not included in the count.}
 
-\item{...}{Additional vectors of clonal features to distinct same clonal sequences optional}
+\item{...}{character vector(s) of the clonal sequences.}
 }
 \value{
 integer of unique count.

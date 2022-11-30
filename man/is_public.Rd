@@ -4,14 +4,14 @@
 \alias{is_public}
 \title{Is public clonotype}
 \usage{
-is_public(.id, ..., .public = 2)
+is_public(.id, .public = 2)
 }
 \arguments{
 \item{.id}{repertoire identifier vector}
 
-\item{...}{additional identifier vectors}
-
 \item{.public}{minimum number of repertoires.}
+
+\item{...}{additional identifier vectors}
 }
 \value{
 TRUE for public, FALSE for private.
