@@ -1,7 +1,7 @@
 #' Convergent recombination level calculation
 #'
-#' @param .clone character vector of the clonal sequences.
-#' @param ... Additional vectors of clonal features to distinct same clonal sequences optional
+#' @param ... character vector(s) of the clonal sequences.
+#' @param ignore.na if TRUE (default), NA values are not included in the count.
 #'
 #' @return integer of unique count.
 #' @export
@@ -10,29 +10,40 @@
 #'
 #' cr_level(rep(LETTERS[1:2], each=4), gl(2,2,8), gl(4,3,8))
 #'
-cr_level <- function(.clone, ...) {
+cr_level <- function(clones, ignore.na=TRUE) {
 
-  unique_n(.clone, ...)
+  # clone_lists <- list2(...)
+  #
+  # clonal_sequences <- squash_chr(clone_lists)
+
+  if (isTRUE(ignore.na)) {
+
+    no_na <- vec_detect_complete(clones)
+
+    clonal_sequences <- clones[no_na]
+
+  }
+
+  vec_unique_count(clones)
+
+}
+
+subgroup_cr_level <- function(.clone, .clonotype, .id, .subgroup, ...) {
+
+  tbl <- tapply(.clone, rlang::list2(.clonotype, .subgroup, .id, ...), cr_level)
+
+  apply(tbl, 1:2, mean, na.rm = T)
 
 }
 
 
-# apply_unique <- function(.on, ..., .apply_func) {
-#
-#   .by <- df_list(..., .name_repair = "minimal")
-#
-#   .by <- new_data_frame(.by)
-#
-#   .by <- vec_group_id(.by)
-#
-#   tapply(.on, .by, .apply_func)
-#
-# }
 
 
 
+# with(rand_df, subgroup_cr_level(clone, clonotype, rep_id, group))
 
-
+# tapply(rand_df$clone, as.list(rand_df[-3]), cr_level) %>%
+#   apply(c("clonotype", "group"), mean, na.rm = T)
 
 
 

@@ -12,6 +12,6 @@
 #' is_public(c("A", "A", "A", "A"))
 #' is_public(c("A", "A", "A", "A", "B"))
 #'
-is_public <- function(.id, ..., .public=2) {
-  unique_n(.id, ...) >= .public
+is_public <- function(.id, .public=2) {
+  unique_n(.id) >= .public
 }

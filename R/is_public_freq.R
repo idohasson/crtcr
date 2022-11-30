@@ -26,25 +26,21 @@
 #'
 is_public_freq <- function(.freq, .public=2, na.rm=FALSE) {
 
-  is_in_rep <- as.logical(.freq)
+  is_in_rep <- as.logical(.freq) & vec_detect_complete(.freq)
 
-  if (isFALSE(na.rm)) {
+  if (isFALSE(na.rm))
 
     if (!any(is_in_rep))
 
       return(NA)
 
-  }
-
-  if (.public > 1) {
+  if (.public > 1)
 
     return(sum(is_in_rep) >= .public)
 
-  } else {
+ else
 
     return(mean(is_in_rep) >= .public)
-
-  }
 
 }
 

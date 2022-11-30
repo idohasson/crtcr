@@ -20,16 +20,26 @@
 #'
 unique_n <- function(..., na.rm = FALSE) {
 
-  .data <- new_data_frame(df_list(..., .name_repair = "minimal"))
+  dfl <- df_list(..., .name_repair = "minimal")
+
+  dfi <- new_data_frame(dfl)
 
   if (isTRUE(na.rm)) {
 
-    no_na <- vec_detect_complete(.data)
+    no_na <- vec_detect_complete(dfi)
 
-    .data <- vec_slice(.data, no_na)
+    dfi <- vec_slice(dfi, no_na)
 
   }
 
-  vec_unique_count(.data)
+  vec_unique_count(dfi)
 
 }
+
+
+
+
+
+
+
+
