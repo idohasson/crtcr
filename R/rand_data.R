@@ -1,5 +1,5 @@
 
-nt_i <- c(T=0L, C=1L, A=2L, G=3L)
+
 
 # a vector of characters that correspond to the amino acid characters.
 codon_table <- c("F", "F", "L", "L", "S", "S", "S", "S",
@@ -15,22 +15,52 @@ coding_tbl_i <- c(1,2,3,4,5,6,7,8,9,10,13,14,16,17,18,19,20,21,22,23,24,25,
               45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64)
 
 
-codon_i <- list(R=c(29,30,31,32,47,48),K=c(43,44),G=c(61,62,63,64),c(5,6,7,8,45,46),
-                c(49,50,51,52),c(3,4,17,18,19,20),c(33,34,35),c(13,14),c(21,22,23,24),
-                c(16),c(41,42),c(37,38,39,40),c(57,58),c(25,26),c(53,54,55,56),c(27,28),
-                c(1,2),c(9,10),c(59,60),c(36))
-AA <- c('R','K','G','S','V','L','I','C','P','W','N','T','D','H','A','Q','F','Y','E','M')
+# codon_i <- list(R=c(29,30,31,32,47,48),K=c(43,44),G=c(61,62,63,64),c(5,6,7,8,45,46),
+#                 c(49,50,51,52),c(3,4,17,18,19,20),c(33,34,35),c(13,14),c(21,22,23,24),
+#                 c(16),c(41,42),c(37,38,39,40),c(57,58),c(25,26),c(53,54,55,56),c(27,28),
+#                 c(1,2),c(9,10),c(59,60),c(36))
+# AA <- c('R','K','G','S','V','L','I','C','P','W','N','T','D','H','A','Q','F','Y','E','M')
 
 
 
 
+
+# "^([AGTC]{3})+$"
+
+strsplit("ATGGCCTTT", c("A", "G", "T", "C"))
+
+v <- c("A","A","A","A","A","A","A","A","A","A","A","A")
+
+nt_input <- replicate(5,rand_nt(sample(2:5,1)))
+
+
+nt_l <- strsplit(nt_v, NULL)
+
+
+
+
+nt_i <- c(T=0L, C=1L, A=2L, G=3L)
+
+# codon_nt_index <-
+
+codon_split <- function(x,n) tapply(x, gl(n,3), function(nti) nt_i[nti])
+  # unname(split(nt, gl(length(nt)%/%3,3)))
+  # vapply(nt, function(x) nt_i[x], integer(1), USE.NAMES = FALSE)
 
 codon_indices_to_table_index <- function(codon_i) codon_i[1]*16 + codon_i[2]*4 + codon_i[3]
+
+# nt_l
+
+codon_indices_to_table_index(tapply(v, gl(length(v)%/%3,3), codon_nt_index)[[1]])
+
+
+
+
+
 
 tbl_index_to_codon_indices <- function(tbl_i) c(tbl_i %/% 16, (tbl_i %% 16) %/% 4, tbl_i %% 4)
 
 # aa_index <- function(x) codon_table[x[1]*16 + x[2]*4 + x[3] + 1]
-# codon_nt_index <- function(nt) vapply(nt, function(x) nt_i[x], integer(1), USE.NAMES = FALSE)
 # rand_codon <- function(n)
 # codon_nt_index(c("T", "A"))
 
