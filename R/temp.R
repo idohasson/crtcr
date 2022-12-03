@@ -1,6 +1,130 @@
 library(vctrs)
 library(rlang)
 
+(x <- rand_nt_vec())
+(y <- sample(LETTERS[1:6], 100, rep=T))
+(z <- sample(c("cancer", "control"), 100, rep=T))
+
+
+
+cr_number <- function(..., na.rm=FALSE) {
+
+  char_list <- list_of(..., .ptype = character(1L))
+
+  char_vec <- squash_chr(char_list)
+
+  if(isTRUE(na.rm))
+
+    char_vec <- char_vec[vec_detect_complete(char_vec)]
+
+  vec_unique_count(char_vec)
+
+}
+
+cr_mean <- function(.clone) {
+
+  cr_number(.clone) / vec_size(.clone)
+
+}
+
+cr_level <- function(.clone, ..., .cr_func=cr_number) {
+  # check input
+}
+
+cr_level_df <- function(.clone, ..., .cr_func=cr_number) {
+
+  dfl <- dots_splice(..., .name_repair = "minimal")
+
+  group_df <- new_data_frame(dfl)
+
+  groups <- vec_group_loc(group_df)
+
+  clone_list <- vec_chop(.clone, groups$loc)
+
+  lvl <- vapply(clone_list, .cr_func, numeric(1L), USE.NAMES = FALSE)
+
+  vec_cbind(groups$key, CRlevel=lvl)
+
+}
+
+cr_level_vec <- function(.clone, ..., .cr_func=cr_number) {
+
+  l <- dots_splice(...)
+
+  clone_list <- split(.clone, l)
+
+  vapply(clone_list, .cr_func, numeric(1L), USE.NAMES = FALSE)
+
+}
+
+cr_level_tbl <- function(.clone, ..., .cr_func=cr_number) {
+
+  dfl <- df_list(y,z,.name_repair = "minimal")
+
+  tapply(.clone, dfl, .cr_func)
+
+}
+
+
+
+
+share_number <- function(.id) {
+  vec_unique_count(.id)
+}
+
+share_mean <- function(.id) {
+
+  share_number(.id) / vec_size(.id)
+
+}
+
+share_level <- function(.id, ..., .share_func=share_number) {
+
+  dfl <- df_list(..., .name_repair = "minimal")
+
+  if (vec_size(dfl) == 0)
+
+    return(.share_func(.id))
+
+
+
+  tapply(.id, dfl, .share_func)
+
+}
+
+share_cr <- function(.clone, .id, ...,
+                     .cr_func=cr_level,
+                     .share_func=share_level) {
+
+  share_level(.id , .clone, .share_func = share_mean) %*% (table(.clone, .id) %*% cr_level(.clone, .id, .cr_func = cr_mean))
+
+  # table(.clone, .id, ...)
+
+
+
+  # v1 <- tapply(.clone, .id, .cr_func, ...)
+  #
+  # v2 <- tapply(.id, .clone, .share_func, ...)
+  #
+  # v1 %*% v2
+
+}
+
+
+
+
+
+# id <- vec_group_id(...)
+#
+# groups <- vec_split(.clone, id)
+#
+# vals <- vapply(groups$val, .cr_func, numeric(1))
+#
+# sum(vals, na.rm = TRUE) / attr(id,"n")
+
+
+
+
 cr_func <- function(..., .func=cr_level, .use_id=FALSE, .use_group=FALSE) {
 
   if (.use_id) {
@@ -53,17 +177,9 @@ apply_group <- function(x, ..., by_id=FALSE, .func) {
 }
 
 
-cr_mean <- function(.nt) {
-  vec_unique_count(.nt) / attr(.nt, "n")
-}
 
-cr_number <- function(.nt) {
-  vec_unique_count(.nt)
-}
 
-cr_level <- function(.clone, ..., .cr_func=cr_number) {
-  vapply(.clone, .cr_func, numeric(1), ...)
-}
+
 
 
 
@@ -204,56 +320,8 @@ weight_unique <- function(.data, .weigh=1, .weigh_unique=1, ..., .weigh_func=sum
   val_each_unique[.data]
 }
 
-each_unique(x, y)
-
-weight_unique(x)
-vec_count(x)$count / 10
-weight_unique(x, .weigh_func = sum)
-weight_unique(x, .weigh_func = length)
-
-x2 <- weight_unique(x)
-each_unique(x2, y, .each_func = sd)
-each_unique(rep_len(1,length(x)), y, .each_func = mean)
 
 
-
-
-cr_number <- function(.clone, .id, ..., .cr_func=n_unique) {
-
-  .cr_func(.clone, ...)
-
-}
-
-share_number <- function(.id, .share_func=n_unique, ...) {
-
-  .share_func(.id, ...)
-
-}
-
-x <- sample(letters[1:10], 100, rep=T)
-y <- sample(LETTERS[1:10], 100, rep=T)
-
-a <- rpois(100, 2)
-b <- runif(100)
-c <- runif(100, min = -1)
-
-cr_number(c("a", "b", "a"))
-cr_number(c("a", "b", "a"), .cr_func = length)
-cr_number(c(1,0,1))
-cr_number(c(1,0,1), .cr_func = length)
-
-share_number(c("a", "b", "a"))
-share_number(c("a", "b", "a"), .share_func = length)
-share_number(c(1,0,1))
-share_number(c(1,0,1), .share_func = length)
-
-
-each_unique(x,y, .each_func = cr_number)
-
-each_unique(x,y)
-each_unique(y,x)
-each_unique(rep_along(x, 1), x)
-each_unique(rep_along(x, 1), x)
 
 
 cr_number(x, y)

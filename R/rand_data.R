@@ -195,24 +195,26 @@
 # >>>>>>> 7919e6a49d75e90057e20ab60b5c118ccdb495d0
 #
 #
-# rand_nt <- function(n_codons) {
-#
-#   coding_codon <- function() {
-#
-#     codon <- paste(sample(c("A","G","T","C"), 3, rep = TRUE), collapse = "")
-#
-#     ifelse(codon %in% c("TGA","TAA","TAG"), coding_codon(), codon)
-#
-#   }
-#
-#   paste(replicate(n_codons, coding_codon()), collapse = "")
-# }
-#
-# rand_nt_vec <- function(n=10, mu=5) {
-#
-#   replicate(n, rand_nt(rpois(1,mu)+1))
-#
-# }
+rand_nt <- function(n_codons) {
+
+  coding_codon <- function() {
+
+    codon <- paste(sample(c("A","G","T","C"), 3, rep = TRUE), collapse = "")
+
+    ifelse(codon %in% c("TGA","TAA","TAG"), coding_codon(), codon)
+
+  }
+
+  paste(replicate(n_codons, coding_codon()), collapse = "")
+}
+
+rand_nt_vec <- function(n=100, l=1) {
+
+
+  replicate(n, rand_nt(l))
+  # replicate(n, rand_nt(rpois(1,mu)+1))
+
+}
 #
 # rand_aa <- function(n) {
 #
