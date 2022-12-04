@@ -15,3 +15,4 @@
 is_public <- function(.id, .public=2) {
   unique_n(.id) >= .public
 }
+# vec_locate_matches

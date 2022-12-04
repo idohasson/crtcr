@@ -1,24 +1,109 @@
-NT_AXIS <- c(T=1L, C=1L, A=2L, G=3L)
+NT_AXIS <- c(T=0L, C=1L, A=2L, G=3L)
 
-cr_seq <- function(.nt) {
+codon_talbe <- c("F", "F", "L", "L", "S", "S", "S", "S",
+                 "Y", "Y", "*", "*", "C", "C", "*", "W",
+                 "L", "L", "L", "L", "P", "P", "P", "P",
+                 "H", "H", "Q", "Q", "R", "R", "R", "R",
+                 "I", "I", "I", "M", "T", "T", "T", "T",
+                 "N", "N", "K", "K", "S", "S", "R", "R",
+                 "V", "V", "V", "V", "A", "A", "A", "A",
+                 "D", "D", "E", "E", "G", "G", "G", "G")
 
-  nt_vec <- strsplit(.nt, NULL)
+# TABLE_INDEX <- c(1L,1L,2L,2L,3L,3L,3L,3L,4L,4L,5L,5L,6L,6L,5L,7L,2L,2L,2L,2L,8L,8L,8L,8L,9L,9L,10L,10L,11L,11L,11L,11L,12L,12L,12L,13L,14L,14L,14L,14L,15L,15L,16L,16L,3L,3L,11L,11L,17L,17L,17L,17L,18L,18L,18L,18L,19L,19L,20L,20L,21L,21L,21L,21L)
 
-  nt_axis <- lapply(nt_vec, get_axis)
+cr <- function(.clone, .clonotype=NULL) {
 
+  if (is.null(.clonotype))
 
+    .clonotype <-  translate(.clone)
+
+  attr(.clone, "clonotype") <- .clonotype
+
+  .clone
 
 }
 
-cr_seq(c("ATGTAA", "TTACCC"))
+
+is_cr <- function(.clone) {
+
+  isFALSE(is.null(.clone)) isFALSE()
+
+  # is.null(attr(.clone, "clonotype"))
+}
+
+split_cr <- function(.clone) {
+
+  clonotype <- attr(.clone, "clonotype")
+
+  if (is.null(clonotype))
+
+    clonotype <- translate(.clone)
+
+  clone_loc <- vec_group_loc(clonotype)
+
+  clone_list <- vec_chop(.clone, clone_loc$loc)
+
+  mapply(`attr<-`, clone_list, clone_loc$key,
+         MoreArgs = list(which = "clonotype"))
+
+}
+
+cr_level <- function(.clone) {
+
+}
 
 
-get_axis <- function(nucleotide) {
+cr_id <- function(.clone) {
 
-  vapply(nucleotide, function(nt) NT_AXIS[nt], integer(1), USE.NAMES = FALSE)
+  clonotype <- translate(.clone)
+
+  vec_group_id(clonotype)
 
 }
 
 
 
-get_axis(c("A", "T"))
+
+
+translate <- function(nt_str) {
+
+
+  paste_vec <- function(tbl_indices) {
+
+    aa_vac <- codon_talbe[tbl_indices]
+
+    paste(aa_vac, collapse = "")
+
+  }
+
+  nt_vec <- strsplit(nt_str, "")
+
+  codon_indices <- lapply(nt_vec, get_codon_indices)
+
+  vapply(codon_indices, paste_vec, character(1L))
+
+}
+
+
+get_codon_indices <- function(nt_vec) {
+
+  nucleotide_axis <- function(nucleotide) {
+
+    vapply(nucleotide, function(nt) NT_AXIS[nt], integer(1), USE.NAMES = FALSE)
+
+  }
+
+  triplet_code <- function(three_bases) {
+
+    three_bases[1] * 16L + three_bases[2] * 4L + three_bases[3] + 1L
+
+  }
+
+  axis_vec <- nucleotide_axis(nt_vec)
+
+  codon_list <- split(axis_vec, gl(length(axis_vec) %/%3 ,3))
+
+  vapply(codon_list, triplet_code, integer(1), USE.NAMES = FALSE)
+
+}
+
