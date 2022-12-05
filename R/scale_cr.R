@@ -1,8 +1,38 @@
-scale_cr <- function(.clone, .id) {
+scale_cr <- function(.clone, .id, .func) {
 
-  cr_level(.clone)
+  (i <- vec_group_loc(xx)$loc)
+
+  (g <- vec_chop(yy, i))
+
+  (n <- lapply(g, vec_unique_count))
+
+  (u <- vec_count(xx, sort = "location")$count)
+
+  scale(n, u)
+
+
+
+  indices <- vec_group_loc(.clone)$loc
+
+  weights <- vec_count(xx, sort = "location")$count
+
+  vec_chop(values, indices)
 
 }
+
+
+dimnames(A) <- list(fee=1:4, fie=1:3, fum=1:2)
+
+mn_fum_fie <- apply(A, c("fum", "fie"), mean)
+mn_fum_fie
+
+sweep(A, c("fum", "fie"), mn_fum_fie)
+
+
+
+
+
+
 
 
   #' Scale values by a vector of weights
