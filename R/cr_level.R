@@ -1,144 +1,66 @@
-#' Convergent recombination level calculation
+#' Calculate convergent recombination level by the number of unique nucleotide sequences
 #'
-#' @param ... character vector(s) of the clonal sequences.
-#' @param ignore.na if TRUE (default), NA values are not included in the count.
+#' This function calculates the convergent recombination level of a TCR sequence by counting the number of unique nucleotide sequences in the sequence. The TCR sequence is given as a character vector of DNA sequences in the `.clone` argument.
 #'
-#' @return integer of unique count.
+#' @param .clone A character vector of DNA sequences representing the TCR sequence to be analyzed
+#' @param ... Additional arguments (currently not used)
+#' @return A numeric value indicating the convergent recombination level of the TCR sequence
 #' @export
-#'
-#' @examples
-#'
-#' cr_level(rep(LETTERS[1:2], each=4), gl(2,2,8), gl(4,3,8))
-#'
 cr_level <- function(clones, ignore.na=TRUE) {
 
-  # clone_lists <- list2(...)
-  #
-  # clonal_sequences <- squash_chr(clone_lists)
 
-  if (isTRUE(ignore.na)) {
-
-    no_na <- vec_detect_complete(clones)
-
-    clonal_sequences <- clones[no_na]
-
-  }
-
-  vec_unique_count(clones)
 
 }
 
 
+# cr_level(xx, .cr_func = function(x) n_unique(x) / length(x))
+cr_level <- function(.clone, .cr_func=n_unique, ...) {
 
-cr_number <- function(.clone, .relative_cr=FALSE) {
+  cr_sequences <- translate(.clone)
 
-  cr_n <- n_unique(.clone)
+  indices <- vec_group_loc(cr_sequences)
 
-  if (isTRUE(.relative_cr)) cr_n <- cr_n / vec_size(.clone)
+  chopped <- vec_chop(.clone, indices$loc)
 
-  cr_n
-
-}
-
-cr_func <- function(.clone, .func=cr_number, ...) {
-
-  lvl <- .func(.clone)
-
-  if (isTRUE(relative))
-
-    lvl <- lvl/vec_size(.clone)
-
-  lvl
-
-}
-
-cr_level <- function(.clone, ..., .cr_func=n_unique) {
-
-  if (rlang::dots_n(...)==0)
-
-    return(.cr_func(.clone))
-
-
-  .id <- rlang::dots_splice(...)
-
-  tapply(.clone, .id, .cr_func)
+  vapply(chopped, .cr_func, numeric(1), ..., USE.NAMES = FALSE)
 
 }
 
 
+# cr_func(..., .func=n_unique)
 
-cr_number <- function(..., na.rm=FALSE) {
+# # An alternative implementation of `ave()` can be constructed using
+# # `vec_chop()` and `list_unchop()` in combination with `vec_group_loc()`
+# ave2 <- function(.x, .by, .f, ...) {
+#   indices <- vec_group_loc(.by)$loc
+#   chopped <- vec_chop(.x, indices)
+#   out <- lapply(chopped, .f, ...)
+#   list_unchop(out, indices = indices)
+# }
+#
+# breaks <- warpbreaks$breaks
+# wool <- warpbreaks$wool
+#
+# ave2(breaks, wool, mean)
 
-  clones_list <- list_of(..., .ptype = character(1L))
-
-  clones <- squash_chr(clones_list)
-
-  if (isTRUE(ignore.na)) {
-
-    no_na <- vec_detect_complete(clones)
-
-    clonal_sequences <- clones[no_na]
-
-  }
-
-  if(isTRUE(na.rm))
-
-    clones <- clones[vec_detect_complete(clones)]
-
-  vec_unique_count(clones)
-
+cr2 <- function(.clone, .f=n_unique, ..., .cid=get_cid(.clone)) {
+  indices <- vec_group_loc(.cid)$loc
+  chopped <- vec_chop(.clone, indices)
+  lapply(chopped, .f, ...)
+  out <- lapply(chopped, .f, ...)
+  list_unchop(out, indices = indices)
 }
 
-cr_mean <- function(.clone) {
-
-  cr_number(.clone) / vec_size(.clone)
-
+sharelvl <- function(.clone, .id, .f, ...) {
+  cr2(.id, .clonotype = .clone)
 }
 
-cr_pairwise <- function(.clone1, .clone2., .cr_func=cr_number, ...) {
-  # TODO: complete
-  # https://github.com/matsengrp/sumrep/blob/master/R/Compare.R
-  mapply(.cr_func, .clone1, .clone2., ...)
+cr2(xx, translate(xx))
 
-}
 
-cr_group <- function(.clone, .id, ...) {
-  # TODO: complete
-}
 
-cr_level <- function(.clone, ..., .cr_func=cr_number) {
-  # check input
-  dfl <- dots_splice(..., .name_repair = "minimal")
 
-  group_df <- new_data_frame(dfl)
 
-  groups <- vec_group_loc(group_df)
-
-  # TODO: new_list_of(groups$loc, ptype = integer())
-
-  clone_list <- vec_chop(.clone, groups$loc)
-
-  vapply(clone_list, .cr_func, numeric(1L), USE.NAMES = FALSE)
-
-}
-
-cr_level_df <- function(.clone, ..., .cr_func=cr_number) {
-
-  dfl <- dots_splice(..., .name_repair = "minimal")
-
-  group_df <- new_data_frame(dfl)
-
-  groups <- vec_group_loc(group_df)
-
-  # TODO: new_list_of(groups$loc, ptype = integer())
-
-  clone_list <- vec_chop(.clone, groups$loc)
-
-  lvl <- vapply(clone_list, .cr_func, numeric(1L), USE.NAMES = FALSE)
-
-  vec_cbind(groups$key, CRlevel=lvl)
-
-}
 
 cr_level_vec <- function(.clone, ..., .cr_func=cr_number) {
 
@@ -157,3 +79,34 @@ cr_level_tbl <- function(.clone, ..., .cr_func=cr_number) {
   tapply(.clone, dfl, .cr_func)
 
 }
+
+share_cr_levl <- function(.x, .y, .f1, f2, .freq=1) {
+
+
+
+  l <- vec_recycle_common(.freq, .x, .y)
+
+  tapply(l[[1]], l[-1], .f)
+
+}
+
+yy <- sample(LETTERS[1:10], 100, rep=T)
+
+id <- get_cid(xx)
+
+v1 <- cr2(xx, .cid = id)
+v2 <- cr2(yy, .cid = id)
+
+
+outer(unlist(v1), unlist(v2))
+
+v1
+v2
+vec_chop(vec_cbind(v1, v2), vec_group_loc(id)$loc)
+
+
+
+
+
+
+
