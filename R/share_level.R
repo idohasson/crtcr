@@ -27,22 +27,44 @@ sharing_level <- function(.id, share_func=unique_n) {
 
 
 
-group_sharing <- function(.id, .group, reduce_by=mean, ...) {
+share_number <- function(.id) {
+  vec_unique_count(.id)
+}
 
-  l_i <- split(.id, .group)
+share_mean <- function(.id) {
 
-  N_v <- list_sizes(l_i)
+  share_number(.id) / vec_size(.id)
 
-  reduce_by(N_v, ...)
+}
+
+share_level <- function(.id, ..., .share_func=share_number) {
+
+  dfl <- df_list(..., .name_repair = "minimal")
+
+  if (vec_size(dfl) == 0)
+
+    return(.share_func(.id))
 
 
-  # .data <- new_data_frame(df_list(.subgroup, ..., .name_repair = "minimal"))
+
+  tapply(.id, dfl, .share_func)
+
+}
+
+share_cr <- function(.clone, .id, ...,
+                     .cr_func=cr_level,
+                     .share_func=share_level) {
+
+  share_level(.id , .clone, .share_func = share_mean) %*% (table(.clone, .id) %*% cr_level(.clone, .id, .cr_func = cr_mean))
+
+  # table(.clone, .id, ...)
+
+
+
+  # v1 <- tapply(.clone, .id, .cr_func, ...)
   #
-  # sub_i <- vctrs::vec_group_id(.data)
+  # v2 <- tapply(.id, .clone, .share_func, ...)
   #
-  # tapply(.id, sub_i, vec_unique_count)
-  # sub_id <- vctrs::vec_split(.id, .data)
-  # sub_id
-  # sapply(sub_id$val, unique_n)
+  # v1 %*% v2
 
 }

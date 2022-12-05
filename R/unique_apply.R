@@ -1,4 +1,47 @@
 
+each_unique <- function(.data, .unique_by, ..., .each_func=n_unique) {
+
+  indices <- vec_seq_along(.unique_by)
+
+  unique_list <- vec_split(indices, by = .unique_by)
+
+  .each_func(.data, unique_list$val)
+
+}
+
+unique_freq <- function(.freq_of, .unique_by) {
+
+  freq_split <- vec_chop(.freq_of, .unique_by)
+
+  compute_freq <- lapply(freq_of, vec_unique_count)
+
+  list_unchop(compute_freq, indices = .unique_by)
+
+}
+
+unique_weight <- function(.weight, .unique_by) {
+
+  id <- vec_group_id(.weight)
+
+  id_list <- vec_chop(id, .unique_by)
+
+  vapply(id_list, function(z) vec_unique_count(z) / attr(z,"n"), numeric(1))
+
+}
+
+weight_unique <- function(.data, .weigh=1, .weigh_unique=1, ..., .weigh_func=sum) {
+
+  .weigh <- vec_recycle_common(.weigh, .data)[[1]]
+
+  val_each_unique <- tapply(.weigh, .data, .weigh_func)
+
+  # .weigh_unique <- vec_recycle_common(.weigh_unique, val_each_unique)[[1]]
+  # val_each_unique <- val_each_unique * .weigh_unique / vec_size(val_each_unique)
+
+  val_each_unique <- val_each_unique / vec_size(val_each_unique)
+
+  val_each_unique[.data]
+}
 
 # across_unique <- function(.data, .var, apply_func, ...) {
 #

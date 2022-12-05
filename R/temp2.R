@@ -57,6 +57,16 @@ y <- vec_split(id[[1]], cc[[1]])
 lapply(y$val, function(i) vec_count(i)$count)
 
 
+# cr_level <- function()
 
-ta
+
+
+
+
+
+
+
+
+
+
 

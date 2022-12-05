@@ -53,6 +53,16 @@ cr_mean <- function(.clone) {
 
 cr_level <- function(.clone, ..., .cr_func=cr_number) {
   # check input
+  dfl <- dots_splice(..., .name_repair = "minimal")
+
+  group_df <- new_data_frame(dfl)
+
+  groups <- vec_group_loc(group_df)
+
+  clone_list <- vec_chop(.clone, groups$loc)
+
+  vapply(clone_list, .cr_func, numeric(1L), USE.NAMES = FALSE)
+
 }
 
 cr_level_df <- function(.clone, ..., .cr_func=cr_number) {

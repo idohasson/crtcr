@@ -111,7 +111,7 @@ get_codon_indices <- function(nt_vec, index=c(T=0L, C=1L, A=2L, G=3L)) {
 
   axis_vec <- nucleotide_axis(nt_vec)
 
-  codon_list <- split(axis_vec, gl(length(axis_vec) %/%3 ,3))
+  codon_list <- split(axis_vec, gl(length(axis_vec) %/% 3 ,3))
 
   vapply(codon_list, triplet_code, integer(1), USE.NAMES = FALSE)
 
