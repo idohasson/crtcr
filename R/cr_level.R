@@ -42,6 +42,83 @@ cr_level <- function(.clone, .cr_func=n_unique, ...) {
 # wool <- warpbreaks$wool
 #
 # ave2(breaks, wool, mean)
+# a <- translate(x)
+
+
+get_cid <- function(.clone, ...) {
+
+  dfl <- df_list(.clone, ..., .name_repair = "minimal")
+
+  df <- new_data_frame(dfl)
+
+  vec_group_id(df)
+
+}
+
+# TRUE for first nt of aa in a group (by ... or given cid)
+is_cr_seq <- function(.clone, ..., .cid=NULL) {
+
+  if (is.null(.cid))
+
+    .cid <- get_cid(.clone, ...)
+
+
+  vec_duplicate_any(translate(.clone)) & !duplicated(.cid)
+
+}
+
+
+cr_seq <- function()
+
+cr_table <- function(.clone, .id) {
+
+  dfl <- df_list(.clone, .id, .name_repair = "minimal")
+
+  df <- new_data_frame(dfl)
+
+  not_na <- vec_detect_complete(df)
+
+  # not_duplicated <- !vec_duplicate_detect(df)
+
+  # is_cr <- not_na & not_duplicated
+
+  not_duplicated
+  # df <- vec_slice(df, not_na)
+
+  # df
+
+  # df
+  # cr_seq <- translate(.clone)
+  #
+  # l <- list(cr_seq, .id)
+  #
+  # apply(.clone, l, vec_unique_count)
+
+}
+
+cr_table(x,y)
+
+vec_unique(data.frame(aa=a, id=y)) %>% vec_count(sort = "key")
+
+
+share_table <- function(.clone, .id, ...) {
+
+
+
+
+
+  # l <- vec_recycle_common(1, translate(.clone), .id)
+
+  t
+
+}
+share_cr(x,y)
+
+
+
+tapply(x, list(a, y), vec_unique_count)
+
+
 
 cr2 <- function(.clone, .f=n_unique, ..., .cid=get_cid(.clone)) {
   indices <- vec_group_loc(.cid)$loc
