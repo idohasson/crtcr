@@ -1,4 +1,4 @@
-NT_AXIS <- c(T=0L, C=1L, A=2L, G=3L)
+# https://github.com/evoclock/translateR/blob/master/R/TranslateR.R
 CODON <- matrix(c("TTT","TTC","TTA","TTG","CTT","CTC","CTA","CTG","ATT","ATC","ATA","ATG",
                   "GTT","GTC","GTA","GTG","TCT","TCC","TCA","TCG","CCT","CCC","CCA","CCG",
                   "ACT","ACC","ACA","ACG","GCT","GCC","GCA","GCG","TAT","TAC","TAA","TAG",
@@ -9,6 +9,7 @@ CODON <- matrix(c("TTT","TTC","TTA","TTG","CTT","CTC","CTA","CTG","ATT","ATC","A
                   "A","A","Y","Y","*","*","H","H","Q","Q","N","N","K","K","D","D","E","E",
                   "C","C","*","W","R","R","R","R","S","S","R","R","G","G","G","G"), 64, 2)
 
+NT_AXIS <- c(T=0L, C=1L, A=2L, G=3L)
 codon_talbe <- c("F", "F", "L", "L", "S", "S", "S", "S",
                  "Y", "Y", "*", "*", "C", "C", "*", "W",
                  "L", "L", "L", "L", "P", "P", "P", "P",
