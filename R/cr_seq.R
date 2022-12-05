@@ -1,4 +1,13 @@
 NT_AXIS <- c(T=0L, C=1L, A=2L, G=3L)
+CODON <- matrix(c("TTT","TTC","TTA","TTG","CTT","CTC","CTA","CTG","ATT","ATC","ATA","ATG",
+                  "GTT","GTC","GTA","GTG","TCT","TCC","TCA","TCG","CCT","CCC","CCA","CCG",
+                  "ACT","ACC","ACA","ACG","GCT","GCC","GCA","GCG","TAT","TAC","TAA","TAG",
+                  "CAT","CAC","CAA","CAG","AAT","AAC","AAA","AAG","GAT","GAC","GAA","GAG",
+                  "TGT","TGC","TGA","TGG","CGT","CGC","CGA","CGG","AGT","AGC","AGA","AGG",
+                  "GGT","GGC","GGA","GGG","F","F","L","L","L","L","L","L","I","I","I","M",
+                  "V","V","V","V","S","S","S","S","P","P","P","P","T","T","T","T","A","A",
+                  "A","A","Y","Y","*","*","H","H","Q","Q","N","N","K","K","D","D","E","E",
+                  "C","C","*","W","R","R","R","R","S","S","R","R","G","G","G","G"), 64, 2)
 
 codon_talbe <- c("F", "F", "L", "L", "S", "S", "S", "S",
                  "Y", "Y", "*", "*", "C", "C", "*", "W",
@@ -85,11 +94,11 @@ translate <- function(nt_str) {
 }
 
 
-get_codon_indices <- function(nt_vec) {
+get_codon_indices <- function(nt_vec, index=c(T=0L, C=1L, A=2L, G=3L)) {
 
   nucleotide_axis <- function(nucleotide) {
 
-    vapply(nucleotide, function(nt) NT_AXIS[nt], integer(1), USE.NAMES = FALSE)
+    vapply(nucleotide, function(nt) index[nt], integer(1), USE.NAMES = FALSE)
 
   }
 
