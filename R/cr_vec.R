@@ -69,7 +69,7 @@ cr_level <- function(nt, ..., aa=translate(nt), named.aa=FALSE) {
   dfl <- df_list(nt, ..., aa, .name_repair = "universal")
 
   df <- new_data_frame(dfl)
-  return(df)
+
   cr_seq_list <- split(df[,1], df[,-1])
 
   # cr_seq <- enframe(split_cr, name = "clonotype", value = "clone")
