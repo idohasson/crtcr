@@ -1,6 +1,5 @@
-cr_level <- function(...) {
-  UseMethod("cr_level")
-}
+
+
 
 
 cr_level.default <- function(...) {
