@@ -28,7 +28,7 @@ convergent_level <- function(nucleotide) {
   vec_unique_count(nucleotide)
 }
 
-with(x, convergent_recombination_level(nt, aa))
+# with(x, convergent_recombination_level(nt, aa))
 convergent_recombination_level <- function(nucleotide, amino_acid, unnamed=TRUE) {
 
   if (rlang::is_missing(amino_acid)) {
@@ -39,8 +39,12 @@ convergent_recombination_level <- function(nucleotide, amino_acid, unnamed=TRUE)
   clonal_sequeces <- vctrs::vec_split(nucleotide, amino_acid)
   # counts the number of unique clonal sequences
   clonal_sequeces_list <- vctrs::field(clonal_sequeces, "val")
+  # returns the number of unique clonal sequences
+  vapply(clonal_sequeces_list, vctrs::vec_unique_count, integer(1))
 
-  convergent_level <- vapply(clonal_sequeces_list, vctrs::vec_unique_count, integer(1))
+}
+
+convergent_level <-
 
   if (isTRUE(unnamed)) {
     # returns the number of unique clonal sequences
@@ -55,8 +59,6 @@ convergent_recombination_level <- function(nucleotide, amino_acid, unnamed=TRUE)
     return(named_by_clonotype)
 
   }
-
-}
 
 
 
