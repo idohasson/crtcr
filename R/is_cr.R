@@ -1,28 +1,58 @@
-is_cr <- function(clone, ...) {
-  UseMethod("is_cr")
+
+# l <- rand_clone_list()
+# lu <- lapply(l, unique)
+# s <- l[[1]]
+# su <- unique(s)
+all_cr <- function(nt) {
+
+  if (is_character(nt))
+
+    return(is_cr(nt))
+
+  is_cr_vec <- is_cr.list(nt)
+
+  if (which.max(is_cr_vec)==1)
+
+    if (isTRUE(is_cr_vec[1]))
+
+      return(TRUE)
+
+  return(FALSE)
+
 }
 
+is_cr.list <- function(nt_list) {
 
-is_cr.default <- function(clone, ...) {
+  if (!is_bare_list(nt_list)) stop(
+    "CR list must be a bare list"
+  )
 
-  is_cr(as.character(clone))
+  vapply(nt_list, is_cr, logical(1), USE.NAMES = FALSE)
 
 }
 
-is_cr.character <- function(clone, cr_seq) {
+# is_cr(s)
+# is_cr(su)
+is_cr <- function(nt) {
 
-  if (is_missing(cr_seq)) {
+  if (!is_character(nt)) stop(
+    "Not a character vector"
+  )
 
-    cr_seq <- translate(clone[1])
+  unique_aa(nt)
+  # no_nt_duplicates(nt) & same_unique_aa(nt)
 
-    clone <- clone[-1]
+}
 
-  }
+unique_aa <- function(nt, aa=translate(nt[1])) {
 
+  if (length(nt)==1)
 
-  for (nt in clone)
+    return(TRUE)
 
-    if (cr_seq != translate(nt))
+  for (nt_seq in nt[-1])
+
+    if (aa != translate(nt_seq))
 
       return(FALSE)
 
@@ -30,5 +60,23 @@ is_cr.character <- function(clone, cr_seq) {
 
 }
 
+# sapply(x, no_nt_duplicates)
+# sapply(unique_x, no_nt_duplicates)
+no_nt_duplicates <- function(nt) {
 
+  anyDuplicated(nt)==0
+
+}
+
+same_unique_aa <- function(nt) {
+
+  if (length(nt)==1)
+
+    return(TRUE)
+
+  aa <- translate(nt)
+
+  length(unique(aa)) == 1
+
+}
 
