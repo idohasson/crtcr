@@ -1,4 +1,103 @@
 
+# number of unique nucleotide sequences.
+
+with(x, convergent_recombination_level(nt, aa))
+#' Calculate the convergent recombination level of a nucleotide sequence
+#'
+#' This function calculates the convergent recombination level of a nucleotide sequence by splitting the sequence into clonal sequences and counting the number of unique clonal sequences.
+#'
+#' @param nucleotide A character vector containing the nucleotide sequence.
+#' @param amino_acid An optional character vector containing the amino acid sequence. If this is not provided, the function will translate the nucleotide sequence.
+#' @param prop A logical value indicating whether the convergent recombination level should be calculated as a proportion of the total number of clonal sequences.
+#' @param na.rm A logical value indicating whether NA values should be removed before calculating the convergent recombination level.
+#' @param named A logical value indicating whether the result should be returned as a named vector.
+#' @return A numeric vector containing the convergent recombination level for each clonal sequence. If the `named` argument is `TRUE`, the result will be a tibble data frame with the clonal sequence names as the row names.
+#' @export
+#' @examples
+#' convergent_recombination_level(nucleotide = "ATCGATCG")
+#' convergent_recombination_level(nucleotide = "ATCGATCG", amino_acid = "IK")
+convergent_recombination_level <- function(nucleotide, amino_acid, prop=FALSE, na.rm = FALSE, named=FALSE) {
+
+  if (any(!grepl("^([AGTC]{3})+$", nucleotide))) stop(
+
+    "Only coding sequences are supported"
+
+  )
+
+  if (rlang::is_missing(amino_acid)) {
+    # translates the nucleotide sequence
+    amino_acid <- translate(nucleotide)
+  }
+  clonal_sequeces <- vctrs::vec_split(nucleotide, amino_acid)
+  # splits the nucleotide sequence into clonal sequences
+  clone_list <- vctrs::field(clonal_sequeces, "val")
+  # counts the number of unique clonal sequences
+  converged_number <- vapply(clone_list, converged_number, numeric(1), prop, na.rm)
+  # returns the number of unique clonal sequences
+  if (isTRUE(named)) {
+    vctrs::field(clonal_sequeces, "val") <- converged_number
+    # returns named vector
+    return(tibble::deframe(clonal_sequeces))
+  } else {
+    # return unnamed vector
+    return(converged_number)
+  }
+}
+
+#' Calculate the number of unique elements in a vector.
+#'
+#' This function takes a vector `nucleotide` and calculates the number of unique elements in the vector. By default, the function returns the number of unique elements as an integer. If the `prop` argument is set to `TRUE`, the function returns the proportion of unique elements in the vector instead. If the `na.rm` argument is set to `TRUE`, the function will remove any `NA` values from the vector before calculating the number of unique elements.
+#'
+#' @param nucleotide A vector of nucleotide sequences.
+#' @param prop A logical value indicating whether to return the proportion of unique elements in the vector (default is `FALSE`).
+#' @param na.rm A logical value indicating whether to remove `NA` values from the vector before calculating the number of unique elements (default is `FALSE`).
+#' @return An integer or numeric value indicating the number or proportion of unique elements in the vector.
+#' @examples
+#' # Generate some random nucleotide sequences
+#' nucleotide <- c("A", "T", "G", "C", "A", "T", "G", "C", "A", "T", "G", "C")
+#'
+#' # Calculate the number of unique nucleotide sequences
+#' converged_
+converged_number <- function(nucleotide, prop=FALSE, na.rm = FALSE) {
+
+  is_unique_clone <- !duplicated(nucleotide)
+
+  if (isTRUE(na.rm)) {
+
+    non_na <- vctrs::vec_detect_complete(nucleotide)
+
+    is_unique_clone <- non_na & is_unique_clone
+
+  }
+
+  converge_count <- sum(is_unique_clone)
+
+  if (isTRUE(prop)) {
+
+    return(converge_count / vec_size(is_unique_clone))
+
+  } else {
+
+    return(converge_count)
+
+  }
+
+}
+
+
+convergence_level <- function(nucleotide) {
+
+  is_unique_clone <- !duplicated(nucleotide)
+
+  clonotype <- translate(nucleotide[nucleotide])
+
+  convergent_number <- vec_count(clonotype, sort = "none")
+
+  field(convergent_number, "count")
+
+}
+
+
 prepare <- function(nucleotide, amino_acid, ...) {
 
   if (missing(amino_acid))
@@ -23,42 +122,25 @@ convergent_recombination_level <- function(nucleotide, amino_acid, ...) {
 
 }
 
-convergent_level <- function(nucleotide) {
-  # number of unique nucleotide sequences.
-  vec_unique_count(nucleotide)
-}
 
-# with(x, convergent_recombination_level(nt, aa))
-convergent_recombination_level <- function(nucleotide, amino_acid, unnamed=TRUE) {
 
-  if (rlang::is_missing(amino_acid)) {
-    # translates the nucleotide sequence
-    amino_acid <- translate(nucleotide)
-  }
-  # splits the nucleotide sequence into clonal sequences
-  clonal_sequeces <- vctrs::vec_split(nucleotide, amino_acid)
-  # counts the number of unique clonal sequences
-  clonal_sequeces_list <- vctrs::field(clonal_sequeces, "val")
-  # returns the number of unique clonal sequences
-  vapply(clonal_sequeces_list, vctrs::vec_unique_count, integer(1))
 
-}
 
-convergent_level <-
-
-  if (isTRUE(unnamed)) {
-    # returns the number of unique clonal sequences
-    return(convergent_level)
-
-  } else {
-    # returns the number of unique clonal sequences
-    vctrs::field(clonal_sequeces, "val") <- convergent_level
-    # named by the clonotype sequence
-    named_by_clonotype <- tibble::deframe(clonal_sequeces)
-
-    return(named_by_clonotype)
-
-  }
+# convergent_level <-
+#
+#   if (isTRUE(unnamed)) {
+#     # returns the number of unique clonal sequences
+#     return(convergent_level)
+#
+#   } else {
+#     # returns the number of unique clonal sequences
+#     vctrs::field(clonal_sequeces, "val") <- convergent_level
+#     # named by the clonotype sequence
+#     named_by_clonotype <- tibble::deframe(clonal_sequeces)
+#
+#     return(named_by_clonotype)
+#
+#   }
 
 
 

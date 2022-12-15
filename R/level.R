@@ -1,227 +1,138 @@
-# library(vctrs)
-# library(rlang)
-# NT=rand_nt_vec(100, 1);AA=translate(NT);ID=rep_along(NT, 1:4);FREQ=runif(100);DF=data.frame(nt=NT, aa=AA, id=ID, freq=FREQ)
-
-
-
-# values - numerical values
-# intervals - numerical integer / funciton or formula to apply on values to use as interval
-
-#' Compute the level of a numeric vector
+#' @title Compute Numeric Vector Levels
 #'
-#' This function computes the level of each element in a numeric vector by using the provided intervals. The intervals can be specified directly as a numeric vector or as a function that returns a numeric vector. If no intervals are provided, the default is to use the median of the values as the interval.
+#' @description This function computes the levels of a numeric vector using a provided function for generating the vector. The levels are then computed using the `compute_vector_levels` function, which uses a provided function or formula for computing vector intervals. An optional threshold function can be applied to the interval function output to specify a threshold for the computed levels.
 #'
-#' @param values a numeric vector
-#' @param intervals a numeric vector or a function that returns a numeric vector
-#' @return a numeric vector with the levels for each element in values
+#' @param x a vector of data
+#' @param vec_func a function for generating a numeric vector from the data
+#' @param interval_func a function or formula for computing vector intervals
+#' @param threshold_func an optional function for applying a threshold to the computed levels
+#' @param ... additional arguments passed to the `interval_func` and `threshold_func` functions
+#' @param remove_duplicates a logical indicating whether to remove duplicate levels
+#'
+#' @return a numeric vector of levels
+#'
 #' @examples
-#' # Compute the levels for the numbers 1, 2, 3, 4, and 5
-#' level(c(1, 2, 3, 4, 5))
+#' x <- c("AA", "AB", "BB", "AA", "BB", "AB")
 #'
-#' # Compute the levels for the numbers 1, 2, 3, 4, and 5 using the median as the interval
-#' level(c(1, 2, 3, 4, 5), median)
+#' # Count the number of each unique nucleotide sequence group
+#' count_seq_groups <- function(seq) table(seq)
 #'
-#' # Compute the levels for the numbers 1, 2, 3, 4, and 5 using the function mean as the interval
-#' level(c(1, 2, 3, 4, 5), mean)
+#' # Compute levels using quantile intervals
+#' compute_numeric_vector_levels(x, vec_func = count_seq_groups, interval_func = quantile)
+#'
+#' # Compute levels using custom intervals
+#' custom_intervals <- function(vec) c(min(vec), mean(vec), max(vec))
+#' compute_numeric_vector_levels(x, vec_func = count_seq_groups, interval_func = custom_intervals)
+#'
+#' # Compute levels using custom intervals and a threshold function
+#' custom_intervals <- function(vec) c(min(vec), mean(vec), max(vec))
+#' threshold_func <- function(levels) levels[levels > 1]
+#' compute_numeric_vector_levels(x, vec_func = count_seq_groups, interval_func = custom_intervals, threshold_func = threshold_func)
+#'
+compute_numeric_vector_levels <- function(x, vec_func, interval_func, threshold_func=NULL, ..., remove_duplicates=TRUE) {
+  # Generate a numeric vector from the data
+  vec <- vec_func(x)
+
+  # Compute vector levels
+  levels <- compute_vector_levels(vec, interval_func, ..., remove_duplicates=remove_duplicates)
+
+  # Apply threshold function, if provided
+  if (!is.null(threshold_func)) {
+    levels <- threshold_func(levels)
+  }
+
+  levels
+}
+
+
+#' @title Compute Vector Levels
+#'
+#' @description This function computes the levels of a numeric vector using a provided function or formula for computing vector intervals. The levels are computed by sorting the vector intervals and removing any duplicate levels if specified.
+#'
+#' @param x a numeric vector
+#' @param interval_func a function or formula for computing vector intervals
+#' @param ... additional arguments passed to the `interval_func` function
+#' @param remove_duplicates a logical indicating whether to remove duplicate levels
+#'
+#' @return a numeric vector of levels
+#'
+#' @examples
+#' x <- c(1, 2, 3, 4, 5, 6)
+#'
+#' # Compute levels using quantile intervals
+#' compute_vector_levels(x, interval_func = quantile)
+#'
+#' # Compute levels using custom intervals
+#' custom_intervals <- function(vec) c(min(vec), mean(vec), max(vec))
+#' compute_vector_levels(x, interval_func = custom_intervals)
+#'
 #' @export
-level <- function(values, intervals=median) {
-
-  if (is_formula(intervals))
-
-    intervals <- as_function(intervals)
-
-  if (is_function(intervals))
-
-    intervals <- intervals(values)
-
-  findInterval(values, intervals, rightmost.closed = TRUE)
-
-}
-
-
-function(group_var) {
-
-  function (...) {
-
-    vars <- dots_splice(...)
-
-    dfl <- df_list(..., .name_repair = "minimal")
-
-    data <- new_data_frame(dfl)
-
-    if (!has_name(data, group_var))
-
-      group_var <- which.min(!have_name(data))
-
-    by <- field(data, group_var)
-
-    clonotype_df <- vec_split(data, by)
-
-    tibble::deframe(clonotype_df)
-
+#'
+compute_vector_levels <- function(x, interval_func=quantile, ..., remove_duplicates=TRUE) {
+  # Convert interval_func to a function if it is a formula
+  if (is_formula(interval_func)) {
+    interval_func <- as_function(interval_func)
   }
 
-}
-
-
-my_level1 <- level_func(vec_unique_count)
-my_level1(NT, AA)
-
-
-my_level2 <- level_func(~length(unique(.x)))
-my_level2(NT, aa=AA, id=ID)
-
-
-my_level3 <- level_func(mean)
-with(DF, my_level3(freq, aa, id))
-
-level_func <- function(.func, ..., for_each) {
-
-  group_func <- function(group_var) {
-
-    function (...) {
-
-      vars <- dots_splice(...)
-
-      dfl <- df_list(..., .name_repair = "minimal")
-
-      data <- new_data_frame(dfl)
-
-      if (!has_name(data, group_var))
-
-        group_var <- which.max(!have_name(data))
-
-      by <- field(data, group_var)
-
-      clonotype_df <- vec_split(data, by)
-
-      tibble::deframe(clonotype_df)
-
-    }
-
+  # Compute vector intervals using the provided function
+  if (is_function(interval_func)) {
+    interval_func <- interval_func(x, ...)
   }
 
-  .level_func <- as_function(.func)
+  # Sort the vector intervals
+  levels <- sort(interval_func)
 
-    # vapply(val, as_function(.func), numeric(1))
-    if (!missing(for_each)) {
-
-      .level_func <- function(val, each, ...) {
-
-        group_func(for_each)(val, ..., each)
-
-      }
-    }
-
-  .level_func
-  # function(values, ..., for_each) {
-  #
-  #   if (dots_n(...) > 0)
-  #
-  #     tapply(values, dots_splice(...), level_func)
-  #
-  #   else
-  #
-  #     vapply(values, level_func, numeric(1), ...)
-  #
-  # }
-
-}
-
-
-
-# f <- function(nt, ...) vec_unique_count(nt)
-# level_func(f, group_func("aa"))(x$nt)
-level_func <- function(level_func, group_func) {
-
-  level_func <- as_function(level_func)
-
-  function(data) {
-
-    data_fragments <- group_func(data)
-
-    vapply(data_fragments, do.call, numeric(1), what=level_func)
-
+  # Remove duplicate levels if specified
+  if (isTRUE(remove_duplicates)) {
+    levels <- levels[!duplicated(levels)]
   }
 
-}
-
-level_var <- function(data, level_func, group_func) {
-
-  data_fragments <- group_func(data)
-
-  vapply(data_fragments, do.call, numeric(1), what=level_func)
-
-}
-
-level_func <- function(.var, .level_func, group_func) {
-
-
-  function(data) {
-
-    group_func()
-
-    func <- function(.var, ...) .level_func(.var)
-
-    do.call(func, data)
-
-    # func(data)
-
-    # vapply(data, do.call, numeric(1), what=func)
-
-  }
-
+  # Compute the level of the numeric vector
+  findInterval(x, levels, rightmost.closed = TRUE)
 }
 
 
+#' @title Compute Numeric Vector Levels
+#'
+#' @description This function computes the levels of a numeric vector using a provided function for generating the vector. The levels are then computed using the `compute_vector_levels` function, which uses a provided function or formula for computing vector intervals.
+#'
+#' @param x a vector of data
+#' @param vec_func a function for generating a numeric vector from the data
+#' @param interval_func a function or formula for computing vector intervals
+#' @param ... additional arguments passed to the `interval_func` function
+#' @param remove_duplicates a logical indicating whether to remove duplicate levels
+#'
+#' @return a numeric vector of levels
+#'
+#' @examples
+#' x <- c("AA", "AB", "BB", "AA", "BB", "AB")
+#'
+#' # Count the number of each unique nucleotide sequence group
+#' count_seq_groups <- function(seq) table(seq)
+#'
+#' # Compute levels using quantile intervals
+#' compute_numeric_vector_levels(x, vec_func = count_seq_groups, interval_func = quantile)
+#'
+#' # Compute levels using custom intervals
+#' custom_intervals <- function(vec) c(min(vec), mean(vec), max(vec))
+#' compute_numeric_vector_levels(x, vec_func = count_seq_groups, interval_func = custom_intervals)
+#'
+#' @export
+#'
+compute_numeric_vector_levels <- function(x, vec_func, interval_func=quantile, ..., remove_duplicates=TRUE) {
+  # Generate a numeric vector using the provided function
+  vec <- vec_func(x)
 
-
-level_var(x, my_level, clonotype_split)
-
-f <- function(..., func) {
-
-  clonotype_split <- function(..., by=1) {
-
-    dfl <- df_list(..., .name_repair = "unique_quiet")
-
-    df <- new_data_frame(dfl, class = "clonotype")
-
-    aa <- field(df, by)
-
-    clonotype_df <- vec_split(df, aa)
-
-    tibble::deframe(clonotype_df)
-
-  }
-
-  data_fragments <- clonotype_split(...)
-
-  lapply(data_fragments, do.call, what=func)
-
+  # Compute levels of the numeric vector using the compute_vector_levels function
+  compute_vector_levels(vec, interval_func = interval_func, ..., remove_duplicates = remove_duplicates)
 }
 
+# Count the number of each unique nucleotide sequence group
+convergent_recombination_level <- function(seq) table(seq)
 
+# Compute levels using quantile intervals
+compute_numeric_vector_levels(x, vec_func = convergent_recombination_level, interval_func = quantile)
 
-
-f(x, func = )
-
-
-x <- rand_rep_df(n = 1000, l = 2)
-tapply(x$nt, x[c("aa", "id2")], cr_level)
-
-rep_along(x,1)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Compute levels using custom intervals
+custom_intervals <- function(vec) c(min(vec), mean(vec), max(vec))
+compute_numeric_vector_levels(x, vec_func = convergent_recombination_level, interval_func = custom_intervals)
