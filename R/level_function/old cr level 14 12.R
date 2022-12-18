@@ -39,7 +39,6 @@ cr_level <- function(nt, ...) {
 
 }
 
-
 group_cr_level <- function(..., group_by) {
 
   dfl <- df_list(..., .name_repair = "unique_quiet")

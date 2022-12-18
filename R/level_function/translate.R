@@ -1,3 +1,27 @@
+#' Convert a vector of nucleotide sequences into a vector of amino acid sequences.
+#'
+#' @param nt_vec A vector of nucleotide sequences. Each sequence must contain consecutive
+#'   triplets of 'A','G','T','C' (uppercase)
+#' @return A vector of amino acid sequences.
+#' @examples
+#' translate(c("ATGAGACCCAGG", "ATGAGACCCAGG"))
+#'   #> c("MGR", "MGR")
+#'
+translate <- function(nt_vec) {
+  # Check that each element in the vector is a DNA base.
+  if (all(grepl(pattern = "^([AGTC]{3})+$", sequences))) stop(
+
+    "All strings must have consecutive triplets of 'A','G','T','C' (uppercase)"
+
+  )
+
+  # Split the input vector into individual sequences.
+  sequences <- strsplit(nt_vec, NULL)
+
+  # Apply the nt_to_aa function to each sequence.
+  vapply(sequences, nt_to_aa, character(1))
+}
+
 #' Translate a vector of nucleotide sequences into amino acid sequences.
 #'
 #' @param nt_vec A vector of nucleotide sequences. Each sequence must contain
@@ -81,6 +105,42 @@ nt_to_aa <- function(nt) {
 
 }
 
+# This function takes a nucleotide sequence and returns a vector of indexes for each codon in the sequence.
+#
+# Arguments:
+#   nuc_seq: a character vector containing the nucleotide sequence.
+#
+# Returns:
+#   A numeric vector of indexes for each codon in the input sequence.
+nt2aa <- function(nuc_seq) {
+
+  # Create a map of nucleotide characters to their corresponding index values.
+  nucleotide_map <- c("T" = 0, "C" = 1, "A" = 2, "G" = 3)
+
+  codon_talbe <- c("F", "F", "L", "L", "S", "S", "S", "S",
+                   "Y", "Y", "*", "*", "C", "C", "*", "W",
+                   "L", "L", "L", "L", "P", "P", "P", "P",
+                   "H", "H", "Q", "Q", "R", "R", "R", "R",
+                   "I", "I", "I", "M", "T", "T", "T", "T",
+                   "N", "N", "K", "K", "S", "S", "R", "R",
+                   "V", "V", "V", "V", "A", "A", "A", "A",
+                   "D", "D", "E", "E", "G", "G", "G", "G")
+
+  # Calculate the index for each codon in the input string using the map.
+  codon_talbe[
+
+    nucleotide_map[nuc_seq[seq(1, length(nuc_seq), by = 3)]] * 16 +
+
+    nucleotide_map[nuc_seq[seq(2, length(nuc_seq), by = 3)]] * 4 +
+
+    nucleotide_map[nuc_seq[seq(3, length(nuc_seq), by = 3)]] + 1
+
+  ]
+
+}
+
+
+
 
 
 #' Calculate the aa_index value for a given amino acid sequence.
@@ -100,44 +160,52 @@ aa_index <- function(aa) {
     base_i[aa[seq(3,length(aa),3)]] + 1
 }
 
-#' Compare two amino acid sequences by their aa_index values.
+#' Compare two nucleotide sequences by their codon indexes.
 #'
-#' @param aa1 An amino acid sequence.
-#' @param aa2 An amino acid sequence.
-#' @return A logical value indicating whether the two input amino acid sequences
-#'   have the same aa_index value.
+#' @param seq1 A nucleotide sequence.
+#' @param seq2 A nucleotide sequence.
+#' @return A logical value indicating whether the two input nucleotide sequences
+#'   have the same codon index value.
 #' @examples
-#' compare_aa_sequences("MGR", "MGR")
+#' compare_codon_indexes("ATG", "ATG")
 #'   #> TRUE
-#' compare_aa_sequences("MGR", "AGR")
+#' compare_codon_indexes("ATG", "ATC")
 #'   #> FALSE
 #'
-compare_aa_sequences <- function(aa1, aa2) {
-  aa_index1 <- aa_index(aa1)
-  aa_index2 <- aa_index(aa2)
-
-  aa_index1 == aa_index2
+compare_codon_indexes <- function(seq1, seq2) {
+  all(nt2aa(seq1) == nt2aa(seq2))
 }
 
+s
 
-
-#' Check whether all nucleotide sequences in a character vector are equal.
+#' Check if a vector of nucleotide sequences are coding to the same sequence.
 #'
-#' @param nt_vec A vector of nucleotide sequences. Each sequence must contain
-#'   consecutive triplets of 'A','G','T','C' (uppercase)
-#' @return A logical value indicating whether all nucleotide sequences in the
-#'   input vector are equal.
+#' @param seqs A vector of nucleotide sequences.
+#' @return A logical value indicating whether all input sequences are coding to the same sequence.
 #' @examples
-#' check_nt_sequence_equality(c("ATGAGACCCAGG", "ATGAGACCCAGG", "ATGAGACCCAGG"))
+#' coding_to_same_seq(c("ATG", "ATG"))
 #'   #> TRUE
-#' check_nt_sequence_equality(c("ATGAGACCCAGG", "ATGAGACCCAGG", "ATGAAACCCAGG"))
+#' coding_to_same_seq(c("ATG", "ATC"))
 #'   #> FALSE
 #'
-check_nt_sequence_equality <- function(nt_vec) {
-  # split each nucleotide sequence into its component triplets
-  split_nt_vec <- strsplit(nt_vec, NULL)
+coding_to_same_seq <- function(seqs) {
+  # Check if there are at least two sequences in the input vector.
+  if (length(seqs) < 2) return(TRUE)
 
-  # apply the compare_aa_sequences function to all pairs of nucleotide sequences
-  Reduce(function(x, y) x & compare_aa_sequences(x, y), split_nt_vec)
+  # Compare the first sequence to the rest of the sequences in the vector.
+  for (seq in seqs[-1]) {
+    if (!compare_codon_indexes(seqs[[1]], seq)) return(FALSE)
+  }
+
+  # If all comparisons were successful, return TRUE.
+  return(TRUE)
 }
 
+# Define a function that takes a nucleotide sequence as input
+# and returns a logical value indicating whether the sequence
+# is a coding sequence
+is_coding_sequence <- function(seq) {
+
+  grepl("^([AGTC]{3})+$", seq)
+
+}

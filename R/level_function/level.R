@@ -64,16 +64,16 @@ function(group_var) {
 }
 
 
-my_level1 <- level_func(vec_unique_count)
-my_level1(NT, AA)
+# my_level1 <- level_func(vec_unique_count)
+# my_level1(NT, AA)
 
 
-my_level2 <- level_func(~length(unique(.x)))
-my_level2(NT, aa=AA, id=ID)
+# my_level2 <- level_func(~length(unique(.x)))
+# my_level2(NT, aa=AA, id=ID)
 
 
-my_level3 <- level_func(mean)
-with(DF, my_level3(freq, aa, id))
+# my_level3 <- level_func(mean)
+# with(DF, my_level3(freq, aa, id))
 
 level_func <- function(.func, ..., for_each) {
 
@@ -172,47 +172,6 @@ level_func <- function(.var, .level_func, group_func) {
   }
 
 }
-
-
-
-
-level_var(x, my_level, clonotype_split)
-
-f <- function(..., func) {
-
-  clonotype_split <- function(..., by=1) {
-
-    dfl <- df_list(..., .name_repair = "unique_quiet")
-
-    df <- new_data_frame(dfl, class = "clonotype")
-
-    aa <- field(df, by)
-
-    clonotype_df <- vec_split(df, aa)
-
-    tibble::deframe(clonotype_df)
-
-  }
-
-  data_fragments <- clonotype_split(...)
-
-  lapply(data_fragments, do.call, what=func)
-
-}
-
-
-
-
-f(x, func = )
-
-
-x <- rand_rep_df(n = 1000, l = 2)
-tapply(x$nt, x[c("aa", "id2")], cr_level)
-
-rep_along(x,1)
-
-
-
 
 
 
