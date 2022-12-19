@@ -2,6 +2,7 @@
 
 export(calculate_clonotype_diversity)
 export(calculate_clonotype_frequency)
+export(calculate_shared_clonotypes)
 export(group_value_counts)
 export(summarize_clonality)
 export(unique_value_count)

@@ -46,6 +46,12 @@ rand_nt_vec <- function(n=100, l=1) {
 
 }
 
+
+rand_nt_list <- function(n=100, l=1, v=3) {
+  replicate(v, rand_nt_vec(n, l), simplify = FALSE)
+}
+
+
 rand_aa <- function(n=100) {
 
   AA_list <- c("A","C","D","E","F",

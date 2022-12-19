@@ -44,7 +44,6 @@ group_share_level <- function(id_list, group_level=mean) {
   return(group_level)
 }
 
-
 combined_function <- function(data_list, level_func, group_level=NULL, ...) {
 
   # Calculate the number of unique values for each vector in the list
