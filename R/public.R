@@ -1,3 +1,16 @@
+public <- function(aa, id1, id2,
+                         share_val1=share_level(aa, id1),
+                         share_val2=share_level(aa, id2),
+                         bound=list(2,1), condition=c(">=", "<=")) {
+
+  match_condition(public=share_val1,
+                  exclusive=share_val2,
+                  bound_level = bound,
+                  condition = condition)
+
+}
+
+
 #' @title Find Matching Condition
 #'
 #' @description This function finds the highest threshold level that satisfies a given condition for a list of numeric vectors. The threshold level and condition can be provided as arguments, or they can be generated from the data. The conditions are applied in the following order: >, >=, ==, <=, <.
@@ -43,4 +56,19 @@ find_matching_condition <- function(vectors, threshold_levels=1, conditions=c(">
   )
 
   matches$haystack
+}
+
+
+condition <- function(..., .condition) {
+
+  condition_call <- substitute(.condition)
+
+  dfl <- df_list(..., .name_repair = "minimal")
+
+  val <- new_data_frame(dfl)
+
+  i_cond <- eval(condition_call, val)
+
+  i_cond
+
 }

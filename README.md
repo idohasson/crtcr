@@ -1,9 +1,15 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # crtcr: Convergent Recombination of TCR Repertoire
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 A commonly used method for quantifying the degree of similarity of TCR
@@ -57,7 +63,7 @@ summary(cars)
 #>  Max.   :25.0   Max.   :120.00
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
+You'll still need to render `README.Rmd` regularly, to keep `README.md`
 up-to-date. `devtools::build_readme()` is handy for this. You could also
 use GitHub Actions to re-render `README.Rmd` every time you push. An
 example workflow can be found here:
@@ -65,7 +71,7 @@ example workflow can be found here:
 
 You can also embed plots, for example:
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
+<img src="man/figures/README-pressure-1.png" width="100%"/>
 
-In that case, don’t forget to commit and push the resulting figure
+In that case, don't forget to commit and push the resulting figure
 files, so they display on GitHub and CRAN.

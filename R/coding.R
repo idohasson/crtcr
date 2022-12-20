@@ -1,3 +1,47 @@
+# Define a function that takes a nucleotide sequence as input
+# and returns a logical value indicating whether the sequence
+# is a coding sequence
+is_coding <- function(nucleotide) {
+
+  grepl("^([AGTC]{3})+$", nucleotide)
+
+}
+
+all_coding <- function(nucleotide) {
+
+  all(is_coding(nucleotide))
+
+}
+
+check_coding <- function(nucleotide) {
+
+  if (!all_coding(nucleotide)) stop(
+
+    "Only coding sequences are supported. All strings must have consecutive triplets of 'A','G','T','C' (uppercase)"
+
+  )
+
+}
+
+#' Convert a vector of nucleotide sequences into a vector of amino acid sequences.
+#'
+#' @param nt_vec A vector of nucleotide sequences. Each sequence must contain consecutive
+#'   triplets of 'A','G','T','C' (uppercase)
+#' @return A vector of amino acid sequences.
+#' @examples
+#' translate(c("ATGAGACCCAGG", "ATGAGACCCAGG"))
+#'   #> c("MGR", "MGR")
+#'
+convert_sequence <- function(nt_vec) {
+  # Check that each element in the vector is a DNA base.
+  check_coding(nt_vec)
+
+  sequences <- lapply(strsplit(nt_vec, NULL), dna_to_protein)
+
+  vapply(sequences, paste, character(1), collapse="")
+
+}
+
 # This function takes a nucleotide sequence and returns a vector of indexes for each codon in the sequence.
 #
 # Arguments:
@@ -5,7 +49,7 @@
 #
 # Returns:
 #   A numeric vector of indexes for each codon in the input sequence.
-nt2aa <- function(nuc_seq) {
+dna_to_protein <- function(nuc_seq) {
 
   # Create a map of nucleotide characters to their corresponding index values.
   nucleotide_map <- c("T" = 0, "C" = 1, "A" = 2, "G" = 3)
@@ -33,33 +77,4 @@ nt2aa <- function(nuc_seq) {
 }
 
 
-#' Convert a nucleotide sequence into an amino acid sequence.
-#'
-#' @param nt A nucleotide sequence. The sequence must contain consecutive
-#'   triplets of 'A','G','T','C' (uppercase)
-#' @return An amino acid sequence.
-#' @examples
-#' nt_to_aa("ATGAGACCCAGG")
-#'   #> "MGR"
-#'
-nt_to_aa <- function(nt) {
-  # a vector of integers that correspond to the nucleotide characters.
-  base_i <- c(T=0, C=1, A=2, G=3)
-  # a vector of characters that correspond to the amino acid characters.
-  codon_talbe <- c("F", "F", "L", "L", "S", "S", "S", "S",
-                   "Y", "Y", "*", "*", "C", "C", "*", "W",
-                   "L", "L", "L", "L", "P", "P", "P", "P",
-                   "H", "H", "Q", "Q", "R", "R", "R", "R",
-                   "I", "I", "I", "M", "T", "T", "T", "T",
-                   "N", "N", "K", "K", "S", "S", "R", "R",
-                   "V", "V", "V", "V", "A", "A", "A", "A",
-                   "D", "D", "E", "E", "G", "G", "G", "G")
-
-  aa_index <- base_i[nt[seq(1,length(nt),3)]] * 16 +
-    base_i[nt[seq(2,length(nt),3)]] * 4 +
-    base_i[nt[seq(3,length(nt),3)]] + 1
-
-  paste(codon_talbe[aa_index], collapse="")
-
-}
 

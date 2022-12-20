@@ -1,3 +1,19 @@
+#' Calculate convergent recombination level by the number of unique nucleotide sequences
+#'
+#' This function calculates the convergent recombination level of a TCR sequence by counting the number of unique nucleotide sequences in the sequence. The TCR sequence is given as a character vector of DNA sequences in the `.clone` argument.
+#'
+#' @param nucleotide A character vector of DNA sequences representing the TCR sequence to be analyzed
+#' @param ... Additional arguments (currently not used)
+#' @return A numeric value indicating the convergent recombination level of the TCR sequence
+#' @export
+cr_number <- function(nucleotide, ...) {
+  unique_count(nucleotide, ...)
+}
+
+cr_mean <- function(nucleotide, ...) {
+  unique_mean(nucleotide, ...)
+}
+
 #' Count the number of unique clonal sequences in a nucleotide sequence.
 #'
 #' This function takes a nucleotide sequence and a corresponding amino acid
@@ -23,25 +39,20 @@
 #' @examples
 #' nucleotide <- c("ATG", "TGA", "TGA", "TAA", "TAA")
 #' amino_acid <- c("M", "W", "W", "*", "*")
-#' convergent_recombination_level(nucleotide, amino_acid)
+#' cr_level(nucleotide, amino_acid)
 #'   # returns: 2
 #'
 #' nucleotide <- c("ATG", "TGA", "TGA", "TAA", "TAA")
-#' convergent_recombination_level(nucleotide)
+#' cr_level(nucleotide)
 #'   # returns: 2
 #'
 #' @export
-convergent_recombination_level <- function(nucleotide, amino_acid, proportions=FALSE, ignore_na = FALSE, names=FALSE) {
-
-  # check if the nucleotide sequence contains only valid nucleotides
-  if (any(!grepl("^([AGTC]{3})+$", nucleotide))) stop(
-    "Only coding sequences are supported"
-  )
+cr_level <- function(nucleotide, amino_acid, proportions=FALSE, ignore_na = FALSE, names=FALSE) {
 
   # translate the nucleotide sequence if necessary
   if (rlang::is_missing(amino_acid)) {
 
-    amino_acid <- translate(nucleotide)
+    amino_acid <- convert_sequence(nucleotide)
 
   }
 
