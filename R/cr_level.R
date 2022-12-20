@@ -10,8 +10,24 @@ cr_number <- function(nucleotide, ...) {
   unique_count(nucleotide, ...)
 }
 
-cr_mean <- function(nucleotide, ...) {
-  unique_mean(nucleotide, ...)
+cr_mean <- function(nucleotide, ...)  {
+  unique_mean(nucleotide)
+}
+
+cr_level <- function(x, ..., .cr_func=cr_number) {
+
+  dfl <- df_list(nt=x, ..., .name_repair = "minimal")
+  # return(dfl)
+  if (vec_size(dfl) == 0)
+
+    return(NA)
+
+  else if (vec_size(dfl) == 1)
+
+    return(.share_func(dfl$nt))
+
+  tapply(dfl$nt, dfl[-1], .cr_func, default = 0)
+
 }
 
 #' Count the number of unique clonal sequences in a nucleotide sequence.

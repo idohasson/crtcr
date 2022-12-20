@@ -6,21 +6,18 @@ share_mean <- function(.id, ...) {
   unique_mean(.id)
 }
 
-# share_level
-# share_level(nt, aa, id)
-share_level <- function(..., .share_func=share_number) {
+share_level <- function(x, ..., .share_func=share_number) {
 
-  dfl <- df_list(..., .name_repair = "minimal")
-
+  dfl <- df_list(id=x, ..., .name_repair = "minimal")
+  # return(dfl)
   if (vec_size(dfl) == 0)
 
     return(NA)
 
   else if (vec_size(dfl) == 1)
 
-    return(.share_func(dfl[[1]]))
+    return(.share_func(dfl$id))
 
-  tapply(dfl[[1]], dfl[-1], .share_func)
+  tapply(dfl$id, dfl[-1], .share_func, default = 0)
 
 }
-

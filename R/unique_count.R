@@ -1,30 +1,29 @@
-unique_count <- function(x) {
+unique_count <- function(x, ...) {
   UseMethod("unique_count")
 }
 
-value_count.character <- function(x, ...) {
-  x <- rlang::squash_chr(dots_splice(x, ...))
-  vapply(x, vec_unique_count, integer(1), ...)
+unique_count.character <- function(x, ...) {
+  vec_unique_count(rlang::squash_chr(list(x, ...)))
 }
 
 
-value_count.list <- function(x, ...) {
-  x_list <- dots_splice(x, ...)
-  lapply(rlang::squash(x_list), value_count, ...)
+unique_count.list <- function(x, ...) {
+  vapply(squash_if(list(x, ...), is_list), unique_count, integer(1))
+  # unique_count()
 }
 
 
-value_count.data.frame <- function(x, ..., i=1) {
-  value_count(x[i], ...)
+unique_count.data.frame <- function(x, ...) {
+  vec_unique_count(dplyr::bind_rows(x, ...))
 }
 
 unique_count.logical <- function(x, ...) {
-  sum(x)
+  sum(x,..., na.rm = TRUE)
 }
 
 
 unique_count.numeric <- function(x, ...) {
-  unique_count(x > 0)
+  unique_count(c(x, ...) > 0)
 }
 
 unique_count.array <- function(x, ..., i=1) {
@@ -32,8 +31,5 @@ unique_count.array <- function(x, ..., i=1) {
 }
 
 unique_mean <- function(x, ...) {
-  unique_count(x, ...) / vec_size(x)
+  sum(unique_count(list(x, ...))) / vec_size(x)
 }
-
-
-

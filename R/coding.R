@@ -1,6 +1,3 @@
-# Define a function that takes a nucleotide sequence as input
-# and returns a logical value indicating whether the sequence
-# is a coding sequence
 is_coding <- function(nucleotide) {
 
   grepl("^([AGTC]{3})+$", nucleotide)
@@ -23,15 +20,6 @@ check_coding <- function(nucleotide) {
 
 }
 
-#' Convert a vector of nucleotide sequences into a vector of amino acid sequences.
-#'
-#' @param nt_vec A vector of nucleotide sequences. Each sequence must contain consecutive
-#'   triplets of 'A','G','T','C' (uppercase)
-#' @return A vector of amino acid sequences.
-#' @examples
-#' translate(c("ATGAGACCCAGG", "ATGAGACCCAGG"))
-#'   #> c("MGR", "MGR")
-#'
 convert_sequence <- function(nt_vec) {
   # Check that each element in the vector is a DNA base.
   check_coding(nt_vec)
@@ -42,13 +30,6 @@ convert_sequence <- function(nt_vec) {
 
 }
 
-# This function takes a nucleotide sequence and returns a vector of indexes for each codon in the sequence.
-#
-# Arguments:
-#   nuc_seq: a character vector containing the nucleotide sequence.
-#
-# Returns:
-#   A numeric vector of indexes for each codon in the input sequence.
 dna_to_protein <- function(nuc_seq) {
 
   # Create a map of nucleotide characters to their corresponding index values.
@@ -75,6 +56,3 @@ dna_to_protein <- function(nuc_seq) {
   ]
 
 }
-
-
-
