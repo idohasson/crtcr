@@ -1,0 +1,125 @@
+
+```{r}
+library(data.table)
+library(datawizard)
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(purrr)
+```
+
+Paths
+
+```{r}
+DATASETS_DIR <- "~/Datasets"
+# DIR_PATH <- "~/Datasets/Multiple sampled mice"
+# BETA_DIR <- file.path(DIR_PATH, "beta_MiXCR")
+EXPRESSION_DIR <- "time_points"
+# META_FILE <- file.path(DIR_PATH, "metadata.txt") # meta data of the samples
+# BETA_FILES <- list.files(BETA_DIR, full.names = T)
+EXPRESSION <- list.files(file.path(DATASETS_DIR, EXPRESSION_DIR),full.names = T)
+```
+
+
+Read data
+
+```{r}
+# read_file
+data100 <- fread(EXPRESSION[1])
+head(data100)
+# paths <- list.files(path.expand("~/R/data/beta_tps/"), full.names = T)
+# names(paths) <- strsplit(basename(paths),"\\.txt")
+# data_list <- lapply(paths[1:5], read_mixcr)
+# data <- dplyr::bind_rows(data_list, .id = "repertoire")
+```
+
+Prepare data
+
+```{r}
+
+data100 %<>% as.data.frame()
+fields <- names(data100)
+subject_i <- which(setNames(startsWith(fields, "Subject"), fields))
+data_expr <- data100[subject_i]
+aa <- data100[,"Amino Acid"]
+
+meta <- strsplit(fields[subject_i],"-|_") %>%
+  purrr::map_dfr(setNames, nm=c("id", "time", "type")) %>% 
+  mutate(time=substr(time, 3,4)) %>% cbind(i=subject_i)
+
+id_time <- meta[meta$type=="PBMC",-3] %>% 
+  with(split(setNames(i,time), id))
+time_id <- meta[meta$type=="PBMC",-3] %>% 
+  with(split(setNames(i,id), time))
+
+```
+
+
+
+```{r}
+
+get_expr_seq <- function(x,i,aa=1) {
+  
+  x[,aa][rowSums(x[i])>0]
+}
+
+library("ggVennDiagram")
+treshold=length(subject_i)%/%2
+share_data <- data100[rowSums(data100[subject_i]>0)>=treshold,]
+subject_aa <- map(id_time, get_expr_seq, x=share_data)
+time_aa <- map(time_id, get_expr_seq, x=share_data)
+ggVennDiagram(subject_aa) 
+ggVennDiagram(time_aa)
+```
+
+
+
+
+```{r}
+row_count <- function(x, at=(seq_along(x))) {
+  rowSums(x[,at]>0)
+}
+
+
+
+# share <- map(id_time, row_count, x=data100)
+# share_all_time_points <- map_dfr(id_time, row_count, x=data100)
+# shared_subject_points <- map_dfr(id_time, row_count, x=data100)
+# shared_time_points <- map_dfr(time_id, row_count, x=data100)
+
+```
+
+```{r}
+
+?hist(rowMeans(shared_subject_points), freq = T) 
+```
+
+
+```{r}
+share_level <- rowSums(data100[,-1:-3]>0)
+```
+
+```{r}
+row_count <- function(x, at=(seq_along(x))) {
+  rowSums(x[,at]>0)
+}
+# data100[,"Sum (Productive Frequency)"]
+
+
+require(stats)
+set.seed(14)
+x <- rchisq(100, df = 4)
+x <- rowMeans(datawizard::center(shared_time_points))
+
+## Histogram with custom x-axis:
+hist(x, xaxt = "n")
+axis(1, at = 0:17)
+
+op <- par(mfrow = 2:1, mgp = c(1.5, 0.6, 0), mar = .1 + c(3,3:1))
+qqplot(x, qchisq(ppoints(x), df = 4)); abline(0, 1, col = 2, lty = 2)
+
+hist(x, freq = FALSE, ylim = c(0, 0.2))
+curve(dchisq(x, df = 4), col = 2, lty = 2, lwd = 2, add = TRUE)
+par(op)
+```
+
