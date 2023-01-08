@@ -1,0 +1,115 @@
+
+```{r}
+library(rje)
+```
+
+# Fast but loose implementations of AND and OR logical operators.
+
+```{r}
+and0(c(0,1,0), c(1,1,0))
+## Not run: 
+set.seed(1234)
+x = rbinom(5000, 1, 0.5)
+y = rbinom(5000, 1, 0.5)
+
+# 3 to 4 times improvement over `&`
+system.time(for (i in 1:5000) and0(x,y))
+system.time(for (i in 1:5000) x & y)
+```
+# Fast and loose application of function over list.
+
+This is just a wrapper for unlist(lapply(x, FUN)), which will behave as sapply if FUN returns an atomic vector of length 1 each time.
+
+Speed up over sapply is not dramatic, but can be useful in time critical code.
+
+```{r}
+x = list(1:1000)
+tmp = fsapply(x, sin)
+
+## Not run: 
+x = list()
+set.seed(142313)
+for (i in 1:1000) x[[i]] = rnorm(100)
+
+system.time(for (i in 1:1000) sapply(x, function(x) last(x)))
+system.time(for (i in 1:1000) fsapply(x, function(x) last(x)))
+```
+
+
+
+# Get inclusion maximal subsets from a list
+
+```{r}
+letlist <- list(LETTERS[1:2], LETTERS[2:4], LETTERS[1:3], LETTERS[3:6])
+inclusionMax(letlist)
+```
+
+# Compute margin of a table faster
+
+```{r}
+m <- matrix(1:4, 2)
+marginTable(m, 1)
+marginTable(m, 2)
+
+propTable(m, 2)
+
+# 3-way example
+m <- array(1:8, rep(2,3))
+marginTable(m, c(2,3))
+marginTable(m, c(3,2))
+marginTable(m, c(3,2), order=FALSE)
+
+#' set.seed(2314)
+# set of 10 2x2x2 probability distributions
+x = rdirichlet(10, rep(1,8))
+
+marginMatrix(x, c(1,3))
+marginMatrix(t(x), c(1,3), incols=TRUE)
+```
+
+
+```{r}
+x = list(1:2, 1:3)
+y = list(1:4, 1:3)
+setmatch(x, y)
+subsetmatch(x, y)
+setsetdiff(x, y)
+
+x = list(1:3, 1:2)
+y = list(2:1, c(2,1,3))
+setsetequal(x, y)
+```
+
+
+```{r}
+x=replicate(10, sample(1:5,3,T), F)
+
+setsetdiff(list(1:3,4:5), x)
+```
+
+```{r}
+subsetOrder(2:4, 1:4)
+subsetOrder(2:4, 3:5)
+```
+
+```{r}
+is.subset(1:2, 1:3)
+is.subset(1:2, 2:3)
+1:2 %subof% 1:3
+1:2 %subof% 2:3
+```
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
